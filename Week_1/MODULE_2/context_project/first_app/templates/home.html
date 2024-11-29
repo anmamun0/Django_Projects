@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Home Page is it</h1>
+
+    <h2>Author: {{author}}</h2> 
+    <h2>Age: {{age}}</h2> 
+    <h2>List: {{lst}}</h2> 
+
+    <!--  Conditional statement -->
+    {% if age >= 20 %}
+        <h4>You will get driving license</h4>
+    {% elif age >= 10 and age <= 19 %}
+        <h4>Your will not get driving license</h4>
+    {% else %}
+        <h4>your are child</h4>
+    {% endif %}
+
+
+    <!--  For loop -->
+
+    {% for i in courses %}
+    <h3>{{i.id}}  {{i.name}} {{i.fee}}</h3>
+    {%endfor%}
+
+
+     <!--  Djagno template filters -->
+
+     <h3>{{ lst | join:" - " }}</h3>
+
+     <h3>{{ date |date:"D d M Y"}}</h3>
+     <h3>{{'I Am Master Yoda' | lower}}</h3>
+     <h3>{{'I Am Master Yoda' | upper}}</h3>
+     <h3>{{'I Am Master Yoda' | title}}</h3>
+
+ 
+
+</body>
+</html>
