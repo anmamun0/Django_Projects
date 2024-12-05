@@ -1,0 +1,200 @@
+
+    <p>First Item: 
+        {% for item in my_list %}
+            {% if forloop.first %}
+                {{ item }}
+            {% endif %}
+        {% endfor %}</p>
+
+    <p>Last Item: 
+        {% for item in my_list %}
+            {% if forloop.last %}
+                {{ item }}
+            {% endif %}
+        {% endfor %}</p>
+
+        {% for item in my_list|reverse %}
+        <li>{{ item }}</li>
+    {% endfor %}
+
+
+
+    <p>Length of List: {{ my_list|length }}</p>
+
+
+
+
+    {% for item in my_list %}
+    <li>{{ forloop.counter }}: {{ item }}</li>
+{% endfor %}
+
+
+
+
+{% if my_list %}
+    <p>List is not empty.</p>
+{% else %}
+    <p>List is empty.</p>
+{% endif %}
+
+<p>Joined List: {{ my_list|join:", " }}</p>
+
+
+
+
+
+
+{% for item in my_list %}
+        <li>{{ item }}</li>
+    {% endfor %}
+
+    {% for item in my_list %}
+    <li>{{ forloop.counter }}: {{ item }}</li>
+{% endfor %}
+
+<ul>
+    {% for item in my_list %}
+        <li>{{ forloop.counter0 }}: {{ item }}</li>
+    {% endfor %}
+</ul>
+{% for item in my_list %}
+        {% if forloop.first %}
+            <li>First Item: {{ item }}</li>
+        {% else %}
+            <li>{{ item }}</li>
+        {% endif %}
+    {% endfor %}
+
+
+    {% for item in my_list %}
+    {% if forloop.last %}
+        <li>Last Item: {{ item }}</li>
+    {% else %}
+        <li>{{ item }}</li>
+    {% endif %}
+{% endfor %}
+
+{% for item in my_list %}
+        <li style="color: {% if forloop.counter|divisibleby:2 %}blue{% else %}red{% endif %};">
+            {{ item }}
+        </li>
+    {% endfor %}
+
+
+
+
+
+
+
+    {% for item in my_list %}
+    {% if forloop.counter > 2 %}
+        {% break %}
+    {% endif %}
+    <li>{{ item }}</li>
+{% endfor %}
+
+
+{% for key, value in my_dict.items %}
+        <li>{{ key }}: {{ value }}</li>
+    {% endfor %}
+
+
+
+
+
+
+
+
+    {% for item in my_list %}
+    {% if item|length > 5 %}
+        <li>{{ item }}</li>
+    {% endif %}
+{% endfor %}
+
+
+
+
+
+
+{% for item in my_list %}
+        <li>{{ item }}</li>
+    {% empty %}
+        <li>No items found</li>
+    {% endfor %}
+
+
+    {% for index, item in my_list %}
+    <li>{{ index }}: {{ item }}</li>
+{% endfor %}
+
+{% for item in my_list %}
+<li>{{ forloop.counter }}. {{ item }}</li>
+{% endfor %}
+
+
+
+
+
+
+
+{% for item in my_list %}
+        <li style="background-color: {% cycle 'red' 'blue' 'green' %};">{{ item }}</li>
+    {% endfor %}
+
+
+
+    {% for key, value in my_dict.items %}
+    <li>{{ key }}: {{ value }}</li>
+{% endfor %}
+
+
+<p>Name: {{ my_dict.name }}</p>
+<p>Age: {{ my_dict.age }}</p>
+
+
+
+
+<p>Address: {{ my_dict.address }}</p>
+
+
+{% if 'name' in my_dict %}
+    <p>Name: {{ my_dict.name }}</p>
+{% else %}
+    <p>Name not available</p>
+{% endif %}
+
+
+
+{% for key in my_dict %}
+        <li>{{ key }}</li>
+    {% endfor %}
+
+
+
+
+
+
+    {% for value in my_dict.values %}
+    <li>{{ value }}</li>
+{% endfor %}
+
+
+
+
+
+
+
+{% for key, value in my_dict.items %}
+        <li>{{ key }}: {{ value }}</li>
+    {% empty %}
+        <li>The dictionary is empty.</li>
+    {% endfor %}
+
+
+
+
+    <p>Name: {{ my_dict.name|default:"No name available" }}</p>
+    <p>Address: {{ my_dict.address|default:"No address provided" }}</p>
+    
+
+

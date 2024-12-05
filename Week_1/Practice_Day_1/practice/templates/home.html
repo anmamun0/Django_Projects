@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Home Page</h1>
+    <header>
+        <nav>
+            <li><a href="/">Home</a> </li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/blog/">Blog</a></li>
+            <li><a href="/blog/first_page/">First_Blog</a></li>
+        </nav>
+    </header>
+
+    <main>
+        <h3>{{5 | add:'4'}}</h3>
+        <h3>{{'anmamun' | capfirst}}</h3>
+        <h3>{{5| center:'15'}} okey</h3>  
+        <h3>{{ "Thu 06 Feb 2020" |date:"D d M Y"}}</h3>
+        <h3>{{"Hello word new" | cut:' '}}</h3> 
+        <h3>{{dic | dictsort:'name'}}</h3> 
+        <h3>{{15 | divisibleby:'3'}}</h3>
+        <h3>{{my_date| date:"D d M Y"}}</h3>
+        <h3>{{tag | escape}}</h3>
+        <h3>{{my_file.size | filesizeformat}}</h3>
+        <h3>{{lst | last}}</h3>
+        <h3>{{lst | first}}</h3>
+        <!-- {% for x in "text" %}
+            <h3>{{x|linenumbers}}</h3>
+        {%endfor%} -->
+        <h3>{{"my_text"|linenumbers}}</h3>
+        <h3>{{"my_text"|make_list}}</h3>
+        <h3>{{lst|random}}</h3>
+        <h3>{{"https://anmamun0.vercel.app/"|slugify}}</h3>
+        <h3>{{my_date|time:"H:i"}}</h3>
+        <h3>{{my_date|timesince}}</h3>
+        <h3>{{lst|unordered_list}}</h3>
+        <h3>{{"Hello I'm word"|wordcount}}</h3>
+        <h3>{{ "hello"|center:100 }}</h3>
+        <h3>{{"my string"|addslashes }}</h3>
+        <h3>{{3.1416|floatformat:2}}</h3>
+        <h3>{{ lst|length_is:3 }}</h3>
+        <h3>{{"Hello\nWord" |linebreaks }}</h3>
+        <h3>{{"hello"|ljust:10}}</h3> 
+        <h3>{{"hello word"|urlencode}}</h3>
+        <h3>{{"Visit https://anmamun0.vercel.app/"|urlize}}</h3>
+
+        {% for x in lst%}
+        <h3 >{%cycle 'a' 'b' 'c' %}</h3>
+        {% endfor %}
+        {%now 'D d M Y'%}
+
+    </main>
+</body>
+</html>
+
+
+<!-- 
+
+
+Module 10.5 Practice Problems
+
+Make a project and create app inside it and a template folder also. Then pass some context data and then filter the context data based on the blogs.
+
+1. Follow the below websites and practice all the template filters
+
+https://www.geeksforgeeks.org/django-template-filters/
+https://earthly.dev/blog/django-template-filters/
+
+2. Practice the Simple Page Navigation project again and again
+
+-->

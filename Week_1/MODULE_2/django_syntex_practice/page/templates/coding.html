@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h3>Blog Page page.!</h3>
+        <nav>
+            <li><a href="/">Home</a></li>
+            <li><a href="/page/">Page</a></li> 
+        </nav>
+    </header>
+
+    {% load custom_filters %}  <!-- Load your custom filters -->
+
+    <p>
+        {% for x in num %}
+            <span>{{ x|convert }}</span>  <!-- Use the custom filter -->
+        {% endfor %}
+    </p>
+    
+</body>
+</html

@@ -1,0 +1,47 @@
+Assignment:
+Live : https://anmamun0.github.io/Software_Development_Project/Week_2/ASSIGNMENT_2/
+Gitbub: https://github.com/anmamun0/Software_Development_Project/tree/main/Week_2/ASSIGNMENT_2
+
+
+Practice Day 2:
+Live: https://anmamun0.github.io/Software_Development_Project/Week_2/Practice_day_2/
+Gitbub:https://github.com/anmamun0/Software_Development_Project/tree/main/Week_2/Practice_day_2
+
+Installing virtual environment
+
+1. Test your instalation:
+$ pipenv --version
+
+2. Naming Vitual Env:
+$ python -m nenv room1
+
+3. Activeing Virtual Env:
+$ <venv>\Scripts\active.bat
+
+4. Deactivating Virtual Env:
+$ deactivate
+
+
+Project Make:
+django-admin startproject project_1
+
+Run Project :
+python manage.py runserver
+
+
+
+App Make:
+django-admin app first_app
+
+
+
+ 
+
+
+
+
+Git:
+
+$ git add .
+$ git commit -m "text"
+$ git push
