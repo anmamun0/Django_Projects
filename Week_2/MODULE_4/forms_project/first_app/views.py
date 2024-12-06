@@ -2,10 +2,11 @@ from django.shortcuts import render
 
 # Create your views here.
 def contact(request):
-    if request.method == "POST":
+    if request.method == "POST": 
         name = request.POST.get("username")
         email = request.POST.get("email")
-        return render(request,'contact.html',{'name':name,'email':email})
+        select = request.POST.get('select')
+        return render(request,'contact.html',{'name':name,'email':email,'select':select})
     else:
         return render(request,'contact.html')
 

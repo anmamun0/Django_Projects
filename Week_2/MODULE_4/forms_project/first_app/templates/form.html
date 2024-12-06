@@ -2,7 +2,9 @@
 
 
 {% block main%}
-<form method="post" action="/first_app/contact/">
+<div class="container" style="margin:auto; width: 50%;">
+<form method="get">
+<!-- <form method="post" action="/first_app/contact/"> -->
     {% csrf_token %}
     <div class="mb-3">
       <label for="exampleInputName" class="form-label">Name</label>
@@ -12,9 +14,20 @@
       <label for="exampleInputEmail" class="form-label">Email</label>
       <input type="eamil" class="form-control" id="exampleInputEmail" name="email">
     </div> 
+
+    <select class="form-select" aria-label="Default select example" name="select">
+        <option selected>Open this select menu</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+        <option value="4">Four</option>/
+        <option value="5">Five</option>
+      </select>
+
+
     <button type="submit" class="btn btn-primary">Submit</button>
   </form>
-
+</div>
 <!-- 
 <h3>Name: {{name}}</h3>
 <h3>Email: {{email}}</h3> -->
