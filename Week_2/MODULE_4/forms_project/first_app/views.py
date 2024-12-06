@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from . forms import contactForm
 # Create your views here.
 def contact(request):
     if request.method == "POST": 
@@ -10,11 +11,10 @@ def contact(request):
     else:
         return render(request,'contact.html')
 
-def submit_form(request):
-    # if request.method == "POST":
-    #     name = request.POST.get("username")
-    #     email = request.POST.get("email")
-    #     return render(request,'form.html',{'name':name,'email':email})
-    # else:
-    # print(request.POST)
+def submit_form(request): 
     return render(request,'form.html')
+def DjangoForm(request):
+    form = contactForm(request.POST)
+    if form.is_valid():
+        print(form.cleaned_data)
+    return render(request,'django_form.html',{'form':form})
