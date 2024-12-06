@@ -2,10 +2,12 @@
 
 
 {% block main%}
+{% load crispy_forms_tags %}
 
-<form method="post">
+<form method="post" style="width:300px;height:50%;margin:auto;"class="pt-5">
     {% csrf_token %}
-    {{form.as_p}}
+    {{form |crispy}}
+    {% comment %} {{form.as_p}} {% endcomment %}
 
     <button type="submit" class="btn btn-primary">Submit</button>
 
