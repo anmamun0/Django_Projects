@@ -1,0 +1,24 @@
+{% extends 'base.html'%}
+
+{% block main%}
+<h1 style="text-align: center;">This is Food section</h1>
+<div class="container" style="display: grid;grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); grid-template-rows: auto; justify-items: center; align-self: center; row-gap: 20px;">
+
+
+
+
+{% for food in meals%}
+<div class="card" style="width: 18rem;">
+    <img src="{{food.strMealThumb}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{food.strMeal}}</h5>
+      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      <a href="#" class="btn btn-primary">Go somewhere</a>
+    </div>
+  </div>
+{% endfor%}
+
+
+
+</div>
+{% endblock%}
