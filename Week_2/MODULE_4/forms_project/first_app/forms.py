@@ -1,6 +1,9 @@
 from django import forms
 
 from django.core import validators 
+
+
+
 # class StudentForm(forms.Form):
 #     name = forms.CharField(label="User Name")
 #     email = forms.EmailField(label="User Email")
@@ -38,6 +41,24 @@ class StudentForm(forms.Form):
 
     text = forms.CharField(widget=forms.TextInput,validators=[custom_check])
 
+
+class PasswordValidationProject(forms.Form):
+    name = forms.CharField(widget=forms.TextInput)
+    password = forms.CharField(widget=forms.PasswordInput)
+    confirm_password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        val_pass = self.cleaned_data['password']
+        con_pass = self.cleaned_data['confirm_password']
+        val_name = self.cleaned_data['name']
+
+        if len(val_name) < 10:
+            raise forms.ValidationError("Name must be at least 15 char!")
+
+        if val_pass != con_pass:
+            raise forms.ValidationError("Password does'nt mathch")
+    
 
 class contactForm(forms.Form):
     name = forms.CharField(label="User Name: ")
@@ -85,6 +106,7 @@ class contactForm(forms.Form):
 
 
 
+
     # event_date = forms.DateField(
     #         widget=forms.DateInput(attrs={'type': 'date'}), 
     #         label="Event Date"
@@ -123,3 +145,8 @@ class contactForm(forms.Form):
     # slug = forms.SlugField(label="Blog Slug")
 
     # settings = forms.JSONField(label="Settings JSON")
+
+
+
+
+
