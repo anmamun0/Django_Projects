@@ -1,29 +1,43 @@
 from django import forms
 
-class StudentForm(forms.Form):
-    name = forms.CharField(label="User Name")
-    email = forms.EmailField(label="User Email")
-    # def clean_name(self):
-    #     valname = self.cleaned_data['name']
-    #     if len(valname) < 10 :
-    #         raise forms.ValidationError("Enter a Name with at least 10 char")
-    #     return valname
-    # def clean_email(self):
-    #     valemail = self.cleaned_data['email']
-    #     if '.com' not in valemail:
-    #         raise forms.ValidationError("Your Email must .com")
-    #     return valemail
+from django.core import validators 
+# class StudentForm(forms.Form):
+#     name = forms.CharField(label="User Name")
+#     email = forms.EmailField(label="User Email")
+#     # def clean_name(self):
+#     #     valname = self.cleaned_data['name']
+#     #     if len(valname) < 10 :
+#     #         raise forms.ValidationError("Enter a Name with at least 10 char")
+#     #     return valname
+#     # def clean_email(self):
+#     #     valemail = self.cleaned_data['email']
+#     #     if '.com' not in valemail:
+#     #         raise forms.ValidationError("Your Email must .com")
+#     #     return valemail
 
-    def clean(self):
-        cleaned_data = super().clean()
-        valname = self.cleaned_data['name']
-        valemail = self.cleaned_data['email']
-        if len(valname) < 10 :
-            raise forms.ValidationError("Enter a Name with at least 10 char")
+#     def clean(self):
+#         cleaned_data = super().clean()
+#         valname = self.cleaned_data['name']
+#         valemail = self.cleaned_data['email']
+#         if len(valname) < 10 :
+#             raise forms.ValidationError("Enter a Name with at least 10 char")
   
-        if '.com' not in valemail:
-            raise forms.ValidationError("Your Email must .com")
-       
+#         if '.com' not in valemail:
+#             raise forms.ValidationError("Your Email must .com")
+def custom_check(value):
+    if len(value) <10:
+        raise forms.ValidationError("Enter a value at least 10 char")
+      
+class StudentForm(forms.Form):
+    name = forms.CharField(validators=[validators.MinLengthValidator(10,message="Enter a Name with at least 10 char")])
+    email = forms.EmailField(widget=forms.EmailInput,validators=[validators.EmailValidator(message="Enter a valid Email")])
+
+    age = forms.IntegerField(validators=[validators.MaxValueValidator(34, message="age must be maximum 34"), validators.MinValueValidator(24,message="age must be at least 24")])
+
+    file =  forms.FileField(validators=[validators.FileExtensionValidator(allowed_extensions=['pdf'],message="File extension must be inded with pdf")])
+
+    text = forms.CharField(widget=forms.TextInput,validators=[custom_check])
+
 
 class contactForm(forms.Form):
     name = forms.CharField(label="User Name: ")
