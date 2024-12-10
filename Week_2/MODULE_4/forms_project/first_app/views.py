@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from . forms import contactForm
+from . forms import contactForm , StudentForm
 # Create your views here.
 def contact(request):
     if request.method == "POST": 
@@ -28,4 +28,14 @@ def DjangoForm(request):
         form = contactForm()
     return render(request,'django_form.html',{'form':form})
 
+def studentForm(request):
+    if request.method == "POST":
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data)
+            return render(request,'student_form.html',{'form':form})
+
+    else:
+        form = StudentForm()
+    return render(request,'student_form.html',{'form':form})
 
