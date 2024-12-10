@@ -1,6 +1,20 @@
 from django import forms
 
+class StudentForm(forms.Form):
+    name = forms.CharField(label="User Name")
+    email = forms.EmailField(label="User Email")
+    def clean_name(self):
+        valname = self.cleaned_data['name']
+        if len(valname) < 10 :
+            raise forms.ValidationError("Enter a Name with at least 10 char")
+        return valname
+    def clean_email(self):
+        valemail = self.cleaned_data['email']
+        if '.com' not in valemail:
+            raise forms.ValidationError("Your Email must .com")
+        return valemail
 
+  
 
 class contactForm(forms.Form):
     name = forms.CharField(label="User Name: ")
