@@ -1,0 +1,29 @@
+{%extends 'base.html'%}
+
+{% block title%}
+Application
+{% endblock%}
+
+{%block main%}
+
+{% load crispy_forms_tags %}
+
+<div class='container justify-center '> 
+
+
+<h1 class="text-2xl text-green-600 font-bold text-center">New Job Application Form</h1>
+
+<form method="post"  style=" margin:auto; padding:20px"class="pt-5 grid md:grid-cols-2 gap-4 lg:space-x-28 m-auto" enctype='multipart/form-data' >
+ 
+    {% csrf_token %}
+    
+    {{application_form |crispy }}
+    <button type="submit" class="btn btn-primary m-auto">Submit</button>
+</form>
+
+
+
+
+</div>
+{%endblock%}
+
