@@ -25,16 +25,18 @@ $ deactivate
 Project Make:
 django-admin startproject project_1
 
-Run Project :
-python manage.py runserver
-
-
-
 App Make:
 django-admin app first_app
 
 
+Run Project :
+python manage.py runserver
 
+Python to SQL convert
+python manage.py makemigrations
+
+Python SQL run
+python manage.py migrate
  
 
 
