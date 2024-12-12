@@ -39,6 +39,8 @@ Python SQL run
 python manage.py migrate
  
 
+Python admin user and Password set:
+python manage.py createsuperuser
 
 
 
