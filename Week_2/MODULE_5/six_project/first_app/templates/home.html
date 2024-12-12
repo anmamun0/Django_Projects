@@ -29,7 +29,7 @@
             <td>{{s.name}}</td>
             <td>{{s.father_name}}</td>
             <td>{{s.address}}</td>
-            <td><a class='btn btn-danger'> Delete </a></td>
+            <td><a class='btn btn-danger' href="{%url 'delete_student' s.roll %}"> Delete </a></td>
           </tr> 
           {%endfor%}
         {%else%}
