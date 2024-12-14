@@ -8,5 +8,6 @@ def home(request):
 
 def delete_student(request,roll):
     std = models.Student.objects.get(pk=roll).delete()
+    st = models.Student.objects.filter(name_icontains ='v')
     # print(std)
     return redirect("home") 

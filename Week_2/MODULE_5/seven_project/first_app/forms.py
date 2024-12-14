@@ -9,17 +9,18 @@ class StudentForm(forms.ModelForm):
         # fields = ['name','roll']
         # exclude = ['roll']
 
-        labels = {
-            'name':'Student Name',
-            'roll':'Roll No'
-        }
-        widgets = {
-            'name':forms.TextInput(attrs={'class':'bg-primary'}),
-            # 'roll':forms.PasswordInput()
-        }
-        help_texts = {
-            'name':'Write your Full Name.',
-        }
-        error_messages = {
-            'name':{'required':"Your Name is required"}
-        }
+        # labels = {
+        #     'name':'Student Name',
+        #     'roll':'Roll No'
+        # }
+        # widgets = {
+        #     'name':forms.TextInput(attrs={'class':'bg-primary'}),
+        #     # 'roll':forms.PasswordInput()
+        # }
+        # help_texts = {
+        #     'name':'Write your Full Name.',
+        # }
+        # error_messages = {
+        #     'name':{'required':"Your Name is required"}
+        # }
+
