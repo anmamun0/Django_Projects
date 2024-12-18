@@ -1,0 +1,11 @@
+{% extends 'base.html'%}
+{% load crispy_forms_tags%}
+{% block  content%}
+<h1 class="text-2xl pb-16">Add Musicians</h1>
+
+<form action="" method="post" class="sm:w-3/5 md:w-[600px] ">
+{% csrf_token%}
+{{form | crispy}}
+<button type="submit" class="border rounded-lg bg-sky-500 hover:bg-sky-700 px-6 py-2 text-xl text-white my-12"> Create </button>
+</form>
+{% endblock %}
