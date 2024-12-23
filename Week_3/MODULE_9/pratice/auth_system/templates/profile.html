@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content%}
+
+{% if messages%}
+    {% for m in messages%}
+        <small {% if m.tags %} class="{{m.tags}} text-green-600 font-bold" {%endif%}>{{m}}</small>
+    {% endfor %}
+{% endif %}
+
+
+<h1 class="text-4xl font-bold pb-8">Profile</h1>
+
+
+<h1 class="text-xl font-bold pb-8">
+    @ {{user}}
+</h1>
+
+
+
+  
+
+
+
+
+<form method="post" class="sm:w-3/5 md:w-[500px] m-auto
+p-12  " novalidate>
+    {% csrf_token %}
+<!-- {{form|crispy}} -->
+    {% if form.non_field_errors %}
+    {% for er in form.non_field_errors%}
+        <p class="bg-red-800 text-white p-4 mb-4">{{er}}</p>
+    {% endfor%}
+    {% endif%}
+
+    {% for fm in form%}
+        {{fm.label_tag}}
+        {{fm}}
+        {{fm.errors|striptags}}
+    {% endfor %}
+        
+<button class="bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded-md text-white mt-8"  > Edit Change </button>
+ 
+<div class="space-x-4 py-8 flex gap-4">
+    <a href="{% url 'password_cng' %}"   class="bg-blue-500 text-white text-sm font-bold py-2 px-2 rounded hover:bg-blue-600 transition inline-block">
+      Change Password
+    </a>
+
+    <a href="{% url 'send_email_info' %}"   class="bg-green-500 text-white text-sm font-bold py-2 px-2 rounded hover:bg-green-600 transition inline-block">
+    Email Token
+    </a>
+
+  </div>
+</form>
+
+
+
+
+
+
+{% endblock %}
