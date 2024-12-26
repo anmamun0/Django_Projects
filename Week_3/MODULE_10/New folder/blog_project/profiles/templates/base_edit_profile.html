@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+
+<div class="mx-auto p-4 ">
+    <!-- Header Section -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="flex items-center p-6 bg-gray-800 text-white pb-12">
+            <img src="https://via.placeholder.com/100" alt="Profile Picture" class="w-24 h-24 rounded-full border-4 border-white shadow">
+            <div class="ml-6">
+                <h1 class="text-2xl font-bold">{{user.first_name}} {{user.last_name}}</h1>
+                <p class="text-sm">ID: {{user.username}}</p>
+            </div>
+        </div>
+
+        <!-- Sidebar and Content -->
+        <div class="flex pr-4 ">
+            <!-- Sidebar -->
+            <div class="w-1/4 bg-gray-50 border-r p-4">
+                <nav class="space-y-2">
+                    <a href="{% url 'profile_edit' %}" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Basic Info</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Points</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Account</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Lab</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Privacy</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Notifications</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Billing</a>
+                    <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Orders</a>
+                </nav>
+            </div>
+
+            <!-- Content -->
+             <div class="w-3/4 p-6 -mt-16 shadow-lg  bg-white rounded-lg ">
+                <div class="bg-white  ">
+                {% block form_content%}
+
+
+                {% endblock %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+{% endblock %} 
