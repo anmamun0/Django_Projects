@@ -2,12 +2,7 @@
 {% load crispy_forms_tags%}
 {% block content %}
 <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
-        {% if messages %}
-            {% for msg in message%}
-                <p class="text-red-600 font-semibold py-2">msg</p>
-            {% endfor %}
-        {% endif %}
+  <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md"> 
     <h2 class="text-center text-3xl font-extrabold text-gray-900">Sign in to your account</h2>
     <p class="mt-2 text-center text-sm text-gray-600">
       Or

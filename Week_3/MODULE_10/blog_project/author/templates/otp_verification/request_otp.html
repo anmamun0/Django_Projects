@@ -2,14 +2,6 @@
 {% load crispy_forms_tags%}
 {% block content %}
 
-<div class="justify-center text-center">
-  {% if messages%}
-      {% for m in messages%}
-          <small {% if m.tags %} class="{{m.tags}} text-md text-red-500   text-center font-semibold" {%endif%}>{{m}}</small>
-      {% endfor %}
-    {% endif %}
-
-</div>
 
 <div class="flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
   <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-md">

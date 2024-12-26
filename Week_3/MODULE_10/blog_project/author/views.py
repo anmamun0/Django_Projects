@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .forms import   RegisterForm , OTPRequestForm , OTPVerifyForm
+from .forms import  RegisterForm , OTPRequestForm , OTPVerifyForm
 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm , SetPasswordForm
@@ -13,8 +13,19 @@ def register(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
-            form.save(commit=True)
-            return redirect('login')
+            name = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            email = form.cleaned_data['email']
+
+            if User.objects.filter(email=email).exists():
+                messages.warning(request,'This mail has and account, Please Login.')
+                return redirect('login')
+            else:
+                form.save()
+                user = authenticate(username=name,password=password)
+                if user is not None:
+                    login(request,user)
+                return redirect('profile_edit')
     else:
         form = RegisterForm()
     return render(request,'register.html',{'form':form})
@@ -29,11 +40,13 @@ def login_user(request):
             password = form.cleaned_data['password']
             user = authenticate(username=name,password=password)
             if user is not None:
-                messages.success(request,"Login Successfyll..")
                 login(request,user)
-                return redirect('homepage')
+                messages.success(request,"Login Successfyll..")
+                return redirect('profile_edit')
             else:
-                messages.warning(request,"Your are not authenticated people, we can ban account..")
+                messages.error(request, "Invalid username or password.")
+                return redirect('login')
+                
     else:
         form = AuthenticationForm(request=request)
     return render(request,'login.html',{'form':form})
@@ -69,6 +82,7 @@ def request_otp(request):
                     recipient_list=[email],
                     fail_silently=False,
                 )
+                messages.success(request,'Sended a OTP in you mail')
                 return redirect('verify_otp')
     else:
         form = OTPRequestForm(request.POST)
@@ -83,9 +97,10 @@ def verify_otp(request):
 
             if email in OTP_BANK and OTP_BANK[email]== enter_otp:
                 del OTP_BANK[email]
-                messages.success(request,"Login Successfull.")
+                messages.success(request,"Varify Success")
                 return redirect("reset_password")
             else:
+                messages.error(request,'Invalid OTP, Try again..')
                 return redirect('request_otp')
     else:
         form = OTPVerifyForm()
@@ -107,9 +122,11 @@ def reset_password(request):
         if form.is_valid():
             form.save()
             del request.session['email']
-            messages.success(request,"Reset Password Successfull")
+            messages.success(request,"Login Successfull")
             login(request,user)
             return redirect('homepage')
     else:
         form = SetPasswordForm(user=user)
     return render(request,'otp_verification/reset_password.html',{'form':form})
+
+

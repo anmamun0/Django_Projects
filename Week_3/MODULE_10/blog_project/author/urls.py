@@ -10,4 +10,6 @@ urlpatterns = [
     path('request_otp/',request_otp,name='request_otp'),
     path('verify_otp/',verify_otp,name='verify_otp'),
     path('reset_password/',reset_password,name='reset_password'),
+
+    
 ]

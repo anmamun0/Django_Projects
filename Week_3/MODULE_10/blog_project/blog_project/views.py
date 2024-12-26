@@ -1,16 +1,26 @@
-from django.shortcuts import render
-from posts.models import Post
+from django.shortcuts import render 
 from django.utils.timezone import now
+from post.models import Post
+from categories.models import Category
 
-def home(request):
-    data = Post.objects.all().order_by('-created_at')
+def home(request,category_slug=None):
+    posts = Post.objects.all().order_by('-created_at')
+    if category_slug is not None:
+        cat = Category.objects.get(slug=category_slug)
+        posts = Post.objects.filter(category=cat)
 
-    for post in data:
-        post.days_passed = (now() - post.created_at).days
+    categorys = Category.objects.all()
 
-    for i in data:
-        print(i.title)
-        for j in i.category.all():
-            print(j)
+    context = {
+        'posts':posts,
+        'categorys':categorys,
+    }
+    # for post in data:
+    #     post.days_passed = (now() - post.created_at).days
 
-    return render(request,'home.html',{'data':data})
+    # for i in data:
+    #     print(i.title)
+    #     for j in i.category.all():
+    #         print(j)
+
+    return render(request,'home.html',context)

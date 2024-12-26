@@ -5,34 +5,31 @@
 <div class="min-h-screen flex items-center justify-center ">
     <div class="bg-white shadow-md rounded-lg p-8 max-w-lg w-full">
         <h1 class="text-2xl font-bold mb-6 text-center text-gray-800">Register</h1>
+        
         <form action="" method="post" class="space-y-6">
             {% csrf_token %}
-            
+        
             {% for field in form %}
             <div>
                 <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700">
-                    {{ field.label }}
-                </label>
-                <div class="mt-1">
-                    {{ field }}
-                </div>
+                    {{ field.label }} </label> 
+                <div class="mt-1"> {{ field }} </div>
+
                 {% if field.errors %}
-                <p class="text-red-500 text-sm mt-1">
-                    {{ field.errors|striptags }}
-                </p>
+                    <p class="text-red-500 text-sm mt-1"> {{ field.errors|striptags }} </p>
                 {% endif %}
+
             </div>
             {% endfor %}
-
+        
             <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md shadow-md">
-                Register
-            </button>
-
+                Register </button>
+        
             <div class="text-sm">
-                <p class="font-medium  "> Alreade have an account<a href="{% url 'login' %}" class="font-medium text-blue-600 hover:text-blue-500 "> Login </a>
-                </p>
-                
+                <p class="font-medium  "> Alreade have an account<a href="{% url 'login' %}" class="font-medium text-blue-600 hover:text-blue-500 ">
+                    Login </a></p> 
             </div>
+
         </form>
     </div>
 </div>
