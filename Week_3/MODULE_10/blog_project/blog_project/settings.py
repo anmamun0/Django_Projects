@@ -37,6 +37,8 @@ EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 # Application definition
 
+LOGIN_URL = '/user/login/'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

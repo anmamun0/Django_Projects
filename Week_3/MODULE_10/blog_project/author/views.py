@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from .forms import  RegisterForm , OTPRequestForm , OTPVerifyForm
+from django.contrib.auth.decorators import login_required
 
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm , SetPasswordForm
@@ -52,7 +53,7 @@ def login_user(request):
     return render(request,'login.html',{'form':form})
 
 
-
+@login_required(login_url='/user/login/')
 def logout_user(request):
     logout(request)
     return redirect('homepage')
@@ -62,6 +63,7 @@ import random
 from blog_project.settings import EMAIL_HOST_USER
 OTP_BANK = {}
 
+@login_required(login_url='/user/login/')
 def request_otp(request):
     if request.method == "POST":
         form = OTPRequestForm(request.POST)
@@ -88,6 +90,7 @@ def request_otp(request):
         form = OTPRequestForm(request.POST)
     return render(request,'otp_verification/request_otp.html',{'form':form})
 
+@login_required(login_url='/user/login/')
 def verify_otp(request):
     if request.method == "POST":
         form = OTPVerifyForm(request.POST)
@@ -106,6 +109,7 @@ def verify_otp(request):
         form = OTPVerifyForm()
     return render(request,'otp_verification/request_otp.html',{'form':form})
 
+@login_required(login_url='/user/login/')
 def reset_password(request):
     email = request.session['email']
     if not email:

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+    <div class="max-w-5xl mx-auto p-4">
+        <!-- Header Section -->
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <div class="flex items-center p-6 bg-gray-800 text-white">
+                <img src="https://via.placeholder.com/100" alt="Profile Picture" class="w-24 h-24 rounded-full border-4 border-white shadow">
+                <div class="ml-6">
+                    <h1 class="text-2xl font-bold">AN Mamun</h1>
+                    <p class="text-sm">Last active: 2h ago</p>
+                </div>
+            </div>
+
+            <!-- Sidebar and Content -->
+            <div class="flex">
+                <!-- Sidebar -->
+                <div class="w-1/4 bg-gray-50 border-r p-4">
+                    <nav class="space-y-2">
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Basic Info</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Points</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Account</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Lab</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Privacy</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Notifications</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Billing</a>
+                        <a href="#" class="block py-2 px-4 text-gray-700 hover:bg-gray-200 rounded">Orders</a>
+                    </nav>
+                </div>
+
+                <!-- Content -->
+                <div class="w-3/4 p-6">
+                    <!-- Basic Info Section -->
+                    <div class="bg-white shadow rounded-lg p-6">
+                        <h2 class="text-lg font-semibold mb-4">Basic Info</h2>
+                        <form class="space-y-4">
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="name" class="text-sm font-medium text-gray-700 text-left">Name</label>
+                                <input type="text" id="name" name="name" value="AN Mamun" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="gender" class="text-sm font-medium text-gray-700 text-left">Gender</label>
+                                <select id="gender" name="gender" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="Male" selected>Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="location" class="text-sm font-medium text-gray-700 text-left">Location</label>
+                                <input type="text" id="location" name="location" value="Your location" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="birthday" class="text-sm font-medium text-gray-700 text-left">Birthday</label>
+                                <input type="date" id="birthday" name="birthday" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="summary" class="text-sm font-medium text-gray-700 text-left">Summary</label>
+                                <textarea id="summary" name="summary" rows="3" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">Passionate Competitive Programmer...</textarea>
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="website" class="text-sm font-medium text-gray-700 text-left">Website</label>
+                                <input type="url" id="website" name="website" value="http://anmamun.vercel.app/" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="github" class="text-sm font-medium text-gray-700 text-left">GitHub</label>
+                                <input type="url" id="github" name="github" value="https://github.com/anmamun0" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="linkedin" class="text-sm font-medium text-gray-700 text-left">LinkedIn</label>
+                                <input type="url" id="linkedin" name="linkedin" value="https://linkedin.com/in/anmamun0" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="grid grid-cols-3 items-center gap-4">
+                                <label for="twitter" class="text-sm font-medium text-gray-700 text-left">X (formerly Twitter)</label>
+                                <input type="url" id="twitter" name="twitter" value="Your username or URL" class="col-span-2 mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                            </div>
+                            <div class="flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-blue-600 text-white font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Skills Section -->
+                           <!-- Skills Section -->
+                           <div class="bg-white shadow rounded-lg p-6 mt-6">
+                            <h2 class="text-lg font-semibold mb-4">Skills</h2>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">C</span>
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">C++</span>
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">Java</span>
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">Python</span>
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">MySQL</span>
+                                <span class="bg-gray-200 text-gray-800 text-sm font-medium px-3 py-1 rounded">Django</span>
+                            </div>
+                            <form class="flex items-center gap-2">
+                                <input type="text" placeholder="Add a skill" class="flex-grow mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <button type="button" class="px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Add</button>
+                            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

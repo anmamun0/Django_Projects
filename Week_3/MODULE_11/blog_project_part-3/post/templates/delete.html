@@ -1,0 +1,22 @@
+{% extends 'base.html'%}
+
+{% block content%}
+{% load crispy_forms_tags%}
+ 
+<h1 class="text-4xl">Are you sure ? to delete this post</h1>
+
+<form method="post" class="  w-1/2   mt-8 ">
+    {% csrf_token %}
+    <!-- {{  form | crispy}} -->
+
+
+    {% for fm in form%}
+        {{fm.label_tag}}  
+        {{fm}} 
+
+        {{fm.errors|striptags}}
+    {% endfor %}
+    <button class="btn bg-yellow-400"> Publish Blog </button>
+</form> 
+{% endblock %}
+

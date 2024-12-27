@@ -1,0 +1,117 @@
+{% extends 'base.html'%}
+
+{% block content%}
+{% load crispy_forms_tags%}
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+<h1 class="text-4xl">Add Post Page</h1>
+
+<form method="post" class="  w-1/2   mt-8 " enctype="multipart/form-data">
+    {% csrf_token %}
+    <!-- {{  form | crispy}} -->
+
+
+    {% for fm in form%}
+        {{fm.label_tag}}  
+        {{fm}} 
+
+        {{fm.errors|striptags}}
+    {% endfor %}
+    <button class="btn bg-yellow-400"> Publish Blog </button>
+</form>
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <div class="bg-white shadow-lg rounded-lg w-full max-w-3xl">
+      <!-- Page Header -->
+      <div class="px-6 py-4 border-b bg-blue-500 text-white rounded-t-lg">
+        <h1 class="text-2xl font-semibold">Create a New Post</h1>
+        <p class="text-sm text-blue-200">Share your thoughts with the community</p>
+      </div>
+  
+      <!-- Form Section -->
+      <form action="#" method="post" class="p-6 space-y-6">
+        <!-- Title Field -->
+        <div class="space-y-2">
+          <label for="title" class="block text-sm font-medium text-gray-700">Post Title</label>
+          <input 
+            type="text" 
+            id="title" 
+            name="title" 
+            class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+            placeholder="Enter your post title"
+          />
+        </div>
+  
+        <!-- Content Field -->
+         <!-- Content Textarea (Quill Editor) -->
+         <div class="space-y-2">
+            <label for="content" class="block text-sm font-medium text-gray-700">Post Content</label>
+            <div id="editor" class="h-64 px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"></div>
+          </div>
+  
+        <!-- Category Field -->
+        <div class="space-y-2">
+          <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+          <select 
+            id="category" 
+            name="category" 
+            class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-700">
+            <option value="general">General</option>
+            <option value="technology">Technology</option>
+            <option value="lifestyle">Lifestyle</option>
+            <option value="education">Education</option>
+          </select>
+        </div>
+  
+        <!-- Image Upload -->
+        <div class="space-y-2">
+          <label for="image" class="block text-sm font-medium text-gray-700">Upload Image (Optional)</label>
+          <input 
+            type="file" 
+            id="image" 
+            name="image" 
+            class="block w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-gray-700"
+          />
+        </div>
+  
+        <!-- Submit Button -->
+        <div class="text-right">
+          <button 
+            type="submit"
+            class="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md shadow-md">
+            Create Post
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+{% endblock %}
+
