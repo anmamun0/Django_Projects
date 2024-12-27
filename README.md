@@ -26,10 +26,8 @@ This section lists commonly used commands when working with Django projects.
      $ python manage.py createsuperuser
 --
 ```
- 
- 
- 
- 
+  
+ ---
 # Crispy-bootstrap5 
 *Bootstrap5 template pack for django-crispy-forms* [Go](https://github.com/django-crispy-forms/crispy-bootstrap5/) 
 
@@ -56,7 +54,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 ```
 
 
-
+---
 # Static files and photos
 *Used to configure how Django handles static files like CSS, JavaScript, and images.* 
 
@@ -74,6 +72,89 @@ STATICFILES_DIRS = [
 <src href="{% static 'photo.png' %}">
 ```
 
+ ---
+# Dynamic Media File Management
+
+### setting.py
+```
+# URL to access media files in development
+MEDIA_URL = '/media/'
+
+# The directory on your server where media files are stored.
+MEDIA_ROOT = BASE_DIR / 'media'
+```
+
+
+### url.py
+```
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+
+
+### models.py
+```
+class Document(models.Model):
+    title = models.CharField(max_length=100)
+    file = models.FileField(upload_to='documents/')  # Files will be stored in MEDIA_ROOT/documents/
+```
+
+
+### forms.py 
+
+```
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['title', 'file']
+```
+
+
+
+### views.py
+
+```
+def upload_file(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)  # Include request.FILES for file uploads
+        if form.is_valid():
+            form.save()
+            return redirect('file_list')
+    else:
+        form = DocumentForm()
+    return render(request, 'upload_file.html', {'form': form})
+
+
+def file_list(request):
+    documents = Document.objects.all()
+    return render(request, 'file_list.html', {'documents': documents})
+```
+
+
+### upload_file.html
+```
+<h1>Upload File</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+</form>
+```
+
+### file_list.html
+```
+<h1>Uploaded Files</h1>
+<ul>
+    {% for document in documents %}
+    <li>
+        {{ document.title }} - <a href="{{ document.file.url }}">Download</a>
+    </li>
+    {% endfor %}
+</ul>
+```
+
+
+ ---
 # Backend Email Controll
 
 #### *setting.py* 
@@ -89,8 +170,8 @@ EMAIL_USE_SSL = False
 
 
 
-
-# Decorator @login_required
+---
+# Decorator login_required
 *is used to ensure that a view can only be accessed by authenticated (logged-in) users. If a user is not logged in and tries to access a view that is decorated with @login_required, they are redirected to the login page.* 
 
 ####  setting.py  
@@ -106,7 +187,7 @@ from django.contrib.auth.decorators import login_required
 ```
 
 
-
+---
 # Cookie Management
 
 ### Setting a Cookie
@@ -138,7 +219,7 @@ Methods : .keys(), .values(), items(),
 ```
 
 
-
+---
 # Session Management
 
 
@@ -207,14 +288,15 @@ def home(request):
 --- 
 # **Table Of Contents**
 
-|      Topic                 |       Linkes                         | 
-|----------------------------|--------------------------------------| 
-| Django Commands            | [Go](#django-commands)               |  
-| Crispy-bootstrap5          | [Go](#crispy-bootstrap5)             |  
-| Static files and photos    | [Go](#static-files-and-photos)       |  
-| Backend Email Controll     | [Go](#backend-email-controll)        |   
-| Decorator @login_required  | [Go](#decorator-@login_required)     |   
-| Cookie Management          | [Go](#cookie-management)             |   
-| Session Management         | [Go](#session-management)            |   
+|      Topic                                |       Linkes                         | 
+|-------------------------------------------|--------------------------------------| 
+| Django Commands                           | [Go](#django-commands)               |  
+| Crispy-bootstrap5                         | [Go](#crispy-bootstrap5)             |  
+| Static files and photos                   | [Go](#static-files-and-photos)       | 
+| Dynamic Media File Management             | [Go](#dynamic-media-file-management) |
+| Backend Email Controll                    | [Go](#backend-email-controll)        |   
+| Decorator @login_required                 | [Go](#decorator-login_required)      |   
+| Cookie Management                         | [Go](#cookie-management)             |   
+| Session Management                        | [Go](#session-management)            |   
 
 
