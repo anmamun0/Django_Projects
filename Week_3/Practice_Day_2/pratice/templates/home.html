@@ -1,0 +1,94 @@
+{%extends 'base.html'%}
+
+{% block content%}
+
+<h1 class="text-3xl font-bold pb-8">All Data</h1>
+
+
+
+<div class="w-full">
+    <div class="container mx-auto px-2">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded-lg">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th scope="col" class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            ID
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Musician Name
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Email
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Album Rating
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Instrument Type
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Album Name
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Release Date
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                   
+                    <!--   Rows -->
+
+                    {% for album in albums%}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{forloop.counter }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            <a href="{% if user.is_authenticated  and album.musician.id %}  {% url 'edit_musician' album.musician.id%} {%endif%}">
+                            {{album.musician.first_name}}
+                             {{album.musician.last_name}}
+                            </a>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{album.musician.email}}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{album.instrument_type}}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{album.musician.instrument_type}} 
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"> 
+                                {{ album.album_name }} 
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                            {{album.release_date}} 
+                        </td>
+
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'edit_album' album.id%}" class="text-blue-600 hover:text-blue-800">Edit</a>
+                            <span class="mx-2">|</span>
+                            <a href="{% url 'delete_album' album.id %}" class="text-red-600 hover:text-red-800">Delete</a>
+                            {% else %} 
+                            <button class="bg-gray-400 text-white py-2 px-4 rounded" disabled>Disable</button>
+
+
+                            {% endif %}
+                        </td>
+                        
+                    </tr>
+
+                    {%endfor%}
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>    
+
+</div> 
+{% endblock %}
