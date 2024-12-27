@@ -90,16 +90,30 @@ EMAIL_USE_SSL = False
 
 
 
+# Decorator @login_required
+*is used to ensure that a view can only be accessed by authenticated (logged-in) users. If a user is not logged in and tries to access a view that is decorated with @login_required, they are redirected to the login page.* 
 
+####  setting.py  
+```
+LOGIN_URL = '/user/login/'
+```
+
+####  *view.html*
+```
+from django.contrib.auth.decorators import login_required
+@login_required(login_url='/user/login/')
+@login_required
+```
 
 --- 
 # **Table Of Contents**
 
-|      Topic               |       Linkes                    | 
-|--------------------------|---------------------------------| 
-| Django Commands          | [Go](#django-commands)          |  
-| Crispy-bootstrap5        | [Go](#crispy-bootstrap5)        |  
-| Static files and photos  | [Go](#static-files-and-photos)  |  
-| Backend Email Controll   | [Go](#backend-email-controll)   |   
+|      Topic                 |       Linkes                         | 
+|----------------------------|--------------------------------------| 
+| Django Commands            | [Go](#django-commands)               |  
+| Crispy-bootstrap5          | [Go](#crispy-bootstrap5)             |  
+| Static files and photos    | [Go](#static-files-and-photos)       |  
+| Backend Email Controll     | [Go](#backend-email-controll)        |   
+| Decorator @login_required  | [Go](#decorator-@login-required)     |   
 
 
