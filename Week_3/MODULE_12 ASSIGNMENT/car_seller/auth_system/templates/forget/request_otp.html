@@ -1,35 +1,27 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
+<div class="container mt-20">
 
-<h1 class="text-4xl font-bold pb-8"> Enter Your Email </h1>
- 
+    <h1 class="text-4xl font-bold pb-8"> Enter Your Email </h1>
 
-
-<form method="post" class="sm:w-3/5 md:w-[500px] m-auto
+    <form method="post" class="sm:w-3/5 md:w-[500px] m-auto
 p-12 bg-white  rounded-md shadow-lg " novalidate>
-    {% csrf_token %}
-<!-- {{form|crispy}} -->
+        {% csrf_token %}
+        <!-- {{form|crispy}} -->
 
-    {% for fm in form%}
+        {% for fm in form%}
         {{fm.label_tag}}
         {{fm}}
         {{fm.errors|striptags}}
-    {% endfor %}
-        
-<div>
-    <button type="submit" class="bg-green-500 hover:bg-green-600 px-4  text-white rounded-md  mt-10"> Next </button>
+        {% endfor %}
+
+        <div>
+            <button type="submit" class="bg-green-500 hover:bg-green-600 px-4  text-white rounded-md  mt-10"> Next
+            </button>
+        </div>
+    </form>
 </div>
 
 
 {% endblock%}
-
-
-
-
-
-
-
-
-
-

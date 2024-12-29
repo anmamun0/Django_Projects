@@ -18,7 +18,6 @@ class ChangeUserDataForm(UserChangeForm):
         fields = ['username','first_name','last_name','email']
 
  
-
 class RequestOTPform(forms.Form):
     email = forms.EmailField()
 

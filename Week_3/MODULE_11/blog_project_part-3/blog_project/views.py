@@ -14,13 +14,6 @@ def home(request,category_slug=None):
     context = {
         'posts':posts,
         'categorys':categorys,
-    }
-    # for post in data:
-    #     post.days_passed = (now() - post.created_at).days
-
-    # for i in data:
-    #     print(i.title)
-    #     for j in i.category.all():
-    #         print(j)
+    } 
 
     return render(request,'home.html',context)

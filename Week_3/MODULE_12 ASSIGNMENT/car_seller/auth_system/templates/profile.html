@@ -3,57 +3,73 @@
 
 {% block content%} 
 
+<div class="container mx-auto mt-20">
+  <h1 class="text-4xl text-center font-bold pb-8">Your Profile</h1>
 
-<h1 class="text-4xl font-bold pb-8">Profile</h1>
+  <div class="flex flex-col lg:flex-row gap-6">
+    <!-- Sidebar Section -->
+    <aside class="w-full lg:w-1/4 bg-gray-100 p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Transactions</h2>
 
+      {% if historys %}
+      <ul class="space-y-4">
+        {% for history in historys %}
+        <li class="p-4 bg-white rounded-lg shadow">
+          <h3 class="text-lg font-semibold text-gray-800">{{ history.title }}</h3>
+          <p class="text-gray-600">Price: ${{ history.money }}</p>
+          <p class="text-gray-500 text-sm">Date: {{ history.delevary_date|date:"F j, Y" }}</p>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="text-gray-600">No transaction history available.</p>
+      {% endif %}
+    </aside>
 
-<h1 class="text-xl font-bold pb-8">
-    @ {{user}}
-</h1>
+    <!-- Main Content Section -->
+    <main class="w-full lg:w-3/4 bg-white p-6 rounded-lg shadow">
+      <h2 class="text-2xl font-bold text-gray-800 mb-4">Hello, {{ user.first_name }} {{ user.last_name }}</h2>
+      <p class="text-gray-600 mb-8">@ {{ user }}</p>
 
+      <div class="flex flex-wrap gap-4 mb-8">
+        <a href="{% url 'edit_profile' %}" class="bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded hover:bg-blue-600 transition">
+          Edit Profile
+        </a>
+        <a href="{% url 'password_cng' %}" class="bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded hover:bg-blue-600 transition">
+          Change Password
+        </a>
+        <a href="{% url 'password_cng2' %}" class="bg-blue-500 text-white text-sm font-bold py-2 px-4 rounded hover:bg-blue-600 transition">
+          Change Without Password
+        </a>
+        <a href="{% url 'send_email_info' %}" class="bg-green-500 text-white text-sm font-bold py-2 px-4 rounded hover:bg-green-600 transition">
+          Email Verify
+        </a>
+      </div>
 
-
-  
-
-
-
-
-<form method="post" class="sm:w-3/5 md:w-[500px] m-auto
-p-12  " novalidate>
-    {% csrf_token %}
-<!-- {{form|crispy}} -->
-    {% if form.non_field_errors %}
-    {% for er in form.non_field_errors%}
-        <p class="bg-red-800 text-white p-4 mb-4">{{er}}</p>
-    {% endfor%}
-    {% endif%}
-
-    {% for fm in form%}
-        {{fm.label_tag}}
-        {{fm}}
-        {{fm.errors|striptags}}
-    {% endfor %}
-        
-<button class="bg-sky-600 hover:bg-sky-700 px-4 py-2 rounded-md text-white mt-8"  > Edit Change </button>
- 
-<div class="space-x-4 py-8 flex gap-4">
-    <a href="{% url 'password_cng' %}"   class="bg-blue-500 text-white text-sm font-bold py-2 px-2 rounded hover:bg-blue-600 transition inline-block">
-      Change Password
-    </a>
-    <a href="{% url 'password_cng2' %}"   class="bg-blue-500 text-white text-sm font-bold py-2 px-2 rounded hover:bg-blue-600 transition inline-block">
-        Change withour Password
-      </a>
-
-    <a href="{% url 'send_email_info' %}"   class="bg-green-500 text-white text-sm font-bold py-2 px-2 rounded hover:bg-green-600 transition inline-block">
-    Email Token
-    </a>
-
+      <!-- All Products Section -->
+      <h2 class="text-2xl font-bold text-gray-800 mb-4 mt-32">Your Products</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% if cars %}
+        {% for car in cars %}
+        <div class="bg-gray-100 p-4 rounded-lg shadow">
+          <div class="justify-items-center p-4 h-56 w-full">
+            <img src="{% if car.image and car.image.url %} {{ car.image.url }} {%endif%}" alt=" " class="h-35 justify-items-center ">
+            </div>
+          <h3 class="text-lg font-semibold text-gray-800">{{ car.name }}</h3>
+          <p class="text-gray-600 mt-2">{{ car.description|truncatechars:50 }}</p>
+          <p class="text-gray-800 font-bold mt-4">Price: ${{ car.price }}</p>
+          <a href="{% url 'details_car' car.id %}" class="mt-4 block bg-blue-500 text-white text-center py-2 rounded hover:bg-blue-600 transition">
+            View Details
+          </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-gray-600 col-span-full text-center">No products available.</p>
+        {% endif %}
+      </div>
+    </main>
   </div>
-</form>
-
-
-
-
+</div>
 
 
 {% endblock %}

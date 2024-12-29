@@ -1,8 +1,112 @@
 {% extends 'base.html'%}
-
+{% load static %}
 
 {% block  content%}
+<!-- Main Content Section -->
+<div class="container mx-auto px-6 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-center bg-gray-50   rounded-lg p-10">
+      
+      <!-- Left Text Content -->
+      <div class="w-full md:w-1/2 flex flex-col items-center md:items-start text-center md:text-left">
+        <h1 class="text-5xl font-extrabold text-gray-800 leading-tight mb-4">
+          Join the journey
+        </h1>
+        <p class="text-lg text-gray-600 mb-6">
+          Experience the thrill of driving with our cutting-edge cars, engineered for performance, luxury, and reliability. .
+        </p>
+        <div class="flex gap-6">
+          <a href="" class="bg-blue-500 text-white py-3 px-8 rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out">
+            Learn More
+          </a>
+          <a href="#brand" class="bg-green-500 text-white py-3 px-8 rounded-lg hover:bg-green-600 transition duration-300 ease-in-out">
+            Get Started
+          </a>
+        </div>
+      </div>
+      
+      <!-- Right Image Section -->
+      <div class="w-full md:w-1/2 mt-6 md:mt-0">
+        <img src="{% static 'car-logo.png' %}" alt="Brand Image" class="w-full h-full object-cover rounded-lg  ">
+      </div>
+    </div>
+  </div>
+  
+  <!-- Features Section -->
+  <div class="container bg-white py-12 px-6" id="brand">
+    <h2 class="text-3xl font-bold  text-gray-800 mb-8">Brand</h2>
 
-    <h1 class="text-9xl mt-16">Home page</h1>
+    <div>
+      <div class="flex flex-wrap gap-2"> <!-- Flex container set to wrap -->
+        {% for brand in brands %}
+          <div class="flex items-center space-x-3 p-2 px-3  hover:bg-gray-200  rounded-lg"> <!-- Each radio button item -->
+            <input 
+              id="flexRadioDefault{{ forloop.counter }}" 
+              name="flexRadioDefault" 
+              type="radio" 
+              class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+            >
+            <label for="flexRadioDefault{{ forloop.counter }}" class="text-sm font-medium text-gray-700 hover:text-black  ">
+              <a href="{% url 'brand_tag' brand.slug %}"> {{ brand.name }} </a>
+            </label>
+          </div>  
+        {% endfor %}
+      </div>
+      
+    </div>
+
+  </div>
+
+  <div class="container">
+    <!-- User Car Selling Post Section -->
+<section class="bg-gray-100 py-16">
+  <div class="container mx-auto px-4">
+    <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Explore User Car Listings</h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <!-- Single Car Card --> 
+
+    {% if cars%}
+      {% for car in cars%}
+      <div class="bg-white rounded-lg shadow-md  ">
+         
+        <div class="justify-items-center p-4 h-56 w-full">
+        <img src="{% if car.image and car.image.url %} {{ car.image.url }} {%endif%}" alt=" " class="h-35 justify-items-center ">
+        </div>
+        <div class="p-4">
+            
+          <h3 class="text-xl font-semibold text-gray-800 hover:scale-105 transition hover:text-blue-600">{{car.name|truncatechars:20}}</h3>
+          <p class="text-gray-600 mt-2">{{car.description|truncatechars:50}}</p> 
+          <p class="text-gray-800 font-bold mt-4">Price: ${{car.price}}</p>
+          <a href="{% url 'details_car' car.id %}" class="block mt-4 bg-blue-500 text-white text-center py-2 rounded-lg hover:bg-blue-600 transition">
+            View Details
+          </a>
+        </div>
+      </div> 
+      {% endfor %}
+      
+    {% else %}
+
+      <p class="text-gray-600 col-span-full text-center text-3xl py-16">No car listings available at the moment.</p>
+    {% endif %}
+    </div>
+  </div>
+</section>
+
+  </div>
+  
+  <!-- Testimonials Section -->
+  
+
+  <div class="bg-gray-800 text-white py-12 px-6">
+    <h2 class="text-3xl font-bold text-center mb-8">What Our Customers Say</h2>
+    <div class="flex flex-col md:flex-row justify-center gap-8">
+      {% for comment in comments %}
+      <div class="bg-gray-700 p-6 rounded-lg shadow-lg max-w-xs text-center">
+        <p class="text-lg mb-4">"{{comment.description}}!"</p>
+        <p class="font-semibold"> {{comment.commented_user.username}}</p>
+        <p class="text-sm text-gray-400">Satisfied Customer</p>
+      </div> 
+      {% endfor %} 
+  </div>
+  
 
 {% endblock %}

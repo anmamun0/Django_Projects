@@ -94,7 +94,6 @@ class DetailPostView(DetailView):
             new_comment.save() 
         return self.get(request,*args,**kwargs)
         
-
     def get_context_data(self,**kwargs):
         context = super().get_context_data(**kwargs)
         post = self.object # post model ar object

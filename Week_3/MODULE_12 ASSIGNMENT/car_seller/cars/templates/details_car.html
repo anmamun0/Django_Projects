@@ -1,0 +1,99 @@
+{%extends 'base.html'%}
+{% load crispy_forms_tags%}
+
+{% block content %}
+<div class="  mx-auto py-12 px-20">
+    <!-- Page Title -->
+     
+    <!-- Car Details Section -->
+    <div class="bg-white shadow-md rounded-lg overflow-hidden p-10">
+        <!-- Full-Width Image Section -->
+        {% if user.is_authenticated and user == car.author%}
+            <div class="w-full flex justify-end p-2 gap-4">
+                <a href="{% url 'edit_car' car.id%}" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">Edit</a>
+                <a href="{% url 'delete_car' car.id %}" class="bg-red-400 px-4 py-2 rounded-lg hover:bg-red-500 transition">Delete</a>
+            </div>
+        {% endif %}
+        
+        <div class="w-full justify-items-center">
+            <img
+                src="{% if car.image and car.image.url %}{{ car.image.url }}{% endif %}" 
+                alt="{{ car.name }}" 
+                class="  h-[500px]">
+        </div>
+
+        <!-- Car Details Content -->
+        <div class="p-8 space-y-6">
+            <!-- Car Name -->
+            <h2 class="text-3xl font-bold text-gray-800">{{ car.name }}</h2>
+
+            <!-- Additional Details -->
+            <p class="text-gray-600">
+                <span class="font-semibold text-gray-800">Price:</span> ${{ car.price }}
+            </p>
+            <p class="text-gray-600">
+                <span class="font-semibold text-gray-800">Brand:</span> {{ car.brand }}
+            </p>
+            <p class="text-gray-600">
+                <span class="font-semibold text-gray-800">Quantity :</span> {{ car.quantity }}
+            </p>
+            <p class="text-gray-600">
+                <span class="font-semibold text-gray-800">Mileage:</span> {{ car.mileage }} km
+            </p>
+            <p class="text-gray-600 leading-relaxed">
+                <span class="font-semibold text-gray-800">Description:</span> {{ car.description }}
+            </p>
+
+            <!-- Call to Action -->
+             {% if user.is_authenticated %}
+                <div class="flex gap-4 mt-6">
+                    <a  href=""   class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition"  >
+                        Contact Seller
+                    </a>
+                    <a  href="{% url 'buy_car' car.id %}"   class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition" >
+                        Buy now
+                    </a>
+                </div> 
+            {% endif %}
+
+        </div>
+    </div>
+
+    <!-- User Comments Section -->
+    <div class="bg-gray-50 shadow-md rounded-lg mt-12 p-8">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">User Comments</h3>
+        
+        <!-- Comments List -->
+        <div class="space-y-6 p-12"> 
+            {% if comments%}
+                {% for comment in comments %}
+                    <div class="border-b pb-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-lg font-bold text-gray-800 "><span class="font-semibold text-gray-700">@</span> {{comment.commented_user.username}}</h4>
+                            <span class="text-sm text-gray-500">{{comment.created}}</span>
+                        </div>
+                        <p class="text-gray-600 mt-2  w-1/2 break-words">{{comment.description}}</p>
+                    </div> 
+                {% endfor %}
+
+            {% else %}
+            <p class="text-gray-600">No comments yet. Be the first to comment!</p>
+            {% endif %}
+            
+        </div>
+
+        <!-- Add Comment Form -->
+        <form method="post" action="" class="mt-6 p-12">
+            {% csrf_token %}
+            {{comment_form|crispy }} 
+
+            <button 
+                type="submit"  class="mt-4 bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition">
+                Submit Comment
+            </button>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

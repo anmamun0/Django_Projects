@@ -10,104 +10,119 @@ from django.contrib.auth import authenticate ,login, logout , update_session_aut
 from django.core.mail import send_mail , EmailMessage
 from car_seller.settings import EMAIL_HOST_USER
 
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 
+from django.views.generic.edit import FormView , UpdateView
+from django.urls import reverse_lazy , reverse
+
+from django.views.generic.base import TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin 
+
+from django.views import View
+from .models import History
+from cars.models import Car
 # Create your views here.
-def custom_signup(request):
-    if not request.user.is_authenticated:
-        if request.method == 'POST':
-            form = RegistrationForm(request.POST)
-            if form.is_valid():
-                email = form.cleaned_data['email']
-                if User.objects.filter(email=email).exists():
-                    messages.info(request,"You have a accout, please login")
-                    return redirect('login')
-                
-                messages.success(request,'Account created..')
-                form.save(commit=True)
-                return render(request,'signup.html',{'form':form})
-        else:
-            form = RegistrationForm()
-        return render(request,'signup.html',{'form':form})
-    else:
-        return redirect('homepage')
+class CustomRegisterView(FormView):
+    template_name = 'signup.html'
+    form_class = RegistrationForm
+    success_url = reverse_lazy('profile')
+
+    def dispatch(self,request,*args,**kwargs):
+        if request.user.is_authenticated:
+            return redirect('homepage')
+        return super().dispatch(request,*args,**kwargs)
+    def form_valid(self,form):
+        email = form.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            messages.info(self.request,"You have a account, please login")
+            return redirect('login')
         
-def custom_login(request):
-    if not request.user.is_authenticated:
-        if request.method == "POST":
-            form = AuthenticationForm(request=request,data=request.POST)
-            if form.is_valid():
-                name = form.cleaned_data['username']
-                userpass = form.cleaned_data['password']
-                user = authenticate(username=name,password=userpass)
-                if user is not None:
-                    login(request,user) 
-                    send_mail(
-                        subject='Login Successfully',
-                        message='Welcome back to login your profile',
-                        from_email=EMAIL_HOST_USER,
-                        recipient_list = ['anmamun0@gmail.com'],
-                        fail_silently=False,
-                    )
-                    messages.success(request,'Login Successfully')
-                    return redirect('profile')
-                else:
-                    messages.warning(request,'Login invalid!')
-        else:
-            form = AuthenticationForm()
-        return render(request,'login.html',{'form':form})
-    else:
-        return redirect('homepage')
+        form.save()
+        messages.success(self.request,"Account created..")
+        return super().form_valid(form)
+    
+    def form_invalid(self,form):
+        messages.error(self.request,'error info')
+        return super().form_invalid(form)
+     
+class CustomLoginView(LoginView):
+    template_name = 'login.html'
+    success_url = reverse_lazy('profile')
+
+    def form_valid(self, form):
+        # You can add custom logic, such as logging or sending emails
+        messages.success(self.request,'Login Successfull!')
+        return super().form_valid(form)
+    def form_invalid(self, form):
+        messages.warning(self.request,"Invalid information")
+        return super().form_invalid(form)
+    
+    def get_success_url(self):
+        return reverse('profile')
+ 
+class CustomLogoutView(LogoutView):
+    next_page = 'login'
  
 def custom_logout(request):
     logout(request)
     return redirect('login')
 
 
-def custom_profile(request):
-    if request.user.is_authenticated:
-        if request.method == "POST":
-            form = ChangeUserDataForm(request.POST, instance = request.user)
-            if form.is_valid():
-                form.save() 
-        else:
-            form = ChangeUserDataForm(instance=request.user)
-        return render(request,'profile.html',{'form':form}) 
-    else:
-        return redirect("homepage")
+class ProfileView(LoginRequiredMixin,TemplateView):
+    template_name = 'profile.html'
+    login_url = "/user/login/"
 
-def cng_pass(request):
-    if  request.user.is_authenticated:
-        if request.method == "POST":
-            form = PasswordChangeForm(user=request.user,data=request.POST)
-            if form.is_valid():
-                form.save()
-                update_session_auth_hash(request,form.user)
-                messages.success(request,'Password Change successfull..')
-                return redirect('profile')
-        else:
-            form = PasswordChangeForm(user=request.user)
-            messages.warning(request,'unsuccessfull password change')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['yoyo'] = "its brand name"
+        user = self.request.user
+        context['historys'] = self.request.user.history.all()
+        context['cars'] = Car.objects.filter(author=user)
+ 
 
-        return render(request,'password_cng.html',{'form':form})
-    else:
-        return render('homepage')
+        return context
+ 
+
+class EditProfileView(LoginRequiredMixin,UpdateView):
+    model = User
+    form_class = ChangeUserDataForm
+    template_name = 'edit_profile.html'
+    success_url = reverse_lazy('profile')
+ 
+    def form_valid(self,form):
+        messages.success(self.request,"Profile edit successfull.")
+        return super().form_valid(form)
     
-def cng_pass2(request):
-    if  request.user.is_authenticated:
-        if request.method == "POST":
-            form = SetPasswordForm(user=request.user,data=request.POST)
-            if form.is_valid():
-                form.save()
-                update_session_auth_hash(request,form.user)
-                messages.success(request,'Password Change successfull..')
-                return redirect('profile')
-        else:
-            form = SetPasswordForm(user=request.user)
-            messages.warning(request,'unsuccessfull password change')
+    def get_object(self,queryset=None):
+        return self.request.user
+ 
 
-        return render(request,'password_cng.html',{'form':form})
-    else:
-        return render('homepage')
+class ChangePasswordView(LoginRequiredMixin,PasswordChangeView):
+    template_name = 'password_cng.html'
+    form_class = PasswordChangeForm
+    success_url = reverse_lazy('profile')
+
+    def form_valid(self,form):
+        update_session_auth_hash(self.request,form.user)
+        messages.success(self.request,"Password cng successfull!")
+        return super().form_valid(form)
+    def form_invalid(self, form):
+        messages.warning(self.request,"Invalid form data! ")
+        return super().form_invalid(form)
+
+class ChangePasswordView2(LoginRequiredMixin,PasswordChangeView):
+    template_name = 'password_cng.html'
+    form_class = SetPasswordForm
+    success_url = reverse_lazy('profile')
+
+    def form_valid(self,form):
+        update_session_auth_hash(self.request,form.user)
+        messages.success(self.request,"Password cng successfull!")
+        return super().form_valid(form)
+    def form_invalid(self, form):
+        messages.warning(self.request,"Invalid form data! ")
+        return super().form_invalid(form)
+  
 
 
 # print all data of user --
@@ -217,34 +232,40 @@ def verify_otp(request):
         form = VerifyOPTForm()
     return render(request,'forget/verify_top.html',{'form':form})
 
-def password_reset(request):
-    email = request.session.get('email')
-    if not email:
-        messages.error(request,"session expired or invalid, Please try agian.")
-        return redirect("request_otp")
-
-    try:
-        user = User.objects.get(email=email)
-        
-    except User.DoesNotExist:
-        messages.error(request,"User not Found , Please Try again")
-        return redirect('request_otp')
 
 
-    if request.method == "POST":
-        form = SetPasswordForm(user=user,data=request.POST)
+
+# View class or a mix of FormView and TemplateView if needed.
+class PasswordResetView(View):
+    template_name = 'forget/password_reset.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        email = request.session.get('email')
+        if not email:
+            messages.error(request,'Session expired!')
+            return redirect('request_otp')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request,"User not found")
+            return redirect('request_otp')
+        self.user = user 
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        form = SetPasswordForm(user=self.user)
+        return render(request, self.template_name, {'form': form})
+    
+    def post(self, request, *args, **kwargs):
+        form = SetPasswordForm(user=self.user, data=request.POST)
         if form.is_valid():
             form.save()
-
-            del request.session['email']
-            messages.success(request,"Your Password has hebb reset successfully")
-            # login(request,user)
+            del request.session['email']  # Clear email from session
+            messages.success(request, "Your password has been reset successfully.")
             return redirect('login')
-    else:
-        form = SetPasswordForm(user=user)
-    return render(request,'forget/password_reset.html',{'form':form})                 
-
-
+        return render(request, self.template_name, {'form': form})
+ 
 
 
   
