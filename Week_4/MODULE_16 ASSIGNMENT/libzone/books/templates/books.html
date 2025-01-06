@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+
+<!-- Library Search Section -->
+<section class="  py-8 ">
+  <div class="max-w-4xl mx-auto text-center pt-8">
+    <h2 class="text-3xl font-bold text-blue-900 mb-6">Search the Library Catalog</h2>
+    <p class="text-gray-700 mb-8">
+      Find books, journals, research papers, and more from our extensive collection.
+    </p>
+    <form class="flex justify-center">
+      <input type="text" placeholder="Search by title, author, or keyword"
+        class="w-full max-w-lg px-4 py-3 rounded-l-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-600">
+      <button class="px-6 py-3 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 focus:outline-none">
+        Search
+      </button>
+    </form>
+  </div>
+</section>
+
+<!-- Library Section with Categories and Books -->
+<section class="  py-10 ">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 justify-between jusify-items-between">
+
+      <!-- Left Side: Categories (Fixed) -->
+      <div class="lg:col-span-2  ">
+        <div class="filter bg-white p-6 -ml-[10%]   shadow-sm overflow-y-auto text-xs h-52 my-2 py-4"
+          style="overflow-x: hidden;">
+          <h2 class="text-md font-semibold text-teal-700 mb-2 border-b-[1px] border-gray-400 pb-2">
+             Categories 
+          </h2>
+
+          <ul class="space-y-2">
+            {% for cat in categorys %}
+            <li>
+              <a href="{% url 'filter_category' cat.slug %}"
+                class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">
+                {{ cat.name }}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="filter bg-white p-6 -ml-[10%]   shadow-sm overflow-y-auto text-xs h-52 my-2 py-2"
+          style="overflow-x: hidden;">
+          <h2 class="text-md font-semibold text-teal-700 mb-2 border-b-[1px] border-gray-400 pb-2 mt-2">
+            <a href="">Authors</a>
+          </h2>
+          <ul class="space-y-2">
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">Author 1</a></li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">Author 2</a></li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">Author 3</a></li>
+            <!-- Add more authors here -->
+          </ul>
+        </div>
+
+        <div class="filter bg-white p-6 -ml-[10%]   shadow-sm overflow-y-auto text-xs h-52 my-2 py-2"
+          style="overflow-x: hidden;">
+          <!-- Rating Filter -->
+          <h2 class="text-md font-semibold text-teal-700 mb-2 border-b-[1px] border-gray-400 pb-2 mt-4">
+            <a href="">Rating</a>
+          </h2>
+          <ul class="space-y-2">
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">1 Star & Up</a>
+            </li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">2 Stars & Up</a>
+            </li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">3 Stars & Up</a>
+            </li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">4 Stars & Up</a>
+            </li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">5 Stars</a></li>
+          </ul>
+        </div>
+
+        <div class="filter bg-white p-6 -ml-[10%]   overflow-y-auto text-xs h-52 my-2 py-2"
+          style="overflow-x: hidden;">
+          <!-- Language Filter -->
+          <h2 class="text-md font-semibold text-teal-700 mb-2 border-b-[1px] border-gray-400 pb-2 mt-4">
+            <a href="">Language</a>
+          </h2>
+          <ul class="space-y-2">
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">English</a></li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">Spanish</a></li>
+            <li><a href="" class="text-xs text-gray-800 hover:text-teal-600 transition duration-300">French</a></li>
+            <!-- Add more languages here -->
+          </ul>
+        </div>
+
+        <div class="filter  p-6 -ml-[10%] overflow-y-auto text-xs border-t-[1px] border-gray-400  my-2 py-2"
+          style="overflow-x: hidden;">
+          <!-- Language Filter -->
+          <button class=" w-full bg-red-400 text-center py-2 "><a href="{% url 'books' %}"> Reset Filter</a> </button>
+        </div>
+
+      </div>
+
+
+
+      <!-- Right Side: Books -->
+      <div class="lg:col-span-10 bg-white p-6">
+        <h2 class="text-3xl font-bold text-blue-800 mb-8">Recommended Books</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4    gap-8">
+          <!-- Book Item -->
+
+          {% for book in books%}
+          <div
+            class="relative p-2 rounded-lg text-sm  transition duration-300 ease-in-out transform cursor-pointer group">
+            <!-- Card Content -->
+            <div class="group-hover:opacity-20 flex flex-col  ">
+              <div class="items-center justify-center jusify-items-center m-auto">
+                <img src="{{ book.image.url }}" alt="Book Title" class="h-32 object-cover rounded-md mb-4">
+              </div>
+              <h3 class="text-md font-semibold text-gray-800 mb-2  text-center">
+                {{ book.title|truncatechars:20 }}
+              </h3>
+              <p class="text-gray-600 text-center ">
+                {{ book.description|truncatechars:35 }}
+              </p>
+              <p class="text-teal-600 font-semibold mt-2 text-center ">
+                <i class="fas fa-coins text-yellow-500"></i> {{ book.price }}
+              </p>
+            </div>
+
+            <!-- Hover Effect: Background Color and Content Display -->
+            <div
+              class="absolute inset-0 bg-gray-50 opacity-0 rounded-lg group-hover:opacity-50 transition-opacity duration-300 border-2 border-gray-400">
+            </div>
+
+            <a href="{% url 'books_details' book.id %}">
+              <div
+                class="absolute inset-0 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div class="text-center">
+                  <button class="add-to-cart-btn text-md px-4 py-2 w-full font-semibold bg-teal-600 text-white hover:bg-teal-700 transition duration-300" data-profile-url="{% url 'profile' %}">
+                    Add to Cart
+                  </button>
+                  
+                  <button class="absolute bottom-0 left-0 px-6 py-2 w-full text-blue-500 rounded-b-lg hover:text-blue-800 transition duration-300">
+                    View Book
+                  </button>
+                </div>
+              </div>
+            </a>
+ 
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const addToCartButtons = document.querySelectorAll(".add-to-cart-btn"); // Select elements by class
+
+  addToCartButtons.forEach((button) => {
+    button.addEventListener("click", function (event) {
+      event.preventDefault(); // Prevent the default action of the button
+      event.stopPropagation(); // Prevent triggering the `<a>` element
+      const profileUrl = button.getAttribute("data-profile-url"); // Get the URL from data attribute
+      window.location.href = profileUrl; // Redirect to the profile page
+    });
+  });
+});
+
+
+</script>
+
+
+
+
+
+<style>
+/* Apply custom thin scrollbar to filter sections */
+.filter.overflow-y-auto {
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color:  2b2b2b91; /* For Firefox */
+}
+
+.filtere.overflow-y-auto::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar for WebKit browsers */
+}
+
+.filter.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: 4fd1c5; /* Thumb color */
+  border-radius: 10px;
+}
+
+.filter.overflow-y-auto::-webkit-scrollbar-thumb:hover {
+  background-color: 38b2ac; /* Thumb color on hover */
+}
+
+.filter.overflow-y-auto::-webkit-scrollbar-track {
+  background: f1f1f1; /* Track color */
+  border-radius: 10px;
+}
+
+</style>
+
+{% endblock %}

@@ -1,0 +1,90 @@
+<nav class="bg-gray-800 text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <div class="flex items-center">
+                <a href="{% url 'home' %}" class="text-xl font-bold text-white">LibZone</a>
+            </div>
+
+            <!-- Menu Items for Logged-in Users -->
+            <div class="hidden md:flex space-x-4">
+                {% if user.is_authenticated %}
+                <a href="{% url 'home' %}" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                <a href="{%url 'books' %}" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Books</a>
+                <a href="{% url 'deposit' %}" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Deposit</a>
+ 
+                <!-- User Dropdown (for logged-in users) -->
+                <div class="relative">
+                    <button id="user-menu-button" class="flex items-center focus:outline-none focus:ring-0 focus:ring-white focus:ring-offset-0 hover:scale-95">
+                        <img class="h-8 w-8 rounded-full" src="https://via.placeholder.com/150" alt="User Avatar" />
+                    </button>
+
+                    <!-- Dropdown menu -->
+                    <div id="user-dropdown"
+                        class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                        <a href="{% url 'profile'%}" class="block px-4 py-2 text-sm hover:bg-gray-100 rounded-md ">Profile</a>
+                        <a href="{% url 'logout'%}" class="block px-4 py-2 text-sm hover:bg-gray-100 rounded-md ">Logout</a>
+                    </div>
+                </div>
+                {% else %}
+                <!-- Links for Unauthenticated Users -->
+                <a href="{%url 'books' %}" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Books</a>
+
+                <a href="{% url 'login' %}" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Login</a>
+                <a href="{% url 'register' %}" class="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="md:hidden">
+        <div class="space-y-1 px-2 pt-2 pb-3">
+            {% if user.is_authenticated %}
+            <a href="{% url 'home' %}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Home</a>
+            <a href="{% url 'books' %}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Books</a>
+            <a href="/members" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Members</a>
+            <a href="/transactions" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Transactions</a>
+            <a href="/notifications" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Notifications</a>
+
+            <!-- User Dropdown (for logged-in users) -->
+            <div class="relative">
+                <button id="user-menu-button" class="flex items-center focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2">
+                    <span class="sr-only">Open user menu</span>
+                    <img class="h-8 w-8 rounded-full" src="https://via.placeholder.com/150" alt="User Avatar" />
+                </button>
+
+                <!-- Dropdown menu -->
+                <div id="user-dropdown"
+                    class="hidden absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                    <a href="/profile" class="block px-4 py-2 text-sm hover:bg-gray-100">Profile</a>
+                    <a href="{% url 'logout' %}" class="block px-4 py-2 text-sm hover:bg-gray-100">Logout</a>
+                </div>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Login</a>
+            <a href="{% url 'register' %}" class="block px-3 py-2 rounded-md text-base font-medium hover:bg-gray-700">Register</a>
+            {% endif %}
+        </div>
+    </div>
+</nav> 
+
+<!-- JavaScript to toggle dropdown visibility -->
+<script>
+    // Get the user menu button and dropdown
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    // Toggle dropdown visibility on button click
+    userMenuButton.addEventListener('click', function () {
+        // Toggle the 'hidden' class on the dropdown
+        userDropdown.classList.toggle('hidden');
+    });
+
+    // Optional: Close the dropdown if the user clicks outside of it
+    document.addEventListener('click', function (event) {
+        if (!userMenuButton.contains(event.target) && !userDropdown.contains(event.target)) {
+            userDropdown.classList.add('hidden');
+        }
+    });
+</script>

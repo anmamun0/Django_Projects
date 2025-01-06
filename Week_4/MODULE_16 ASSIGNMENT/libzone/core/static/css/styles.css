@@ -1,0 +1,47 @@
+#hero-section {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  color: white;
+  background-image: url("../libzone-3.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+#hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for opacity */
+  z-index: 1;
+}
+
+#hero-section > * {
+  position: relative;
+  z-index: 2;
+}
+
+
+
+
+  /* Thinner and left-side scrollbar */
+  .lg\:col-span-2::-webkit-scrollbar {
+    width: 2px;
+  }
+
+  .lg\:col-span-2::-webkit-scrollbar-thumb {
+    background-color: #ffffffe1;
+    /* Teal color */
+    border-radius: 10px;
+  }
+
+  .lg\:col-span-2::-webkit-scrollbar-track {
+    background: #494949c7;
+  }
+
+  /* Prevent text alignment from changing */
+  .lg\:col-span-2 {
+    direction: ltr;
+    /* Ensure text stays left-aligned */
+  }
+  

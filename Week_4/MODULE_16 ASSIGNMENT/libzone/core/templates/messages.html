@@ -1,0 +1,25 @@
+{% for message in messages %}
+
+<div role="alert" id="message-{{ forloop.counter }}">
+    <div class="{% if 'success' in message.tags %}bg-green-100 border-green-500 text-green-900{% elif 'error' in message.tags %}bg-red-100 border-red-500 text-red-900{% elif 'warning' in message.tags %}bg-yellow-100 border-yellow-500 text-yellow-900{% elif 'info' in message.tags %}bg-blue-100 border-blue-500 text-blue-900{% else %}bg-gray-100 border-gray-500 text-gray-900{% endif %} border-t-4 rounded-b px-4 py-3 shadow-md mt-2"
+    onclick="document.getElementById('message-{{ forloop.counter }}').remove()">
+        <div class="flex justify-between items-center"
+           >
+            <div class="flex">
+                <div class="py-1 hover:scale-105">
+                    <svg class="fill-current h-6 w-6 {% if 'success' in message.tags %}text-green-500{% elif 'error' in message.tags %}text-red-500{% elif 'warning' in message.tags %}text-yellow-500{% elif 'info' in message.tags %}text-blue-500{% else %}text-gray-500{% endif %} mr-4"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path
+                            d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z" />
+                    </svg>
+                </div>
+                <div>
+                    <p class="font-bold capitalize">{{ message.tags|title }}!</p>
+                    <p class="text-sm">{{ message }}</p>
+                </div>
+            </div>
+            <!-- Close Button -->
+        </div>
+    </div>
+</div>
+{% endfor %}

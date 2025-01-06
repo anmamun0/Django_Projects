@@ -1,0 +1,44 @@
+<!-- Purchase History Section -->
+<div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-semibold text-gray-800 mb-4">Purchase History</h3>
+    <table class="min-w-full table-auto ">
+      <thead>
+        <tr>
+          <th class="px-4 py-2 text-left text-gray-600">Transition ID</th>
+          <th class="px-4 py-2 text-left text-gray-600">Book Title</th>
+          <th class="px-4 py-2 text-left text-gray-600">Coin</th>
+          <th class="px-4 py-2 text-left text-gray-600">After Coin</th>
+           <th class="px-4 py-2 text-left text-gray-600">Type</th>
+          <th class="px-4 py-2 text-left text-gray-600">Return</th>
+        </tr>
+      </thead>
+      <tbody class="">
+        <!-- Example Purchase 1 -->
+         {% for history in historys%}
+          <tr class="border-t ">
+            <td class="px-4 py-4 text-gray-700">{{history.id}}</td>
+            <td class="px-4 py-4 font-bold {% if history.book %}text-sm text-gray-800 max-w-[20ch] break-words {% else %} text-red-500 uppercase {% endif %}  ">{% if history.book %} <a href="{% url 'books_details' history.book.id %}"> {{history.book.title }} </a> {% else %} Deposite {% endif %}</td>
+            <td class="px-4 py-4 text-gray-700">{{history.coin}}</td>
+            <td class="px-4 py-4 text-gray-700">{{history.coin_after_transaction}}</td>
+             <td class="px-4 py-4 text-gray-700">{{history.timestamp|date:"M d, Y h:i A" }}</td>
+
+            {% if history.get_transaction_type_display == 'Purchase' %}
+              <td class="px-4 py-4 text-gray-700"><a
+                  class="font-bold bg-green-500 text-white hover:bg-green-700  font-bold px-4 py-2 rounded-lg"
+                  href="{% url 'return_back' history.id %}">Return</a>
+              </td>
+            {% elif history.get_transaction_type_display == 'Return'%}
+              <td class="px-4 py-4 text-gray-700"><a
+                class="font-bold bg-gray-400 text-white   font-bold px-4 py-2 rounded-lg">Done</a>
+              </td>
+            {% else %}
+              <td class="px-4 py-4 text-gray-700"><a
+                  class="font-bold  text-center text-gray-800   font-bold px-4 py-2 rounded-lg">...</a>
+              </td>
+            {% endif %}
+          </tr> 
+        {% endfor %}
+
+      </tbody>
+    </table>
+  </div>
