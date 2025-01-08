@@ -1,6 +1,6 @@
 - [**Contents**](#table-of-contents)
 
-# Django Commands
+## Django Commands
 
 This section lists commonly used commands when working with Django projects.
 
@@ -28,7 +28,7 @@ This section lists commonly used commands when working with Django projects.
 ```
   
  ---
-# Crispy-bootstrap5 
+## Crispy-bootstrap5 
 *Bootstrap5 template pack for django-crispy-forms* [Go](https://github.com/django-crispy-forms/crispy-bootstrap5/) 
 
 
@@ -55,7 +55,7 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 
 ---
-# Static files and photos
+## Static files and photos
 *Used to configure how Django handles static files like CSS, JavaScript, and images.* 
 
 ####  setting.py  
@@ -73,7 +73,7 @@ STATICFILES_DIRS = [
 ```
 
  ---
-# Dynamic Media File Management
+## Dynamic Media File Management
 
 ### setting.py
 ```
@@ -155,7 +155,7 @@ def file_list(request):
 
 
  ---
-# Backend Email Controll
+## Backend Email Controll
 
 #### *setting.py* 
 ```
@@ -188,7 +188,7 @@ from django.contrib.auth.decorators import login_required
 
 
 ---
-# Cookie Management
+## Cookie Management
 
 ### Setting a Cookie
 ```
@@ -220,7 +220,7 @@ Methods : .keys(), .values(), items(),
 
 
 ---
-# Session Management
+## Session Management
 
 
 ### Session Settings : settings.py
@@ -294,7 +294,7 @@ django.contrib.auth.views import Auth-Views
 django.views.generic import Generic-Base, Edit, Details, List, Dates
 ```
 
-| Auth Views [?](#auth-views)| Generic base [?](#generic-base)| Generic edit [?](#generic-edit) | Generic detail [?](#generic-detail) | Generic list[?](#generic-list) |  Generic dates [?](#generic-dates) | 
+| *Auth Views* [?](#auth-views)| *Generic base* [?](#generic-base)| *Generic edit* [?](#generic-edit)| *Generic detail* [?](#generic-detail)| *Generic list* [?](#generic-list)| *Generic dates* [?](#generic-dates) | 
 |---------------------------|------------------------------|------------------------------|------------------------------|------------------------------|------------------------------|   
 | LoginView                 | RedirectView                 | CreateView                   | DetailView                   | ListView                     | ArchiveIndexView             | 
 | PasswordChangeDoneView    | TemplateView                 | DeleteView                   |                              |                              | DateDetailView               | 
@@ -306,9 +306,8 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 
  
-
  ### Auth Views
-  
+[-](#class-base-view-cbv)   
 <h5>1. LoginView</h5>
 <h6>
   <b>Purpose:</b> Handles user login. <br>
@@ -388,7 +387,7 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 ---
 ### Generic Base
-
+[-](#class-base-view-cbv)   
 <h5>1. View</h5>
 <h6>
   <b>Purpose:</b> Base class for all views. It doesn't perform any specific actions by itself but provides a foundation for building views. <br>
@@ -425,7 +424,7 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 ---
 ### Generic Edit
-
+[-](#class-base-view-cbv)   
 <h5>1. CreateView</h5>
 <h6>
   <b>Purpose:</b> Handles the creation of new objects in the database. <br>
@@ -466,8 +465,8 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 
 ---
-# Generic Detail
-
+### Generic Detail
+[-](#class-base-view-cbv)   
 <h5>1. DetailView</h5>
 <h6>
   <b>Purpose:</b> Displays detailed information about a specific object from the database. <br>
@@ -482,8 +481,8 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 
 ---
-# Generic List
-
+### Generic List
+[-](#class-base-view-cbv)   
 <h5>2. ListView</h5>
 <h6>
   <b>Purpose:</b> Displays a list of objects from a database model. <br>
@@ -499,8 +498,8 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 
 ---
-### Generic Dates
-
+### Generic Dates 
+[-](#class-base-view-cbv)   
 <h5>1. ArchiveIndexView</h5>
 <h6>
   <b>Purpose:</b> This view is used for displaying a list of archived objects based on a particular time period (e.g., all objects from a certain year, month, or day). It provides a starting point for time-based views like year-based, month-based, etc. <br>
@@ -560,6 +559,62 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 
 
 
+
+
+
+
+
+
+
+---
+## Connect Django to PostgreSQL Database 
+
+**<h6> Install in terminal</h6>**
+
+```
+pip install psycopg2
+```
+
+**<h6> setting.py</h6>**
+
+``` 
+import dj_database_url 
+import environ
+
+env = environ.Env()
+environ.Env.read_env()
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env("DB_NAME"),
+        'USER': env("DB_USER"),
+        'PASSWORD': env("DB_PASSWORD"),
+        'HOST': env("DB_HOST"),
+        'PORT': env("DB_PORT"),
+    }
+}
+ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['https://libzone-app.onrender.com','https://*.127.0.0.1']
+```
+
+**<h6> .env</h6>**
+
+```
+SECRET_KEY=django-insecure-kyh%asdfqrysd245e^b2e5lu0f68_vt2345asdfa370%$5n&7
+DB_NAME=libzone
+DB_USER=postgres
+DB_PASSWORD=1223
+DB_HOST=localhost
+DB_PORT=5432
+
+EMAIL_HOST_USER=almamun20044@gmail.com
+EMAIL_HOST_PASSWORD=xdsblb-jfpt-wxqaeh #next
+
+```
+
+
+
 --- 
 # **Table Of Contents**
 
@@ -573,8 +628,7 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 | Decorator @login_required                 | [Go](#decorator-login_required)      |   
 | Cookie Management                         | [Go](#cookie-management)             |   
 | Session Management                        | [Go](#session-management)            |   
-| Class Base View (CBv)                     | [Go](#class-base-view-cbv)           |   
-
-
+| Class Base View (CBv)                     | [Go](#class-base-view-cbv)           |    
+| Connect Django to PostgreSQL Database     | [Go](#connect-django-to-postgresql-database )           | 
 
 
