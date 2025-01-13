@@ -77,16 +77,19 @@ STATICFILES_DIRS = [
 
 ### setting.py
 ```
-# URL to access media files in development
+# URL to access media files in  development in app
 MEDIA_URL = '/media/'
 
-# The directory on your server where media files are stored.
+# The directory on your server where media files are stored in root file.
 MEDIA_ROOT = BASE_DIR / 'media'
 ```
 
 
-### url.py
+### ROOT urls.py
 ```
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 ```
 
@@ -154,7 +157,8 @@ def file_list(request):
 ```
 
 
- ---
+
+---
 ## Backend Email Controll
 
 #### *setting.py* 
@@ -162,12 +166,49 @@ def file_list(request):
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'anmamun0@gmail.com'
-EMAIL_HOST_PASSWORD = 'xdsb--appPassword--wxqaeh'
+EMAIL_HOST_USER = 'almamun20044@gmail.com'
+EMAIL_HOST_PASSWORD = 'xdsblb-jdnr-wxqaeh'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 ```
+##### **views.py**
+###### Simple and quick setup	| HTML Support	Basic (via html_message)
+```
+send_mail(
+    subject='Welcome to LibZone',
+    message=f"Your OTP is {otp}. Please use this to reset your password.", 
+    from_email='Refresh Bank noreply@libzone.com',
+    recipient_list=[user.email], 
+    fail_silently=False,
+)
+```
+ 
+##### **views.py**
+###### Advanced emails, attachments, rich content | More verbose, but offers full control
 
+```
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import render_to_string
+
+context = {
+     'user': request.user, 
+}
+body = render_to_string('templates/login_email.html',context) # Adds alternative HTML content 
+
+email = EmailMultiAlternatives(
+     subject="Login successful",
+     body='',
+     from_email= 'ReFresh Bank <noreply@example.com>', 
+     to = [user.email],
+)
+email.attach_alternative(body, "text/html")
+email.send()
+```
+
+```
+# Adds an attachment.
+email.attach('example.pdf', b'PDF content here', 'application/pdf')
+```
 
 
 ---
@@ -609,7 +650,7 @@ DB_HOST=localhost
 DB_PORT=5432
 
 EMAIL_HOST_USER=almamun20044@gmail.com
-EMAIL_HOST_PASSWORD=xdsblb-jfpt-wxqaeh #next
+EMAIL_HOST_PASSWORD=xdsblb-jdnr-wxqaeh #next
 
 ```
 

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+
+    <style>
+        .swiper {
+      width: 100%;
+      height: 100%;
+    }
+
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (max-width: 760px) {
+      .swiper-button-next {
+        right: 20px;
+        transform: rotate(90deg);
+      }
+
+      .swiper-button-prev {
+        left: 20px;
+        transform: rotate(90deg);
+      }
+    }
+    </style>
+</head>
+<body>
+
+    <header class="bg-gray-600 ">
+        <div class="container m-auto flex justify-between text-white text-lg py-4 px-12">
+            <div>anmamun0</div>
+            <div>
+                <ul class="flex gap-8">
+                    <li>Home</li>
+                    <li>Views</li>
+                    <li>Models</li>
+                    <li>Login</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <div>
+
+          <!-- Swiper -->
+  <!-- <div class="swiper">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+      <div class="swiper-slide">Resize me!</div>
+    </div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+    </div> -->
+
+
+    <main class=" ">
+
+        <div class="container m-auto p-12 bg-gray-50">
+            <div>
+                <h1>   </h1>
+                <div id="allCategory" class="text-center m-auto">
+                </div>
+            </div>
+
+            <div class="pt-12 text-center m-auto">
+                <h1>All User </h1>
+                <div id="all_items" class="all_items  text-center m-auto">
+
+
+                    <div class="container mx-auto">
+                        <h2 class="text-2xl font-bold mb-4">Example Table</h2>
+                        <table class="min-w-full bg-white border border-gray-300">
+                            <thead>
+                                <tr>
+                                    <th class="py-2 px-4 border-b">Id</th>
+                                    <th class="py-2 px-4 border-b">Name</th>
+                                    <th class="py-2 px-4 border-b">city</th>
+                                    <th class="py-2 px-4 border-b">Email</th>
+                                    <th class="py-2 px-4 border-b">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="user-table-row"> 
+                            </tbody>
+                        </table>
+                    </div>
+
+
+
+                </div>
+            </div>
+ 
+            
+        </div> 
+
+        <!-- Modal Structure -->
+        <div id="userModal" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center "onclick="this.style.display='none'" >
+            <div class="bg-white rounded-lg shadow-lg p-6 w-1/2 max-w-lg">
+                <div class="flex justify-between items-center border-b pb-2 mb-4">
+                    <h2 class="text-xl font-bold">User Details</h2> <button id="closeModalBtn"
+                        class="text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+                <div class="mb-4">
+                    <p class="text-gray-700"><strong>Name:</strong> John Doe</p>
+                    <p class="text-gray-700"><strong>Email:</strong> john.doe@example.com</p>
+                    <p class="text-gray-700"><strong>Age:</strong> 30</p>
+                    <p class="text-gray-700"><strong>Address:</strong> 123 Main St, Anytown, USA</p>
+                </div> 
+                <button id="closeModalBtnBottom" class="bg-blue-500 text-white px-4 py-2 rounded" onclick="this.parentElement.parentElement.style.display='none'">Close</button>
+            </div>
+        </div>
+
+    <footer></footer>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script src="app.js"> </script>
+</body>
+</html>
