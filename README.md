@@ -503,6 +503,20 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
   <b>Attributes:</b> <code>template_name</code>, <code>form_class</code>, <code>fields</code>, <code>success_url</code>, <code>get_success_url()</code> <br>
 </h6>
 
+<h6> def get_object(self, queryset = None): # to ensure that the profile you're updating belongs to the currently logged-in user </h6>
+
+
+```
+class UpdateProfileView(UpdateView):
+    template_name = 'profile/profile_setting.html'
+    model = Profile
+    form_class = UpdateUserProfileForm
+    success_url = reverse_lazy('profile')
+
+    def get_object(self, queryset = None):
+        return self.request.user.profile
+```
+
 
 
 ---
