@@ -81,7 +81,7 @@ def activate(request,uid64,token):
     else:
         return redirect('register')
     
-#  গোাল  আলু APIView
+    
 class UserLoignView(APIView):
     def post(self,request):
         serializer = UserLoginSerializer(data=self.request.data)

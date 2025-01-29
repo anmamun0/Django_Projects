@@ -670,6 +670,215 @@ EMAIL_HOST_PASSWORD=xdsblb-jdnr-wxqaeh #next
 
 
 
+
+
+
+
+
+--- 
+## SSLcommerz payment gateways Developer
+
+<h6>Your current payment view is not returning an HTTP response, which will cause an error. You need to redirect the user to the SSLCommerz payment gateway URL instead of just returning it as plain text.</h6>
+<h6>views.py</h6>
+
+```
+from django.http import HttpResponse ,JsonResponse
+from django.shortcuts import redirect, render
+from rest_framework.response import Response
+from django.contrib.auth.models import User
+from datetime import datetime
+
+from sslcommerz_lib import SSLCOMMERZ
+import uuid  # To generate unique transaction ID
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view 
+
+@csrf_exempt
+def payment(request, user_id):
+    print('abcd',user_id)
+    settings = {
+        'store_id': 'ancod6799f7f3afcfa',
+        'store_pass': 'ancod6799f7f3afcfa@ssl',
+        'issandbox': True  # Set to False for production
+    } 
+    try:
+        user = User.objects.get(pk=user_id)  # Fix: Use `id=int(user_id)` 
+    except User.DoesNotExist:
+        return HttpResponse("User -- not found.", status=404)
+
+    sslcz = SSLCOMMERZ(settings)
+
+    # Generate unique transaction ID
+    transaction_id = str(uuid.uuid4())
+
+    post_body = {
+        'total_amount': 100.26,
+        'currency': "BDT",
+        'tran_id': transaction_id,  # Use unique transaction ID
+        'success_url': f"http://127.0.0.1:8000/payment/success/{user_id}",
+        'fail_url': "http://127.0.0.1:8000/payment/fail/",
+        'cancel_url': "http://127.0.0.1:8000/payment/cancel/",
+        'emi_option': 0,
+        'cus_name': user.username,
+        'cus_email': user.email,
+        'cus_phone': "01700000000",
+        'cus_add1': "customer address",
+        'cus_city': "Dhaka",
+        'cus_country': "Bangladesh",
+        'shipping_method': "NO",
+        'multi_card_name': "",
+        'num_of_item': 1,
+        'product_name': "Test",
+        'product_category': "Test Category",
+        'product_profile': "general"
+    }
+
+    response = sslcz.createSession(post_body)  # API response
+    print('asdf',user.username)
+
+    if 'GatewayPageURL' in response:
+        return redirect(response['GatewayPageURL'])  # Redirect user to payment page
+    else:
+        return HttpResponse("Payment gateway initialization failed.", status=400)
+```
+
+```
+
+@csrf_exempt
+def success_view(request, user_id):
+    try:
+        user = User.objects.get(id=int(user_id))  # Ensure `user_id` is an integer
+    except User.DoesNotExist:
+        return HttpResponse("User not found.", status=404)
+     context = { 
+        'course_price':course.price, 
+        'payment_date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+    }
+    return render(request,'payment_success.html',context)
+
+
+// when view the web will show the api context
+@api_view(['GET'])
+def success_view(request, user_id):
+    try:
+        user = User.objects.get(id=int(user_id))  # Ensure `user_id` is an integer
+    except User.DoesNotExist:
+        return Response({"error": "User not found."}, status=404)
+    return Response({"message": "Payment successful","user": {"id": user.id,"username": user.username,"email": user.email}}, status=200)
+```
+
+
+<h5> Payment system with JavaScript</h5>
+<h6>views.py</h6>
+
+```
+@csrf_exempt
+def payment(request,user_id,course_id):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+    print('abcd', user_id,'efgh',course_id)
+    
+    settings = {
+        'store_id': 'ancod6799f7f3afcfa',
+        'store_pass': 'ancod6799f7f3afcfa@ssl',
+        'issandbox': True  # Set to False for production
+    } 
+
+    try:
+        user = User.objects.get(pk=user_id)  # Ensure user exists
+    except User.DoesNotExist:
+        return JsonResponse({"error": "User not found"}, status=404)
+
+    sslcz = SSLCOMMERZ(settings)
+
+    # Generate unique transaction ID
+    transaction_id = str(uuid.uuid4())
+
+    post_body = {
+        'total_amount': 100.26,
+        'currency': "BDT",
+        'tran_id': transaction_id,  # Unique transaction ID
+        'success_url': f"http://127.0.0.1:8000/payment/success/{user_id}/{course_id}",
+        'fail_url': "http://127.0.0.1:8000/payment/fail/",
+        'cancel_url': "http://127.0.0.1:8000/payment/cancel/",
+        'emi_option': 0,
+        'cus_name': user.username,
+        'cus_email': user.email,
+        'cus_phone': "01700000000",
+        'cus_add1': "customer address",
+        'cus_city': "Dhaka",
+        'cus_country': "Bangladesh",
+        'shipping_method': "NO",
+        'multi_card_name': "",
+        'num_of_item': 1,
+        'product_name': "Test",
+        'product_category': "Test Category",
+        'product_profile': "general"
+    }
+
+    response = sslcz.createSession(post_body)  # API response
+    print('asdf', user.username)
+
+    if 'GatewayPageURL' in response:
+        return JsonResponse({"url": response['GatewayPageURL']})  # Send URL as JSON
+    else:
+        return JsonResponse({"error": "Payment gateway initialization failed"}, status=400) 
+```
+
+<h6>urls.pyt</h6>
+
+```
+urlpatterns = [
+    path('pay/<int:user_id>/<int:course_id>/', payment, name='payment'),
+    path('success/<int:user_id>/<int:course_id>', success_view, name='payment_success'), 
+    path('fail/', fail_view, name='payment_fail'),
+    path('cancel/', cancel_view, name='payment_cancel'),
+]
+```
+
+
+<h6>payment.js</h6>
+
+```
+const initiatePayment = (userId = 10) => { 
+    alert('Payment started');
+    let course_id = 2;
+    fetch(`http://127.0.0.1:8000/payment/pay/${userId}/${course_id}/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json()) // Expect JSON response
+    .then(data => {
+        if (data.url) {
+            console.log("Redirecting to:", data.url);
+            window.location.href = data.url;  // Redirect user to SSLCOMMERZ payment page
+        } else {
+            console.error("Error:", data.error);
+            alert("Payment initialization failed: " + data.error);
+        }
+    })
+    .catch(error => console.error("Fetch error:", error));
+}
+
+// Call the function when needed (e.g., on a button click)
+initiatePayment();
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
 --- 
 # **Table Of Contents**
 
@@ -684,6 +893,7 @@ EMAIL_HOST_PASSWORD=xdsblb-jdnr-wxqaeh #next
 | Cookie Management                         | [Go](#cookie-management)             |   
 | Session Management                        | [Go](#session-management)            |   
 | Class Base View (CBv)                     | [Go](#class-base-view-cbv)           |    
-| Connect Django to PostgreSQL Database     | [Go](#connect-django-to-postgresql-database )           | 
+| Connect Django to PostgreSQL Database     | [Go](#connect-django-to-postgresql-database)           | 
+| SSLcommerz payment gateways Developer     | [Go](#sslcommerz-payment-gateways-developer)           | 
 
 
