@@ -49,6 +49,54 @@ admin.site.register(Book, BookAdmin)
 - `prepopulated_fields`: Auto-generates values for slug fields.
 - `readonly_fields`: Prevents editing of certain fields.
 
+
+
+## Custom Method in Django Admin (`list_display`)
+
+### How to Use a Custom Method in `list_display`?
+1. Define a **method** inside the `ModelAdmin` class.
+2. Use `obj.related_field.field_name` to access related data.
+3. Set `short_description` to customize the column header.
+
+### Example: Displaying Book Title in `TransactionAdmin`
+
+###### admin.py
+```python
+from django.contrib import admin
+from .models import Transaction
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'book_title', 'borrow_date', 'due_date', 'status']
+
+    def book_title(self, obj):
+        return obj.book.title  # Fetch book title from related Book model
+
+    book_title.short_description = "Book Title"  # Custom column name
+
+admin.site.register(Transaction, TransactionAdmin)
+```
+
+models.py
+```py
+class Transaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+```
+
+---
+
+### Explanation
+| Feature | Description |
+|---------|------------|
+| `def book_title(self, obj):` | Defines a method to fetch `book.title`. |
+| `return obj.book.title` | Accesses the `title` field from the related `Book` model. |
+| `book_title.short_description = "Book Title"` | Customizes the column name in Django Admin. |
+| `list_display = [...]` | Includes the method name (`book_title`) instead of `book.title`. |
+
+---
+
+
+
 ## Auto-Generating Slugs
 - A slug is a URL-friendly identifier derived from another field.
 - Use `prepopulated_fields` in `ModelAdmin`:
@@ -161,6 +209,59 @@ class PostAdmin(admin.ModelAdmin):
     {{ block.super }}
 {% endblock %}
 ```
+
+
+
+## Key Attributes and Methods in ModelAdmin
+
+<h6> 
+
+| Attribute/Method         | Description |
+|-------------------------|-------------|
+| `list_display` | Specifies fields to display in the list view. |
+| `list_display_links` | Fields that link to the detail page. |
+| `search_fields` | Enables search functionality on specified fields. |
+| `list_filter` | Adds filters to the right sidebar. |
+| `ordering` | Defines the default ordering of objects. |
+| `prepopulated_fields` | Auto-fills fields (e.g., slugs from titles). |
+| `readonly_fields` | Makes certain fields read-only. |
+| `date_hierarchy` | Adds hierarchical navigation based on a date field. |
+| `inlines` | Allows editing related models in the same form. |
+| `actions` | Defines custom admin actions for batch updates. |
+| `fieldsets` | Groups fields into sections in the form view. |
+| `formfield_overrides` | Changes default widget styles. |
+| `get_queryset(self, request)` | Customizes the queryset shown in the admin. |
+| `get_list_display(self, request)` | Dynamically modifies `list_display`. |
+| `get_readonly_fields(self, request, obj)` | Dynamically sets read-only fields. |
+
+</h6>
+
+## Custom Methods for `list_display`
+Instead of displaying related object IDs, you can use custom methods to show related data in the admin list view:
+
+```python
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('user', 'book_name', 'borrow_date', 'due_date', 'status')
+    
+    def book_name(self, obj):
+        return obj.book.title
+    book_name.admin_order_field = 'book__title'  # Enables sorting
+    book_name.short_description = 'Book Title'  # Sets column name
+
+admin.site.register(Transaction, TransactionAdmin)
+```
+
+
+
+## Conclusion
+- `admin.ModelAdmin` provides extensive customization options for the Django Admin.
+- You can modify list views, filters, search functionality, actions, and more.
+- Custom methods improve readability by displaying meaningful data instead of raw IDs.
+- The admin panel branding can be personalized for better user experience.
+
+This note should help you master Django's `admin.ModelAdmin`. 🚀 Let me know if you need more details!
+
+
 
 ## Conclusion
 - `admin.py` allows easy management of database models.
