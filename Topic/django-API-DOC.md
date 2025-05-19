@@ -151,3 +151,41 @@ class UserLoginView(APIView):
         return Response(serializer.errors)
 ```
 
+
+##### Logout 
+
+```python
+from rest_framework.authtoken.models import Token
+
+class UserLogoutView(APIView):
+    @extend_schema(
+        request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'token_id': {'type': 'string', 'example': '123abc...'}
+                },
+                'required': ['token_id']
+            }
+        },
+        responses={200: {"message": "Successfully logged out"}, 400: {"error": "Invalid token_id"}},
+        tags=["Authentication"],
+        description="Logs out a user by deleting their token using the provided `token_id`.",
+        summary="Logout user"
+    )
+    
+    def post(self, request):
+        token_id = request.data.get('token_id')
+
+        if not token_id:
+            return Response({'error': 'token_id is required'}, status=status.HTTP_400_BAD_REQUEST) 
+        try:
+            token = Token.objects.get(key=token_id)
+            user = token.user 
+            token.delete() 
+            logout(request) 
+            return Response({'message': 'Successfully logged out'}, status=status.HTTP_200_OK) 
+        except Token.DoesNotExist:
+            return Response({'error': 'Invalid token_id'}, status=status.HTTP_400_BAD_REQUEST)
+        
+```

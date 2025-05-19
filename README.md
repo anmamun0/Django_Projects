@@ -875,8 +875,266 @@ initiatePayment();
 
 
 
+--- 
+## Model Print key and value
+
+```python
+
+for field in user._meta.fields:
+    field_name = field.name
+    field_value = getattr(user, field_name)
+    print(f"{field_name}: {field_value}")
+
+```
+
+##### Output:
+
+```bash
+id: 2
+password: pbkdf2_sha256$...
+last_login: 2025-05-13 13:30:25+00:00
+is_superuser: False
+username: anmamun0
+first_name: AN
+last_name: Mamun
+email: anmamun0@gmail.com
+is_staff: False
+is_active: True
+date_joined: 2025-05-13 12:20:15+00:00
+```
 
 
+
+---
+
+## Leatest Update of me DRF ModelView
+
+##### model.py
+
+```
+from django.db import models
+
+class Category(models.Model):
+    name = models.CharField(max_length=50)
+    slug = models.SlugField(max_length=100,blank=True,unique=True,null=True)
+
+    def __str__(self):
+        return self.name
+    
+class Book(models.Model):
+    image = models.URLField(max_length=255,null=True, blank=True)
+    title = models.CharField(max_length=255)
+    author = models.CharField(max_length=255)
+    isbn = models.CharField(max_length=13, unique=True)  # Unique ISBN number
+    category = models.ManyToManyField(Category, blank=True,related_name='books') 
+    language = models.CharField(max_length=50,default='Bangla', blank=True, null=True)
+    
+    description = models.TextField() 
+    copies = models.IntegerField(default=0)  
+    available = models.IntegerField(default=0)  
+    
+
+    def __str__(self):
+        return f"{self.isbn} - {self.title}"
+
+```
+
+##### serializers.py
+
+```
+class BookSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(many=True, read_only=True)  # Read-only nested category
+
+    class Meta:
+        model = Book
+        fields = "__all__"
+
+```
+
+##### permissions.py 
+```
+from rest_framework.authtoken.models import Token
+from .models import Profile
+
+class AdminTokenCheckMixin:
+    def is_admin(self, request):
+        token_id = (
+            request.data.get('token_id') or
+            request.query_params.get('token_id') or
+            request.headers.get('token_id')
+        )
+        if not token_id:
+            return False
+        try:
+            token = Token.objects.get(key=token_id)
+            user = token.user
+            profile = Profile.objects.get(user=user)
+            return profile.role == 'admin'
+        except (Token.DoesNotExist, Profile.DoesNotExist):
+            return False
+```
+
+##### view.py
+
+```
+# views.py
+
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework import status
+
+from .models import Book, Category
+from .serializers import BookSerializer, CategorySerializer
+from .permissions import AdminTokenCheckMixin
+
+
+class BookViewSet(AdminTokenCheckMixin, ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def create(self, request, *args, **kwargs):
+        if not self.is_admin(request):
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        if not self.is_admin(request):
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+        return super().update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        if not self.is_admin(request):
+            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+        return super().destroy(request, *args, **kwargs)
+ 
+```
+
+##### urls.py
+
+```
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import BookViewSet, CategoryViewSet
+
+router = DefaultRouter()
+router.register('books', BookViewSet, basename='books') 
+
+urlpatterns = [
+    path('', include(router.urls)),
+]
+
+```
+
+
+#### Frontend Test API
+
+✅ 1. GET All Books
+```js 
+fetch("http://127.0.0.1:8000/book/books/")
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error("Error:", err));
+```
+
+
+✅ 2. GET Single Book (ID = 1)
+```js 
+fetch("http://127.0.0.1:8000/book/books/1/")
+  .then(res => res.json())
+  .then(data => console.log(data))
+  .catch(err => console.error("Error:", err));
+
+```
+✅ 3. POST (Create a New Book)
+
+```js 
+fetch("http://127.0.0.1:8000/book/books/", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    token_id: "your_token_string",
+    title: "New Book Title",
+    isbn: "1234567891234",
+    author: "Author Name",
+    description: "This is a new book",
+    copies: 5,
+    available: 5,
+    language: "English",
+    category: [1]  // assuming category ID 1 exists
+  })
+})
+  .then(res => res.json())
+  .then(data => console.log("Created:", data))
+  .catch(err => console.error("Error:", err));
+```
+
+✅ 4. PUT (Update Entire Book by ID)
+```js 
+fetch("http://127.0.0.1:8000/book/books/1/", {
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    token_id: "your_token_string",
+    title: "Updated Title",
+    isbn: "1234567891234",
+    author: "Updated Author",
+    description: "Updated description",
+    copies: 10,
+    available: 8,
+    language: "Bangla",
+    category: [1]
+  })
+})
+  .then(res => res.json())
+  .then(data => console.log("Updated:", data))
+  .catch(err => console.error("Error:", err));
+
+```
+
+✅ 5. PATCH (Update Partial Fields)
+```js 
+fetch("http://127.0.0.1:8000/book/books/1/", {
+  method: "PATCH",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    token_id: "your_token_string",
+    available: 3
+  })
+})
+  .then(res => res.json())
+  .then(data => console.log("Patched:", data))
+  .catch(err => console.error("Error:", err));
+```
+
+✅ 6. DELETE Book by ID
+
+```js 
+fetch("http://127.0.0.1:8000/book/books/1/", {
+  method: "DELETE",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    token_id: "your_token_string"
+  })
+})
+  .then(res => {
+    if (res.status === 204) {
+      console.log("Deleted successfully");
+    } else {
+      console.error("Delete failed");
+    }
+  })
+  .catch(err => console.error("Error:", err));
+```
+
+##### Let me know if you want to use Authorization: Token xxx in headers (more standard way) instead of body-based token_id — I can show that too.
 
 
 --- 
@@ -895,5 +1153,6 @@ initiatePayment();
 | Class Base View (CBv)                     | [Go](#class-base-view-cbv)           |    
 | Connect Django to PostgreSQL Database     | [Go](#connect-django-to-postgresql-database)           | 
 | SSLcommerz payment gateways Developer     | [Go](#sslcommerz-payment-gateways-developer)           | 
+| Model Print key and value     | [Go](#model-print-key-and-value)           | 
 
 
