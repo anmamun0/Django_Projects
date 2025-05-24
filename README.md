@@ -911,7 +911,7 @@ date_joined: 2025-05-13 12:20:15+00:00
 
 ##### model.py
 
-```
+```python
 from django.db import models
 
 class Category(models.Model):
@@ -941,7 +941,7 @@ class Book(models.Model):
 
 ##### serializers.py
 
-```
+```python
 class BookSerializer(serializers.ModelSerializer):
     category = CategorySerializer(many=True, read_only=True)  # Read-only nested category
 
@@ -952,17 +952,27 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ##### permissions.py 
-```
-from rest_framework.authtoken.models import Token
-from .models import Profile
 
-class AdminTokenCheckMixin:
+```python 
+from rest_framework.authtoken.models import Token
+from accounts.models import Profile
+
+class CustomAdminTokenCheckMixin:
     def is_admin(self, request):
+
+        # its best for safe security
+        # it will check , Header section has any "Authorization" variable ?
+        auth_header = request.headers.get('Authorization')
+
+        # it will check , Body section has any "token_id" variable ?
         token_id = (
             request.data.get('token_id') or
             request.query_params.get('token_id') or
             request.headers.get('token_id')
         )
+        if auth_header and auth_header.startswith('Token '):
+            token_id = auth_header.split(' ')[1]
+  
         if not token_id:
             return False
         try:
@@ -972,12 +982,12 @@ class AdminTokenCheckMixin:
             return profile.role == 'admin'
         except (Token.DoesNotExist, Profile.DoesNotExist):
             return False
+
 ```
 
 ##### view.py
 
-```
-# views.py
+```python 
 
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -1011,7 +1021,7 @@ class BookViewSet(AdminTokenCheckMixin, ModelViewSet):
 
 ##### urls.py
 
-```
+```python
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import BookViewSet, CategoryViewSet
@@ -1137,6 +1147,317 @@ fetch("http://127.0.0.1:8000/book/books/1/", {
 ##### Let me know if you want to use Authorization: Token xxx in headers (more standard way) instead of body-based token_id — I can show that too.
 
 
+---
+
+## More security with JWT TOken in Fetch header
+
+##### views.py
+###### form user/profile -> all request - [`GET`,`POST`,`PUT`,`PATCH`,`DELETE`]
+
+```python
+class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
+    serializer_class = ProfileSerializers
+    queryset = Profile.objects.filter(user__is_active=True)
+
+    def create(self, request, *args, **kwargs): # POST REQUEST 
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+        return super().create(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs): # PUT
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+        return super().update(request, *args, **kwargs)
+
+    def partial_update(self, request, *args, **kwargs): # PATCH
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+        return super().partial_update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs): # DELETE
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+        return super().destroy(request, *args, **kwargs)
+     # 🔹 Custom GET endpoint
+     
+
+    @action(detail=False, methods=['get'], url_path='unactive') #Custom GET
+    def get_unactive_profiles(self, request):
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+
+        profiles = Profile.objects.filter(user__is_active=False)
+        serializer = self.get_serializer(profiles, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # Custom POST endpoint to activate a profile by pk
+    @action(detail=True, methods=['post'], url_path='activate') #Custom POST
+    def activate_profile(self, request, pk=None):
+        if not self.is_admin(request):
+            return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
+        try:
+            # profile = self.get_object()  # gets Profile object with pk from URL
+            profile = Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            return Response({'detail': 'Profile not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        user = profile.user
+        user.is_active = True
+        user.save()
+
+        serializer = self.get_serializer(profile)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+```
+
+
+#### All in one - > POST and Patch request will check 
+
+```python
+from rest_framework.exceptions import PermissionDenied
+
+class BookViewSet(CustomAdminTokenCheckMixin, ModelViewSet):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        
+        # Only check admin for write operations (POST, PATCH)
+        if request.method in ['POST', 'PATCH']:
+            if not self.is_admin(request):
+                raise PermissionDenied(detail='Only admins can perform this action.')
+```
+
+##### permissions.py
+
+```python
+from rest_framework.authtoken.models import Token
+from accounts.models import Profile
+
+class CustomAdminTokenCheckMixin:
+    def is_admin(self, request):
+
+        # its best for safe security
+        # it will check , Header section has any "Authorization" variable ?
+        auth_header = request.headers.get('Authorization')
+
+        # it will check , Body section has any "token_id" variable ?
+        token_id = (
+            request.data.get('token_id') or
+            request.query_params.get('token_id') or 
+            request.headers.get('token_id')
+        )
+        if auth_header and auth_header.startswith('Token '):
+            token_id = auth_header.split(' ')[1]
+  
+        if not token_id:
+            return False
+        try:
+            token = Token.objects.get(key=token_id)
+            user = token.user
+            profile = Profile.objects.get(user=user)
+            return profile.role == 'admin'
+        except (Token.DoesNotExist, Profile.DoesNotExist):
+            return False
+```
+
+
+##### checking request dic what has?
+```python 
+        # Only check admin for write operations (POST, PATCH)
+        print("🔍 Request Method:", request.method)
+        print("🔍 Request Path:", request.path)
+        print("🔍 Request Query Params:", dict(request.query_params))
+        print("🔍 Request Headers:")
+        for key, value in request.headers.items():
+            print(f"    {key}: {value}")
+        try:
+            print("🔍 Request Body Data:", request.data.dict())  # For form data
+        except:
+            print("🔍 Request Body Data:", request.data)  # For JSON body
+            
+```
+##### output -> 
+```bash
+Quit the server with CTRL-BREAK.
+
+🔍 Request Method: PATCH
+🔍 Request Path: /book/books/1/
+🔍 Request Query Params: {}
+🔍 Request Headers:
+    Content-Length: 23
+    Content-Type: application/json
+    Host: 127.0.0.1:8000
+    Connection: keep-alive
+    Sec-Ch-Ua-Platform: "Windows"
+    Authorization: Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888
+    User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    Sec-Ch-Ua: "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    Sec-Ch-Ua-Mobile: ?0
+    Accept: */*
+    Origin: http://127.0.0.1:5501
+    Sec-Fetch-Site: same-site
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Accept-Encoding: gzip, deflate, br, zstd
+    Accept-Language: en-US,en;q=0.9,as;q=0.8
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Accept-Encoding: gzip, deflate, br, zstd
+    Accept-Language: en-US,en;q=0.9,as;q=0.8
+🔍 Request Body Data: {'title': 'Updated -3 '}
+[20/May/2025 12:52:15] "PATCH /book/books/1/ HTTP/1.1" 200 177
+ 
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Accept-Encoding: gzip, deflate, br, zstd
+    Accept-Language: en-US,en;q=0.9,as;q=0.8
+🔍 Request Body Data: {'title': 'Updated -3 '}
+[20/May/2025 12:52:15] "PATCH /book/books/1/ HTTP/1.1" 200 177
+
+
+
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Accept-Encoding: gzip, deflate, br, zstd
+    Accept-Language: en-US,en;q=0.9,as;q=0.8
+🔍 Request Body Data: {'title': 'Updated -3 '}
+[20/May/2025 12:52:15] "PATCH /book/books/1/ HTTP/1.1" 200 177
+    Sec-Fetch-Mode: cors
+    Sec-Fetch-Dest: empty
+    Referer: http://127.0.0.1:5501/
+    Referer: http://127.0.0.1:5501/
+    Accept-Encoding: gzip, deflate, br, zstd
+    Accept-Language: en-US,en;q=0.9,as;q=0.8
+🔍 Request Body Data: {'title': 'Updated -3 '}
+[20/May/2025 12:52:15] "PATCH /book/books/1/ HTTP/1.1" 200 177
+```
+
+
+#### Fetch js example    
+
+✅ 1. Get All Active Profiles
+
+```js 
+fetch('/user/profile/', {
+  method: 'GET',
+  headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+  },
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+🔍 2. Get Inactive Profiles (Admin only)
+
+```js
+fetch('/user/profile/unactive/', {
+  method: 'GET',
+   headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+    },
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+➕ 3. Create Profile (Admin only)
+```js 
+fetch('/user/profile/', {
+  method: 'POST',
+   headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+    },,
+  body: JSON.stringify({
+    bio: 'New bio',
+    address: 'Dhaka'
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+✏️ 4. Fully Update Profile (PUT)
+```js
+fetch('/user/profile/5/', {
+  method: 'PUT',
+   headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+    },,
+  body: JSON.stringify({
+    bio: 'Updated bio',
+    address: 'Sylhet'
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+🩹 5. Partially Update Profile (PATCH)
+```js
+fetch('/user/profile/5/', {
+  method: 'PATCH',
+   headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+    },,
+  body: JSON.stringify({
+    address: 'Chittagong'
+  })
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+❌ 6. Delete Profile
+
+```js
+fetch('/user/profile/5/', {
+  method: 'DELETE',
+   headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+    },
+})
+.then(res => {
+  if (res.status === 204) console.log('Profile deleted');
+  else return res.json();
+});
+```
+🔁 7. Activate Profile by ID
+
+```js
+fetch('/user/profile/5/activate/', {
+  method: 'POST',
+   headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888'  // your admin token here
+    },
+})
+.then(res => res.json())
+.then(data => console.log(data));
+```
+
+Let me know if you want this in a downloadable file or as a complete README update.
+
 --- 
 # **Table Of Contents**
 
@@ -1154,5 +1475,7 @@ fetch("http://127.0.0.1:8000/book/books/1/", {
 | Connect Django to PostgreSQL Database     | [Go](#connect-django-to-postgresql-database)           | 
 | SSLcommerz payment gateways Developer     | [Go](#sslcommerz-payment-gateways-developer)           | 
 | Model Print key and value     | [Go](#model-print-key-and-value)           | 
+| Leatest Update of me DRF ModelView     | [Go1](#leatest-update-of-me-drf-modelview)           | 
+| More security with JWT TOken in Fetch header     | [Go2](#more-security-with-jwt-token-in-fetch header)           | 
 
 
