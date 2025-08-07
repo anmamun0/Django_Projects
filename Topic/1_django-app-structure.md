@@ -14,8 +14,8 @@ my_project/
 │   │── __init__.py
 │   │── settings.py
 │   │── urls.py
-│   │── wsgi.py
-│   │── asgi.py
+│   │── wsgi.py (Web Server Gateway Interface)
+│   │── asgi.py (Asynchronous Server Gateway Interface)
 │── my_app/ (Django App)
 │   │── migrations/
 │   │── __init__.py

@@ -500,3 +500,71 @@ def to_representation(self, instance):
 - ✔ **Nested Data:** নেস্টেড Serializer ব্যবহার করুন।
 - ✔ **Custom Fields:** `SerializerMethodField()` দিয়ে কাস্টম ফিল্ড তৈরি করুন।
 
+
+---
+
+
+serializers.py
+```python
+class ProfileSerializers(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()
+    total_book_read = serializers.SerializerMethodField()
+    rating = serializers.SerializerMethodField()
+    last_login = serializers.SerializerMethodField()
+    is_active = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Profile
+        fields = "__all__"
+
+    def get_total_book_read(self, obj):
+        return obj.profile_transactions.filter(status='returned').count()
+
+    def get_rating(self, obj):
+        total = self.get_total_book_read(obj)
+        return min(5, int((total / 100) * 5))  # ensure max rating is 5
+    
+    def get_last_login(self,obj):
+        return obj.user.last_login if obj.user else None
+    def get_is_active(self,obj):
+        return obj.user.is_active if obj.user else None
+```
+
+```python
+# Create your models here.
+class Profile(models.Model):
+    user = models.OneToOneField(User,on_delete=models.CASCADE,null=True)
+    image = models.URLField(max_length=255,null=True,blank=True,default='https://www.w3schools.com/howto/img_avatar.png')
+    full_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=10,choices=USER_ROLE,default='student')
+    phone = models.CharField(max_length=14,unique=True)
+    email = models.CharField(max_length=50,unique=True)
+    
+    roll = models.CharField(max_length=8,unique=True,null=True,blank=True)
+    registration = models.CharField(max_length=40,unique=True,null=True,blank=True)
+    department = models.CharField(max_length=12,null=True,blank=True)
+    session = models.CharField(max_length=4,null=True,blank=True)
+    address = models.CharField(max_length=100)
+    blood = models.CharField(choices=STATUS_BLOOD,max_length=10,null=True,blank=True)
+    gender = models.CharField(choices=STATUS_GENDER,max_length=10,null=True,blank=True)
+    birthday = models.DateField(null=True,blank=True)
+
+    nationality_type = models.CharField(max_length=10,choices=NATIONALITY)
+    nationality_number = models.CharField(max_length=17,unique=True)
+ 
+
+
+    def __str__(self):
+        return f"{self.roll} - {self.session}"
+class Transaction(models.Model):
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE,null=True,related_name='profile_transactions')
+    book = models.ForeignKey(Book, on_delete=models.CASCADE,related_name="book_transactions")
+    request_date = models.DateTimeField(auto_now_add=True,null=True,blank=True)
+    due_date = models.IntegerField(choices=STATUS_DUE, default=7,null=True,blank=True) 
+
+    borrow_date = models.DateTimeField(null=True,blank=True)
+    return_date = models.DateField(null=True, blank=True)
+
+    status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='pending') 
+```
+

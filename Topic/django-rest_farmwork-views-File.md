@@ -22,6 +22,12 @@ from rest_framwork import ViewSets,APIView,Generic,Routers,Permissions,Authentic
 
 </h6>
 
+### ✅ What is `initial()` in DRF?
+<h5> 
+
+  `initial()` is a special method in Django REST Framework's APIView class (which `ModelViewSet` inherits from). <br>
+  It runs before the actual request handler methods like: `get()`, `post()`, `put()`, `destroy()`, etc.
+</h5>
 
 ## 1️⃣  ViewSets
 🔹 ব্যাখ্যা:

@@ -1179,7 +1179,7 @@ class ProfileSerializerView(CustomAdminTokenCheckMixin, ModelViewSet):
             return Response({'detail': 'Permission Denied'}, status=status.HTTP_403_FORBIDDEN)
         return super().destroy(request, *args, **kwargs)
      # 🔹 Custom GET endpoint
-     
+    #  GET-> list , POST -> create, PUT -> update, PATCH -> partial_update, DELETE -> destroy
 
     @action(detail=False, methods=['get'], url_path='unactive') #Custom GET
     def get_unactive_profiles(self, request):
@@ -1476,6 +1476,6 @@ Let me know if you want this in a downloadable file or as a complete README upda
 | SSLcommerz payment gateways Developer     | [Go](#sslcommerz-payment-gateways-developer)           | 
 | Model Print key and value     | [Go](#model-print-key-and-value)           | 
 | Leatest Update of me DRF ModelView     | [Go1](#leatest-update-of-me-drf-modelview)           | 
-| More security with JWT TOken in Fetch header     | [Go2](#more-security-with-jwt-token-in-fetch header)           | 
+| More security with JWT TOken in Fetch header     | [Go2](#more-security-with-jwt-token-in-fetch-header)           | 
 
 
