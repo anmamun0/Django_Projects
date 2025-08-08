@@ -264,3 +264,83 @@ class Profile(models.Model):
 - Migrations ensure the database schema remains in sync with models.
 - The `Meta` class allows setting model-specific configurations, including making a model abstract for inheritance.
 
+<br>
+<br>
+
+## model.Model all Methods
+
+| Method                  | বাংলা ব্যাখ্যা                    |
+| ----------------------- | --------------------------------- |
+| `__str__()`             | human-readable string রিটার্ন     |
+| `save()`                | object ডাটাবেজে সংরক্ষণ করে       |
+| `delete()`              | object ডাটাবেজ থেকে মুছে ফেলে     |
+| `clean()`               | custom validation যুক্ত করার জন্য |
+| `clean_fields()`        | প্রতিটি ফিল্ডের validation চালায়  |
+| `validate_unique()`     | unique constraint গুলা চেক করে    |
+| `full_clean()`          | সব validation একসাথে চালায়        |
+| `refresh_from_db()`     | ডাটাবেজ থেকে রিফ্রেশ করে          |
+| `get_deferred_fields()` | কোন ফিল্ড lazy-loaded তা বলে দেয়  |
+
+
+```python
+from django.db import models
+from django.core.exceptions import ValidationError
+
+class Product(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity = models.PositiveIntegerField(default=0)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        # __str__(): object কে human-readable string এ রিটার্ন করে
+        return f"{self.name} - {self.price}৳"
+
+    def save(self, *args, **kwargs):
+        # save(): ডাটাবেজে object save করে
+        print("Saving the product...")
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # delete(): ডাটাবেজ থেকে object মুছে ফেলে
+        print("Deleting the product...")
+        super().delete(*args, **kwargs)
+
+    def clean(self):
+        # clean(): custom validation এখানে করা হয়
+        print("Running clean() validation...")
+        if self.price < 0:
+            raise ValidationError("দাম ঋণাত্মক হতে পারে না।")
+        if self.quantity < 0:
+            raise ValidationError("পরিমাণ ঋণাত্মক হতে পারে না।")
+
+    def clean_fields(self, exclude=None):
+        # clean_fields(): ফিল্ড-লেভেল validation
+        print("Running clean_fields()...")
+        super().clean_fields(exclude=exclude)
+
+    def validate_unique(self, exclude=None):
+        # validate_unique(): unique constraint গুলা চেক করে
+        print("Checking validate_unique()...")
+        super().validate_unique(exclude=exclude)
+
+    def full_clean(self, exclude=None, validate_unique=True):
+        # full_clean(): সব validation একসাথে চালায়: clean_fields(), clean(), validate_unique()
+        print("Running full_clean()...")
+        super().full_clean(exclude=exclude, validate_unique=validate_unique)
+
+    def refresh_from_db(self, using=None, fields=None):
+        # refresh_from_db(): ডাটাবেজ থেকে আবার object রিফ্রেশ করে
+        print("Refreshing object from database...")
+        super().refresh_from_db(using=using, fields=fields)
+
+    def get_deferred_fields(self):
+        # get_deferred_fields(): কোন ফিল্ড lazy loaded হয়েছে তা দেখায়
+        print("Getting deferred fields...")
+        return super().get_deferred_fields()
+
+    class Meta:
+        ordering = ['name']  # ডিফল্ট অর্ডারিং name দিয়ে
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
+```

@@ -503,8 +503,12 @@ def to_representation(self, instance):
 
 ---
 
+<br>
+<br>
 
-serializers.py
+### Custom Field created with funciton/method
+
+`serializers.py`
 ```python
 class ProfileSerializers(serializers.ModelSerializer):
     user = serializers.StringRelatedField()
@@ -530,6 +534,7 @@ class ProfileSerializers(serializers.ModelSerializer):
         return obj.user.is_active if obj.user else None
 ```
 
+`models.py`
 ```python
 # Create your models here.
 class Profile(models.Model):
@@ -568,3 +573,113 @@ class Transaction(models.Model):
     status = models.CharField(max_length=12, choices=STATUS_CHOICES, default='pending') 
 ```
 
+### 🔰 serializers.ModelSerializer এর সব methods (Built-in)
+
+`ModelSerializer`→ `inherits from Serializer` → `inherits from BaseSerializer` → `inherits from object`
+
+#### ✅ 1. __init__(self, instance=None, data=empty, **kwargs)
+
+instance: model instance, e.g. object from database (for read/update)
+data: input data (for create/update)
+context: dictionary, usually request context ({'request': request})
+many: Boolean, multiple objects serialize হবে কিনা
+
+🔹 Use-case:
+```python 
+serializer = UserSerializer(data=request.data, context={'request': request})
+# Data Represented: Input data বা instance থেকে ডেটা।
+```
+
+
+#### ✅ 2. create(self, validated_data)
+
+validated_data: validated form of data
+
+```
+def create(self, validated_data):
+    # validated_data হচ্ছে dict → {'name': 'Phone', 'price': 10000, 'quantity': 5}
+    return User.objects.create(**validated_data)
+
+def create(self, validated_data):
+        user = self.context['request'].user  # কনটেক্সট থেকে ইউজার ধরলাম
+        product = Product.objects.create(
+            name=validated_data['name'],
+            price=validated_data['price'],
+            quantity=validated_data['quantity'],
+            created_by=user
+        )
+        return product
+```
+🔹 Data Represented: New object তৈরি করার জন্য validated dict।
+
+#### ✅ 3. update(self, instance, validated_data)
+
+instance: model instance to update
+validated_data: new data
+
+```
+def update(self, instance, validated_data):
+    instance.name = validated_data.get('name', instance.name)
+    instance.save()
+    return instance
+```
+🔹 Data Represented: Object আপডেট করার ডেটা।
+
+#### ✅ 4. to_representation(self, instance)
+
+instance: model instance
+
+```
+def to_representation(self, instance):
+    rep = super().to_representation(instance)
+    rep['full_name'] = instance.first_name + " " + instance.last_name
+    return rep
+```
+🔹 Data Represented: কিভাবে ডেটা serialize হবে। Output কাস্টমাইজ করতে
+
+#### ✅ 5. to_internal_value(self, data)
+
+data: raw input data
+
+```
+def to_internal_value(self, data):
+    data = super().to_internal_value(data)
+    data['username'] = data['username'].lower()
+    return data
+```
+🔹 Data Represented: কিভাবে raw data model field-এ map হবে। Input ডেটা কাস্টমভাবে process করা
+
+#### ✅ ৬. validate(self, attrs)
+attrs: all validated fields as dict
+
+```
+def validate(self, attrs):
+    if attrs['start'] > attrs['end']:
+        raise serializers.ValidationError("End must come after start")
+    return attrs
+```
+
+🔹 Data Represented: ফিল্ডের উপর নির্ভরশীল validation
+
+#### ✅ ৭. validate_<field>(self, value)
+value: field-specific value
+```
+def validate_email(self, value):
+    if "spam" in value:
+        raise serializers.ValidationError("Invalid email")
+    return value
+```
+🔹 Data Represented: নির্দিষ্ট ফিল্ডের validation data
+
+
+
+### 🔰 serializers.Serializer এর সব methods (Built-in)
+
+| Method              | ব্যবহার                  |
+| ------------------- | ------------------------ |
+| `validate_<field>`  | ফিল্ড লেভেল চেক          |
+| `validate`          | সব ফিল্ড একসাথে চেক      |
+| `create`            | নতুন object তৈরি         |
+| `update`            | পুরাতন object আপডেট      |
+| `to_representation` | output customize         |
+| `to_internal_value` | input customize (কমন নয়) |
