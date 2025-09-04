@@ -11,7 +11,9 @@
 | [Inline Model Administration](#2-inline-model-administration) | Allows editing related models directly within the parent model in the admin panel. Improves admin workflow. |
 | [Customizing the Admin Panel Header](#3-customizing-the-admin-panel-header) | Lets you change the admin site title, header, and index page text for branding purposes. |
 | [Adding Custom Actions](#4-adding-custom-actions) | Enables defining custom actions in the admin list view to perform bulk operations on selected objects. |
- 
+| [Customizing Form Fields in Admin](#5-customizing-form-fields-in-admin) | Allows overriding default form fields, adding widgets, or making fields read-only for better data control. |
+| [Filtering and Search](#6-filtering-and-search) | Adds list filters and search fields to the admin interface to quickly locate objects in large datasets. |
+| [Key Attributes and Methods in ModelAdmin](#7-key-attributes-and-methods-in-modeladmin) | Explains important ModelAdmin attributes like `list_display`, `list_filter`, `search_fields`, and methods for customizing admin behavior. |
 
 </h6>
 
@@ -257,20 +259,42 @@ admin.site.index_title = "Welcome to the Bookstore Admin"
 
 - Admin actions হলো এমন ফিচার যা Django admin list view থেকে multiple objects select করে একসাথে operation perform করতে দেয়।
 - Define a custom action to update multiple records at once:
-
+  
+- `modeladmin` → এই function কোন ModelAdmin class এর জন্য ব্যবহার হচ্ছে।
+- `request` → বর্তমান HTTP request।
+- `queryset` → admin list থেকে যেসব row/objects select করা হয়েছে তাদের queryset।
+- 
 ```py
 from django.contrib import admin
 from .models import Product
 
 @admin.action(description="Mark selected products as published")
 def make_published(modeladmin, request, queryset):
-    queryset.update(status='published')
+    queryset.update(stock=0)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'status')
     actions = [make_published]
 ```
+
+- `queryset.update(...)` → একসাথে multiple row update।
+- `@admin.action(description="...")` → dropdown এ দেখানো text।
+- `actions list` → ModelAdmin এ add করতে হবে।
+- `queryset.update(stock=0)` → এখানে আপনার action যেসব selected products আছে, তাদের stock field কে 0 করে দিবে।
+
+
+#### 2. Action with Confirmation Page
+
+Django by default একটা confirmation page দেখায় যদি action পরিবর্তন করে data।
+```
+@admin.action(description="Delete selected products safely")
+def safe_delete(modeladmin, request, queryset):
+    for obj in queryset:
+        obj.delete()
+```
+Selection → Choose `Safe Delete` → Confirm → Deleted
+
   
 ```python
 class OrderAdmin(admin.ModelAdmin):
@@ -284,9 +308,84 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order, OrderAdmin)
 ```
 
+#### 3. Action Returning Response (Redirect or Download)
+```python
+from django.http import HttpResponse
+import csv
+ 
+@admin.action(description="Export selected products to CSV")
+def export_to_csv(modeladmin, request, queryset):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=products.csv'
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Name', 'Price'])
+    for obj in queryset:
+        writer.writerow([obj.id, obj.name, obj.price])
+    return response
+
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'price')
+    actions = [export_to_csv]
+```
+ 
+Action থেকে response return করলে browser এ redirect, download বা অন্য page open করতে পারো।
+
+#### 4. Action with Conditions
+```python
+@admin.action(description="Apply discount 10% to expensive products")
+def discount_expensive(modeladmin, request, queryset):
+    for product in queryset:
+        if product.price > 100:
+            product.price *= 0.9
+            product.save()
+
+```
+Conditional logic ব্যবহার করে specific objects modify করা যায়।
+
+#### 5. Action for Related Models
+```python
+@admin.action(description="Mark related category as featured")
+def mark_category_featured(modeladmin, request, queryset):
+    for product in queryset:
+        product.category.is_featured = True
+        product.category.save()
+```
+
+Related objects (ForeignKey/ManyToMany) modify করা সম্ভব।
+
+#### 6. Using Decorator with Short Description (Old Style)
+```python
+def make_draft(modeladmin, request, queryset):
+    queryset.update(status='draft')
+make_draft.short_description = "Mark selected products as draft"
+```
+
+পুরানো Django version এ ব্যবহার হয়।
+
+#### 🔹 Summary Table of Action Types
+
+<h6> 
+
+| Action Type       | Example                               | Notes                           |
+| ----------------- | ------------------------------------- | ------------------------------- |
+| Basic Update      | `queryset.update(status='published')` | Simple field update             |
+| Delete            | `queryset.delete()`                   | Deletes selected rows           |
+| Download / Export | CSV/Excel export                      | Return `HttpResponse` with file |
+| Conditional       | Only modify if condition              | Use `if` inside loop            |
+| Related Model     | Modify foreign key or m2m             | Affects related table           |
+| Old Style         | `short_description`                   | Compatible with older Django    |
+
+</h6>
 
 
-## Customizing Form Fields in Admin
+<br>
+<br>
+<br>
+<br>
+
+
+
+# 5. Customizing Form Fields in Admin
 - Use `formfield_overrides` to change widget styles:
 ```python
 from django.forms import Textarea
@@ -299,7 +398,14 @@ class ProductAdmin(admin.ModelAdmin):
 admin.site.register(Product, ProductAdmin)
 ```
 
-## Filtering and Search
+
+<br>
+<br>
+<br>
+<br>
+
+
+# 6. Filtering and Search
 ### Filtering
 - `list_filter`: Adds filter options to the right sidebar for quick filtering.
 - Example:
@@ -339,7 +445,7 @@ class PostAdmin(admin.ModelAdmin):
 
 
 
-## Key Attributes and Methods in ModelAdmin
+# 7. Key Attributes and Methods in ModelAdmin
 
 <h6> 
 
