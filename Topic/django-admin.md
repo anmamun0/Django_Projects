@@ -1,5 +1,20 @@
 # Django admin.py Notes
 
+
+### Topic of Summary:  
+
+<h6>
+
+| Topic | Description |
+|-------|-------------|
+| [Auto-Generating Slugs](#1-auto-generating-slugs) | Automatically create URL-friendly slugs from model fields like title or name. Useful for SEO-friendly URLs. |
+| [Inline Model Administration](#2-inline-model-administration) | Allows editing related models directly within the parent model in the admin panel. Improves admin workflow. |
+| [Customizing the Admin Panel Header](#3-customizing-the-admin-panel-header) | Lets you change the admin site title, header, and index page text for branding purposes. |
+| [Adding Custom Actions](#4-adding-custom-actions) | Enables defining custom actions in the admin list view to perform bulk operations on selected objects. |
+ 
+
+</h6>
+
 ## Introduction to Django Admin
 - The Django admin site provides a built-in interface for managing models.
 - It is enabled by default in Django projects.
@@ -95,9 +110,14 @@ class Transaction(models.Model):
 
 ---
 
+<br>
+<br>
+<br>
+<br>
 
+# 1. Auto-Generating Slugs
+[Home](#topic-of-summary)
 
-## Auto-Generating Slugs
 - A slug is a URL-friendly identifier derived from another field.
 - Use `prepopulated_fields` in `ModelAdmin`:
 
@@ -125,7 +145,14 @@ class Blog(models.Model):
         super().save(*args, **kwargs)
 ```
 
-## Inline Model Administration
+<br>
+<br>
+<br>
+<br>
+
+# 2. Inline Model Administration
+[Home](#topic-of-summary)
+
 ```python
 class ChapterInline(admin.TabularInline):
     model = Chapter
@@ -138,15 +165,113 @@ admin.site.register(Book, BookAdmin)
 ```
 - `TabularInline` and `StackedInline` allow editing related objects within the parent model’s admin page.
 
-## Customizing the Admin Panel Header
+```py
+# models.py
+class Category(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+# Product model
+class Product(models.Model):
+    name = models.CharField(max_length=200)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="products")
+```
+
+```python
+# admin.py
+from django.contrib import admin
+from .models import Product, Category
+
+class ProductInline(admin.TabularInline):
+    model = Product
+    extra = 2
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    inlines = [ProductInline]
+```
+####  TabularInline কি?
+
+Django admin-এ যখন আপনি একটি related model (one-to-many relationship) কে parent model-এর page-এ inline হিসেবে দেখাতে চান, তখন InlineModelAdmin ব্যবহার করা হয়।
+
+- দুইটি প্রকারের Inline:
+ - TabularInline → Table style (row-column) display করে।
+ - StackedInline → Vertical stacked box style display করে।
+<h6>
+    
+| Attribute | Explanation                                                        |
+| --------- | ------------------------------------------------------------------ |
+| `model`   | কোন model inline হিসেবে দেখানো হবে। এখানে `Product`।               |
+| `extra`   | কতগুলো empty forms দেখানো হবে নতুন Product add করার জন্য। এখানে 2। |
+
+</h6>
+
+```python
+class ProductInline(admin.TabularInline):
+    model = Product               # Required: Inline model
+    extra = 2                     # 2 empty forms for adding new Products
+    max_num = 10                  # Max 10 products allowed in inline
+    min_num = 1                   # Minimum 1 product required
+    can_delete = True             # Allow deletion of inline products
+    fk_name = 'category'          # ForeignKey field to link Category
+    readonly_fields = ('created_at', 'updated_at')  # Read-only fields
+    fields = ('name', 'price', 'stock', 'created_at', 'updated_at')  # Show only these
+    formset = ProductInlineFormSet  # Custom validation formset
+    show_change_link = True        # Show link to go to product change page
+    ordering = ('-price',)         # Order products by price descending
+    verbose_name = "Product Item"
+    verbose_name_plural = "Products List"
+    template = "admin/edit_inline/tabular.html"  # Default template (can customize)
+```
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+
+# 3. Customizing the Admin Panel Header
+[Home](#topic-of-summary)
+
 ```python
 admin.site.site_header = "My Bookstore Admin"
 admin.site.site_title = "Bookstore Admin Portal"
 admin.site.index_title = "Welcome to the Bookstore Admin"
 ```
 
-## Adding Custom Actions
+- Bangla Expl.:
+ - `site_header` → Browser tab ও top bar এ show হবে।
+ - `site_title` → Browser tab title হবে।
+ - `index_title` → Dashboard page (home) এ মূল heading।
+
+<br>
+<br>
+<br>
+<br>
+
+
+# 4. Adding Custom Actions
+[Home](#topic-of-summary)
+
+- Admin actions হলো এমন ফিচার যা Django admin list view থেকে multiple objects select করে একসাথে operation perform করতে দেয়।
 - Define a custom action to update multiple records at once:
+
+```py
+from django.contrib import admin
+from .models import Product
+
+@admin.action(description="Mark selected products as published")
+def make_published(modeladmin, request, queryset):
+    queryset.update(status='published')
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name', 'status')
+    actions = [make_published]
+```
+  
 ```python
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('customer', 'status', 'total_amount')
@@ -158,6 +283,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 ```
+
+
 
 ## Customizing Form Fields in Admin
 - Use `formfield_overrides` to change widget styles:
