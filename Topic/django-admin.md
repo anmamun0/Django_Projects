@@ -386,6 +386,8 @@ make_draft.short_description = "Mark selected products as draft"
 
 
 # 5. Customizing Form Fields in Admin
+[Home](#topic-of-summary)
+
 - Use `formfield_overrides` to change widget styles:
 ```python
 from django.forms import Textarea
@@ -406,6 +408,8 @@ admin.site.register(Product, ProductAdmin)
 
 
 # 6. Filtering and Search
+[Home](#topic-of-summary)
+
 ### Filtering
 - `list_filter`: Adds filter options to the right sidebar for quick filtering.
 - Example:
@@ -443,9 +447,13 @@ class PostAdmin(admin.ModelAdmin):
 {% endblock %}
 ```
 
-
+<br>
+<br>
+<br>
+<br>
 
 # 7. Key Attributes and Methods in ModelAdmin
+[Home](#topic-of-summary)
 
 <h6> 
 
