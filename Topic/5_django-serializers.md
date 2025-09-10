@@ -6,11 +6,10 @@
 
 <h6> 
 
-- [1. Serializer](#-1-serializer)
-  
-- [1. ModelSerializer](#-2-modelserializer)
-- [2. Model এর Attribute ও Field Types](#-modelserializer-এর-attribute-ও-field-types)
-- [3. ModelSerializer-এর Meta Class](#-modelserializer-এর-meta-class)
+- [1. Serializer](#-1-serializer)  
+- [2. ModelSerializer](#-2-modelserializer)  
+- [3. ModelSerializer এর Attribute ও Field Types](#-3-modelserializer-এর-attribute-ও-field-types)  
+- [4. ModelSerializer-এর Meta Class](#-modelserializer-এর-meta-class)
  
 </h6>
 
