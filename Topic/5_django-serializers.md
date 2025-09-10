@@ -17,6 +17,34 @@
 <br>
 <br>
 
+*Flow Diagram (Linear)*
+```
+User POST Request  // Data at Stage
+        │
+        ▼
+   urls.py → find matching path
+        │
+        ▼
+      View → receives request // request.data dictionary
+        │
+        ▼
+   Serializer → initialized with data // serializer.initial_data → raw input
+        │
+        ▼
+   serializer.is_valid() → validation // serializer.validated_data → cleaned & validated data
+        │
+        ▼
+   serializer.save() → create DB object // Model instance created
+        │
+        ▼
+   Serializer → convert object to JSON // JSON excluding write_only fields
+        │
+        ▼
+   Response → sent back to user // Final HTTP response sent to user
+```
+<br>
+<br>
+
 
 ## serializers.ModelSerializer এবং serializers.Serializer এর Different
 [Home](#table-of-contents)
