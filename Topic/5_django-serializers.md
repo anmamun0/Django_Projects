@@ -8,9 +8,10 @@
 
 - [1. Serializer](#1-serializer)  
 - [2. ModelSerializer](#2-modelserializer)  
-- [3. ModelSerializer এর Attribute ও Field Types](#3-modelserializer-এর-attribute-ও-field-types)  
+- [3. ModelSerializer এর Attribute ও Field Types](#modelserializer-এর-attribute-ও-field-types)  
 - [4. ModelSerializer-এর Meta Class](#modelserializer-এর-meta-class)
- 
+- [5. ModelSerializer-এর Override Methods](#modelserializer-এর-override-methods)
+
 </h6>
 
 
@@ -37,11 +38,19 @@ Django REST Framework Serializers - বিস্তারিত ব্যাখ�
 
 
 ## serializers.ModelSerializer এবং serializers.Serializer এর Different
-[Home](#-table-of-contents)
+[Home](#table-of-contents)
 
 Django REST Framework (DRF)-এ serializers.ModelSerializer এবং serializers.Serializer দুইটি গুরুত্বপূর্ণ সিরিয়ালাইজার ক্লাস, তবে এদের কাজ এবং ব্যবহারিক পার্থক্য রয়েছে। নিচে বিস্তারিত ব্যাখ্যা করা হলো:
 -  from rest_framework import serializers
 
+
+ModelSerializer এর গুরুত্বপূর্ণ বিষয়
+- Automatic Fields  -  মডেলের উপর ভিত্তি করে ফিল্ড তৈরি হয়
+- Customizable Fields	 - extra_kwargs দিয়ে কাস্টমাইজ করা যায়
+- Relations Handling	 - StringRelatedField, PrimaryKeyRelatedField, SlugRelatedField, HyperlinkedRelatedField ইত্যাদি
+- Validation - ইনবিল্ট ভ্যালিডেশন ও কাস্টম ভ্যালিডেশন সাপোর্ট করে
+- Nested Serializers - একাধিক মডেল একসাথে সিরিয়ালাইজ করা যায়
+- Authentication Support - CurrentUserDefault ব্যবহার করে ইউজার সেট করা যায়
 
 
 <br>
@@ -576,6 +585,115 @@ class BookSerializer(serializers.ModelSerializer):
 <br>
 <br>
 
+## ModelSerializer এর Override Methods
+[Home](#table-of-contents)
+ 
+<h6>
+ 
+| Method                | Use Case                                 |
+| --------------------- | ---------------------------------------- |
+| `create()`            | Save new object with custom logic        |
+| `update()`            | Update existing object with custom logic |
+| `validate_<field>()`  | Single field validation                  |
+| `validate()`          | Multi-field validation                   |
+| `to_representation()` | Customize output JSON                    |
+| `to_internal_value()` | Customize input parsing                  |
+| `run_validation()`    | Manually run validation chain            |
+
+</h6>
+
+
+### 1. create(self, validated_data)
+[Up](#ModelSerializer-এর-Override-Methods)
+ 
+- নতুন object database এ save করার জন্য।
+- ModelSerializer হলে default automatically create করবে, কিন্তু custom behavior দরকার হলে override করা যায়।
+
+```py
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+        user.set_password(validated_data['password'])  # hashed password
+        user.save()
+        return user
+``` 
+Password hash করার জন্য, অথবা extra fields handle করার জন্য।
+
+### 2.  update(self, instance, validated_data)
+[Up](#ModelSerializer-এর-Override-Methods)
+ 
+- Existing object update করার জন্য।
+```py
+def update(self, instance, validated_data):
+    instance.email = validated_data.get('email', instance.email)
+    password = validated_data.get('password', None)
+    if password:
+        instance.set_password(password)
+    instance.save()
+    return instance
+```
+Custom update logic যেমন password hashing বা computed fields।
+
+### 3. validate_<field_name>(self, value)
+[Up](#ModelSerializer-এর-Override-Methods)
+- Field-level validation করার জন্য।
+```py
+def validate_email(self, value):
+    if "@example.com" not in value:
+        raise serializers.ValidationError("Email must be from example.com")
+    return value
+``` 
+Single field এর specific validation করতে।
+
+### 4. validate(self, data)
+[Up](#ModelSerializer-এর-Override-Methods)
+- Serializer-level validation।
+- একাধিক field একসাথে validate করা যায়।
+```py
+def validate(self, data):
+    if data['password'] != data['password2']:
+        raise serializers.ValidationError("Passwords must match!")
+    return data
+``` 
+Multi-field consistency check (e.g., password confirmation)।
+
+### 5. to_representation(self, instance)
+[Up](#ModelSerializer-এর-Override-Methods)
+- Object কে Python dict → JSON convert করার জন্য।
+- Output customize করতে পারে।
+```py
+def to_representation(self, instance):
+    rep = super().to_representation(instance)
+    rep['full_name'] = f"{instance.first_name} {instance.last_name}"
+    return rep
+``` 
+Output JSON customize করার জন্য।
+
+### 6. to_internal_value(self, data)
+[Up](#ModelSerializer-এর-Override-Methods)
+- Incoming JSON → Python dict convert করার জন্য।
+- Mostly advanced use, custom parsing দরকার হলে।
+```py
+def to_internal_value(self, data):
+    internal = super().to_internal_value(data)
+    internal['username'] = internal['username'].lower()
+    return internal
+```
+ 
+Input normalize করার জন্য (যেমন username lowercase)।
+
+### 7. run_validation(self, data)
+[Up](#ModelSerializer-এর-Override-Methods)
+- Serializer এর validation chain manually run করার জন্য।
+- Mostly internal, rare use case।
 
 
 
@@ -584,19 +702,32 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 
-✅ সংক্ষেপে ModelSerializer এর গুরুত্বপূর্ণ বিষয়
 
-| Feature	| Description| 
-|-----------|------------|
-| Automatic Fields	| মডেলের উপর ভিত্তি করে ফিল্ড তৈরি হয়| 
-| Customizable Fields	| extra_kwargs দিয়ে কাস্টমাইজ করা যায়| 
-| Relations Handling	| StringRelatedField, PrimaryKeyRelatedField, SlugRelatedField, HyperlinkedRelatedField ইত্যাদি| 
-| Validation | 	ইনবিল্ট ভ্যালিডেশন ও কাস্টম ভ্যালিডেশন সাপোর্ট করে| 
-| Nested Serializers| 	একাধিক মডেল একসাথে সিরিয়ালাইজ করা যায়| 
-| Authentication Support	|  CurrentUserDefault ব্যবহার করে ইউজার সেট করা যায়| 
+
+
+
+
+
 
 
 ---
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 <br>
 <br>
 <br>
@@ -645,9 +776,13 @@ class UserModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 ```
 
-✅ **`ModelSerializer`** ব্যবহার করলে মডেলের ফিল্ড অনুযায়ী অটোমেটিক সিরিয়ালাইজেশন হয়।
+**`ModelSerializer`** ব্যবহার করলে মডেলের ফিল্ড অনুযায়ী অটোমেটিক সিরিয়ালাইজেশন হয়।
 
 ---
+<br>
+<br>
+<br>
+<br>
 
 ## 3. **ডাটা ভ্যালিডেশন (Validation) in Serializers**
 
@@ -771,13 +906,7 @@ serializer = UserSerializer(user_instance, context=extra_data)
 
 ---
 
-## **ModelSerializer এর বিশেষ অপশন**
-- `fields = '__all__'` → সকল ফিল্ড অন্তর্ভুক্ত করে।
-- `exclude = ['password']` → নির্দিষ্ট ফিল্ড বাদ দেয়।
-- `read_only_fields = ['id']` → শুধুমাত্র রিড-অনলি ফিল্ড নির্ধারণ করে।
-- `extra_kwargs = {'email': {'required': True}}` → অতিরিক্ত ফিল্ড কনফিগারেশন।
-
----
+ 
 
 ## **ModelSerializer এর Common Methods**
 
