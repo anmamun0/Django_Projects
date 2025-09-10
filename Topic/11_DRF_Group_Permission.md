@@ -114,6 +114,7 @@ DRF automatically map করে HTTP methods → **`DjangoModelPermissions`**:
 <br>
 
 # View বা ViewSet অনুযায়ী আলাদা Permission সেট করা
+[Home](#DRF-Group-Permission)
 
 ```py
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -175,10 +176,74 @@ Summary Bangla
 <br>
 
 
+# Use a Custom permission.py Class
+```
+from rest_framework.permissions import BasePermission
+
+class CustomIsAuthenticated(BasePermission):
+    message = "Please log in first to access this endpoint."
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+```
+Then in your view:
+
+```python 
+class RegisterView(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = Register
+    permission_classes = [CustomIsAuthenticated]
+```
+
+
+<br>
+<br>
+<br>
+<br>
+
+# Own Object Access Permission
+permission.py
+```py
+from rest_framework.permissions import BasePermission
+
+class IsOwnerPermission(BasePermission):
+    message = "You can only access your own profile."
+
+    # General view-level permission
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated
+
+    # Object-level permission
+    def has_object_permission(self, request, view, obj):
+        # obj is a User instance
+        return obj == request.user
+
+```
+views.py
+```py
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
+from .serializers import UserSerializer
+from .permissions import IsOwnerPermission
+
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsOwnerPermission]
+
+    # Override get_object to make sure object-level permission works
+    def get_object(self):
+        obj = super().get_object()
+        self.check_object_permissions(self.request, obj)
+        return obj
+```
+
 
 
 
 # Django Group Model Permission 
+[Home](#DRF-Group-Permission)
 
 setting.py
 ```py
