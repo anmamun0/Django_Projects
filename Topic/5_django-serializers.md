@@ -412,28 +412,28 @@ class BookSerializer(serializers.ModelSerializer):
 
 ### `extra_kwargs` Dictionary এ ব্যবহারযোগ্য parameter গুলো
 
-**read_only**
+i. **read_only**
 - Purpose: Field শুধুমাত্র GET response এ দেখানো হবে।
-- Example: "email": {"read_only": True}
+- Example: `"email": {"read_only": True}`
 
-**write_only**
+ii. **write_only**
 - Purpose: Field শুধুমাত্র POST/PUT/PATCH এ পাঠানো যাবে, GET response এ দেখাবে না।
-- Example: "password": {"write_only": True}
+- Example: `"password": {"write_only": True}`
 
-**required**
+iii. **required**
 - Purpose: Field আবশ্যক কি না POST/PUT এ।
-- Example: "username": {"required": False}
+- Example: `"username": {"required": False}`
 
-**default**
+iv. **default**
 - Purpose: যদি POST এ field না থাকে তাহলে default value ব্যবহার হবে।
-- Example: "last_name": {"default": "Not Provided"}
+- Example: `"last_name": {"default": "Not Provided"}`
 
-**validators**
+v. **validators**
 - Purpose: Custom validation function ব্যবহার করতে। 
-- Example: "email": {"validators": [validate_email]} # from django.core.validators import validate_email
-- Example: "email": {"validators": [custom_email_validator]} 
+- Example: `"email": {"validators": [validate_email]}` # from django.core.validators import validate_email
+- Example: `"email": {"validators": [custom_email_validator]} `
 
-```
+```py
 from rest_framework import serializers
 def validate_username(value):
     if "admin" in value.lower():
@@ -446,13 +446,13 @@ extra_kwargs = {
 }
 ```
  
-**help_text**
+vi. **help_text**
 - Purpose: Documentation বা API Swagger এর জন্য।
-- Example: "password": {"help_text": "Enter a strong password"}
+- Example: `"password": {"help_text": "Enter a strong password"}`
 
-**error_messages**
+vii. **error_messages**
 - Purpose: Custom error message দিতে।
-- Example: "first_name": {"error_messages": {"required": "First name লাগবেই!"}}
+- Example: `"first_name": {"error_messages": {"required": "First name লাগবেই!"}}`
 
 Key (error_key)
 - এই key গুলো হলো Django REST Framework বা Django এর field validation এর default error codes। কিছু সাধারণ key:
@@ -486,21 +486,21 @@ first_name = serializers.CharField(
 
 ```
 
-**allow_blank**
+viii. **allow_blank**
 - Purpose: CharField বা TextField এ খালি string allow করা।
-- Example: "username": {"allow_blank": True}
+- Example: `"username": {"allow_blank": True}`
 
-**allow_null**
+ix. **allow_null**
 - Purpose: Field এ Null value allow করা।
-- Example: "first_name": {"allow_null": True}
+- Example: `"first_name": {"allow_null": True}`
 
-**max_length**, **min_length**
+x. **max_length**, **min_length**
 - Purpose: String field এর max/min length validation।
-- Example: "username": {"max_length": 50, "min_length": 3}
+- Example: `"username": {"max_length": 50, "min_length": 3}`
 
-**trim_whitespace**
+xi. **trim_whitespace**
 - Purpose: Field এর string value trim করবে POST/PUT এ।
-- Example: "username": {"trim_whitespace": True} 
+- Example: `"username": {"trim_whitespace": True} `
 
 
 
