@@ -14,27 +14,8 @@
 
 </h6>
 
-
-
-Django REST Framework Serializers - বিস্তারিত ব্যাখ্যা
-... 
-[->](#django-rest-framework-serializers---বিস্তারিত-ব্যাখ্যা)
-
-<h6> 
-    
-- [1. Basic Serializer Example (পাইথন ডাটাকে JSON-এ রূপান্তর করা)](#1-basic-serializer-example-পাইথন-ডাটাকে-json-এ-রূপান্তর-কর)
-- [2. Model Serializer (Django মডেল থেকে Serializer তৈরি করা)](#2-model-serializer-django-মডেল-থেকে-serializer-তৈরি-কর)
-- [3. ডাটা ভ্যালিডেশন (Validation) in Serializers](#3-ডাটা-ভ্যালিডেশন-validation-in-serializers)
-- [4. Serializer দিয়ে মডেল Data Create/Update করা](#4-serializer-দিয়ে-মডেল-data-createupdate-কর)
-- [5. Serializer for Nested Data](#5-serializer-for-nested-data)
-- [6. Serializer দিয়ে Queryset হ্যান্ডেল করা](#6-serializer-দিয়ে-queryset-হ্যান্ডেল-কর)
-- [7. Serializer Fields](#7-serializer-fields)
-- [8. ModelSerializer-এ Custom Method Field](#8-modelserializer-এ-custom-method-field)
-- [9. Serializer Context ব্যবহার করা](#9-serializer-context-ব্যবহার-কর)
-- [10. ModelSerializer এর Common Methods](#10-modelserializer-এর-common-methods)
-- 
-</h6>
-
+<br>
+<br>
 
 
 ## serializers.ModelSerializer এবং serializers.Serializer এর Different
@@ -176,7 +157,7 @@ class BookSerializer(serializers.Serializer):
 
 
 ### 1. StringRelatedField 
-[UP](#modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-attribute-ও-field-types) 
 
 - এটি ForeignKey বা ManyToManyField সম্পর্কিত অবজেক্টের __str__() মেথডের আউটপুট রিটার্ন করে।
 - ডাটাবেজ আইডি পাঠানোর পরিবর্তে রিডেবল নাম পাঠায়।
@@ -196,7 +177,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 2. PrimaryKeyRelatedField
-[UP](#modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-attribute-ও-field-types) 
 
 - এটি ForeignKey বা ManyToManyField ফিল্ডের জন্য Primary Key (ID) রিটার্ন করে।
 
@@ -210,7 +191,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 3. SlugRelatedField 
-[UP](#modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-attribute-ও-field-types) 
 
 - এটি ForeignKey সম্পর্কিত মডেলের নির্দিষ্ট স্লাগ ফিল্ড রিটার্ন করে। 
 ```python
@@ -223,7 +204,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 4. HyperlinkedIdentityField 
-[UP](#modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-attribute-ও-field-types) 
 
 - এটি প্রতিটি অবজেক্টের ডিটেইল URL লিংক তৈরি করে।
 - HyperlinkedModelSerializer-এর সাথে ব্যবহার করা হয়।
@@ -239,7 +220,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 ```
 
 ### 5. HyperlinkedRelatedField 
-[UP](#modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-attribute-ও-field-types) 
 
 - এটি Related Object-এর লিংক রিটার্ন করে।
 
@@ -253,7 +234,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 ```
 
 ### 6. CurrentUserDefault 
-[UP](#modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-attribute-ও-field-types) 
 
 - এটি বর্তমান লগইনকৃত ইউজারকে স্বয়ংক্রিয়ভাবে ফিল্ডে সেট করতে ব্যবহার করা হয়।
 ```python 
@@ -734,6 +715,25 @@ Input normalize করার জন্য (যেমন username lowercase)।
 <br>
 
  
+
+Django REST Framework Serializers - বিস্তারিত ব্যাখ্যা
+... 
+[->](#django-rest-framework-serializers---বিস্তারিত-ব্যাখ্যা)
+
+<h6> 
+    
+- [1. Basic Serializer Example (পাইথন ডাটাকে JSON-এ রূপান্তর করা)](#1-basic-serializer-example-পাইথন-ডাটাকে-json-এ-রূপান্তর-কর)
+- [2. Model Serializer (Django মডেল থেকে Serializer তৈরি করা)](#2-model-serializer-django-মডেল-থেকে-serializer-তৈরি-কর)
+- [3. ডাটা ভ্যালিডেশন (Validation) in Serializers](#3-ডাটা-ভ্যালিডেশন-validation-in-serializers)
+- [4. Serializer দিয়ে মডেল Data Create/Update করা](#4-serializer-দিয়ে-মডেল-data-createupdate-কর)
+- [5. Serializer for Nested Data](#5-serializer-for-nested-data)
+- [6. Serializer দিয়ে Queryset হ্যান্ডেল করা](#6-serializer-দিয়ে-queryset-হ্যান্ডেল-কর)
+- [7. Serializer Fields](#7-serializer-fields)
+- [8. ModelSerializer-এ Custom Method Field](#8-modelserializer-এ-custom-method-field)
+- [9. Serializer Context ব্যবহার করা](#9-serializer-context-ব্যবহার-কর)
+- [10. ModelSerializer এর Common Methods](#10-modelserializer-এর-common-methods)
+- 
+</h6>
 
 
 # Django REST Framework Serializers - বিস্তারিত ব্যাখ্যা
