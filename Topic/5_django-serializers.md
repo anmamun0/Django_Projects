@@ -6,10 +6,10 @@
 
 <h6> 
 
-- [1. Serializer](#-1-serializer)  
-- [2. ModelSerializer](#-2-modelserializer)  
-- [3. ModelSerializer এর Attribute ও Field Types](#-3-modelserializer-এর-attribute-ও-field-types)  
-- [4. ModelSerializer-এর Meta Class](#-modelserializer-এর-meta-class)
+- [1. Serializer](#1-serializer)  
+- [2. ModelSerializer](#2-modelserializer)  
+- [3. ModelSerializer এর Attribute ও Field Types](#3-modelserializer-এর-attribute-ও-field-types)  
+- [4. ModelSerializer-এর Meta Class](#modelserializer-এর-meta-class)
  
 </h6>
 
@@ -51,7 +51,7 @@ Django REST Framework (DRF)-এ serializers.ModelSerializer এবং serializer
 
 
 ## 1. Serializer
-[Home](#-table-of-contents)
+[Home](#table-of-contents)
 - Serializer 👉 ফ্লেক্সিবল ও কাস্টমাইজড (কমপ্লেক্স ডাটা ও কাস্টম ভ্যালিডেশনের জন্য উপযুক্ত)।
   
 <h6> 
@@ -76,7 +76,7 @@ Django REST Framework (DRF)-এ serializers.ModelSerializer এবং serializer
 
 
 ## 2. ModelSerializer
-[Home](#-table-of-contents)
+[Home](#table-of-contents)
 ModelSerializer 👉 সহজ ও অটোমেটেড (CRUD-এর জন্য উপযুক্ত)।
 <h6> 
     
@@ -143,7 +143,7 @@ class BookSerializer(serializers.Serializer):
 <br>
 
 ### ModelSerializer এর Attribute ও Field Types
-[Home](#-table-of-contents)
+[Home](#table-of-contents)
 
 <h6> 
 
@@ -167,7 +167,7 @@ class BookSerializer(serializers.Serializer):
 
 
 ### 1. StringRelatedField 
-[UP](#-modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি ForeignKey বা ManyToManyField সম্পর্কিত অবজেক্টের __str__() মেথডের আউটপুট রিটার্ন করে।
 - ডাটাবেজ আইডি পাঠানোর পরিবর্তে রিডেবল নাম পাঠায়।
@@ -187,7 +187,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 2. PrimaryKeyRelatedField
-[UP](#-modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি ForeignKey বা ManyToManyField ফিল্ডের জন্য Primary Key (ID) রিটার্ন করে।
 
@@ -201,7 +201,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 3. SlugRelatedField 
-[UP](#-modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি ForeignKey সম্পর্কিত মডেলের নির্দিষ্ট স্লাগ ফিল্ড রিটার্ন করে। 
 ```python
@@ -214,7 +214,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 4. HyperlinkedIdentityField 
-[UP](#-modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি প্রতিটি অবজেক্টের ডিটেইল URL লিংক তৈরি করে।
 - HyperlinkedModelSerializer-এর সাথে ব্যবহার করা হয়।
@@ -230,7 +230,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 ```
 
 ### 5. HyperlinkedRelatedField 
-[UP](#-modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি Related Object-এর লিংক রিটার্ন করে।
 
@@ -244,7 +244,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 ```
 
 ### 6. CurrentUserDefault 
-[UP](#-modelserializer-এর-Attribute-ও-field-types)
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি বর্তমান লগইনকৃত ইউজারকে স্বয়ংক্রিয়ভাবে ফিল্ডে সেট করতে ব্যবহার করা হয়।
 ```python 
@@ -269,7 +269,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 # ModelSerializer এর Meta Class
-[Home](#-table-of-contents)
+[Home](#table-of-contents)
 
 - Meta class হলো serializer এর configuration layer, যেখানে আমরা ModelSerializer কে বলে দেই:
 - কোন model এর উপর serializer বানাতে হবে
@@ -337,31 +337,31 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 ## 1. **fields** Attribute
-[UP](#-Meta-class-attribute-ও-field-types)
+[UP](#Meta-class-attribute-ও-field-types)
 
 - `fields = ['username', 'email', 'password']`  # শুধুমাত্র এই field গুলো serializer handle করবে
 - `fields = '__all__'` # এটি model এর সব field serializer এ দেখাবে।
 
 ## 2. **exclude** Attribute
-[UP](#-Meta-class-attribute-ও-field-types)
+[UP](#Meta-class-attribute-ও-field-types)
 
 - `exclude = ['last_login', 'is_superuser']`  # এই field গুলো serializer এ দেখাবে না
 - exclude = ['password']  # password বাদ, বাকি সব field include <br>
         `extra_kwargs = {'password': {'write_only': True}}`  # password POST এর জন্য write_only
 
 ## 3. **read_only_fields** Attribute
-[UP](#-Meta-class-attribute-ও-field-types)
+[UP](#Meta-class-attribute-ও-field-types)
 
 - `read_only_fields = ['id', 'last_login']`  # এই field update বা create করা যাবে না
 
 
 ## 4. **write_only_fields** Attribute
-[UP](#-Meta-class-attribute-ও-field-types)
+[UP](#Meta-class-attribute-ও-field-types)
 
 - `write_only_fields = ['password']`  # password GET এ দেখাবে না, Post এ দেখবে
  
 ## 5. **extra_kwargs** Attribute
-[UP](#-Meta-class-attribute-ও-field-types)
+[UP](#Meta-class-attribute-ও-field-types)
 
 <h6> 
 
@@ -515,7 +515,7 @@ first_name = serializers.CharField(
 
 
 ## 6. **depth** Attribute 
-[UP](#-Meta-class-attribute-ও-field-types)
+[UP](#Meta-class-attribute-ও-field-types)
 
 - depth ব্যবহার করা হয় nested relationships কে automatically expand করে দেখানোর জন্য। অর্থাৎ foreign key বা related object এর full details nested structure হিসেবে দেখানো যায়।
 
