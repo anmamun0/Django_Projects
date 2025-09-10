@@ -1,5 +1,18 @@
 # Django models.py Notes
 
+**Model Topic summary Quick-Link**
+  
+<h6>
+    
+- [Introduction to Django Models](#-introduction-to-django-models) | 
+- [All Operations in Meta Class](#-all-operations-in-meta-class) | 
+- [Abstract Models](#-abstract-models) | 
+- [Custom methods can be defined](#-custom-methods-can-be-defined) | 
+- [Model Custom Validation](#-model-custom-validation)
+
+</h6>
+
+
 ## Introduction to Django Models
 - In Django, models are used to define the structure of the database.
 - A model is a Python class that subclasses `django.db.models.Model`.
@@ -281,6 +294,12 @@ class Profile(models.Model):
 | `refresh_from_db()`     | ডাটাবেজ থেকে রিফ্রেশ করে          |
 | `get_deferred_fields()` | কোন ফিল্ড lazy-loaded তা বলে দেয়  |
 
+<br>
+<br>
+<br>
+<br>
+
+## Model Custom Validation 
 
 ```python
 from django.db import models
