@@ -14,8 +14,27 @@
 
 </h6>
 
-<br>
-<br>
+
+
+Django REST Framework Serializers - বিস্তারিত ব্যাখ্যা
+... 
+[->](#django-rest-framework-serializers---বিস্তারিত-ব্যাখ্যা)
+
+<h6> 
+    
+- [1. Basic Serializer Example (পাইথন ডাটাকে JSON-এ রূপান্তর করা)](#1-basic-serializer-example-পাইথন-ডাটাকে-json-এ-রূপান্তর-কর)
+- [2. Model Serializer (Django মডেল থেকে Serializer তৈরি করা)](#2-model-serializer-django-মডেল-থেকে-serializer-তৈরি-কর)
+- [3. ডাটা ভ্যালিডেশন (Validation) in Serializers](#3-ডাটা-ভ্যালিডেশন-validation-in-serializers)
+- [4. Serializer দিয়ে মডেল Data Create/Update করা](#4-serializer-দিয়ে-মডেল-data-createupdate-কর)
+- [5. Serializer for Nested Data](#5-serializer-for-nested-data)
+- [6. Serializer দিয়ে Queryset হ্যান্ডেল করা](#6-serializer-দিয়ে-queryset-হ্যান্ডেল-কর)
+- [7. Serializer Fields](#7-serializer-fields)
+- [8. ModelSerializer-এ Custom Method Field](#8-modelserializer-এ-custom-method-field)
+- [9. Serializer Context ব্যবহার করা](#9-serializer-context-ব্যবহার-কর)
+- [10. ModelSerializer এর Common Methods](#10-modelserializer-এর-common-methods)
+- 
+</h6>
+
 
 
 ## serializers.ModelSerializer এবং serializers.Serializer এর Different
@@ -157,7 +176,7 @@ class BookSerializer(serializers.Serializer):
 
 
 ### 1. StringRelatedField 
-[UP](#modelserializer-এর-attribute-ও-field-types) 
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি ForeignKey বা ManyToManyField সম্পর্কিত অবজেক্টের __str__() মেথডের আউটপুট রিটার্ন করে।
 - ডাটাবেজ আইডি পাঠানোর পরিবর্তে রিডেবল নাম পাঠায়।
@@ -177,7 +196,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 2. PrimaryKeyRelatedField
-[UP](#modelserializer-এর-attribute-ও-field-types) 
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি ForeignKey বা ManyToManyField ফিল্ডের জন্য Primary Key (ID) রিটার্ন করে।
 
@@ -191,7 +210,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 3. SlugRelatedField 
-[UP](#modelserializer-এর-attribute-ও-field-types) 
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি ForeignKey সম্পর্কিত মডেলের নির্দিষ্ট স্লাগ ফিল্ড রিটার্ন করে। 
 ```python
@@ -204,7 +223,7 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 
 ### 4. HyperlinkedIdentityField 
-[UP](#modelserializer-এর-attribute-ও-field-types) 
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি প্রতিটি অবজেক্টের ডিটেইল URL লিংক তৈরি করে।
 - HyperlinkedModelSerializer-এর সাথে ব্যবহার করা হয়।
@@ -220,7 +239,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 ```
 
 ### 5. HyperlinkedRelatedField 
-[UP](#modelserializer-এর-attribute-ও-field-types) 
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি Related Object-এর লিংক রিটার্ন করে।
 
@@ -234,7 +253,7 @@ class BookSerializer(serializers.HyperlinkedModelSerializer):
 ```
 
 ### 6. CurrentUserDefault 
-[UP](#modelserializer-এর-attribute-ও-field-types) 
+[UP](#modelserializer-এর-Attribute-ও-field-types)
 
 - এটি বর্তমান লগইনকৃত ইউজারকে স্বয়ংক্রিয়ভাবে ফিল্ডে সেট করতে ব্যবহার করা হয়।
 ```python 
@@ -270,12 +289,12 @@ class PostSerializer(serializers.ModelSerializer):
     
 | Attribute| 	ব্যাখ্যা| 
 |------------| -------| 
-| fields| 	সিরিয়ালাইজ করার জন্য ফিল্ড লিস্ট নির্ধারণ করে। __all__ দিলে সব ফিল্ড অন্তর্ভুক্ত হয়। | 
-| exclude| 	নির্দিষ্ট কিছু ফিল্ড অপসারণ করতে ব্যবহার করা হয়। | 
-| read_only_fields| GET only, POST/PATCH accept করবে না | 
-| write_only_fields| 	POST/PATCH only, GET এ show হবে না (extra_kwargs এও করা যায়) | 
-| extra_kwargs	| নির্দিষ্ট ফিল্ডের জন্য অতিরিক্ত কনফিগারেশন যোগ করতে ব্যবহৃত হয় , যেমন read_only, write_only, validators, error_messages। | 
-| depth| 	Nested relationships কত level depth show করবে (ডিফল্ট: 0) | 
+| fields| 	সিরিয়ালাইজ করার জন্য ফিল্ড লিস্ট নির্ধারণ করে। __all__ দিলে সব ফিল্ড অন্তর্ভুক্ত হয়। [see more](#1-fields-attribute)   | 
+| exclude| 	নির্দিষ্ট কিছু ফিল্ড অপসারণ করতে ব্যবহার করা হয়। [see more](#2-exclude-attribute) | 
+| read_only_fields| GET only, POST/PATCH accept করবে না [see more](#3-read_only_fields-attribute)   | 
+| write_only_fields| 	POST/PATCH only, GET এ show হবে না (extra_kwargs এও করা যায়) [3. read_only_fields Attribute](#3-read_only_fields-attribute)   | 
+| extra_kwargs	| নির্দিষ্ট ফিল্ডের জন্য অতিরিক্ত কনফিগারেশন যোগ করতে ব্যবহৃত হয় , যেমন read_only, write_only, validators, error_messages [see more](#5-extra_kwargs-attribute)	 | 
+| depth| 	Nested relationships কত level depth show করবে (ডিফল্ট: 0) [see more](#6-depth-attribute)  | 
 | validators | 	কাস্টম ভ্যালিডেশন ফাংশন সংযোজন করা যায়। | 
  
 </h6>
@@ -412,28 +431,28 @@ class BookSerializer(serializers.ModelSerializer):
 
 ### `extra_kwargs` Dictionary এ ব্যবহারযোগ্য parameter গুলো
 
-i. **read_only**
+**read_only**
 - Purpose: Field শুধুমাত্র GET response এ দেখানো হবে।
-- Example: `"email": {"read_only": True}`
+- Example: "email": {"read_only": True}
 
-ii. **write_only**
+**write_only**
 - Purpose: Field শুধুমাত্র POST/PUT/PATCH এ পাঠানো যাবে, GET response এ দেখাবে না।
-- Example: `"password": {"write_only": True}`
+- Example: "password": {"write_only": True}
 
-iii. **required**
+**required**
 - Purpose: Field আবশ্যক কি না POST/PUT এ।
-- Example: `"username": {"required": False}`
+- Example: "username": {"required": False}
 
-iv. **default**
+**default**
 - Purpose: যদি POST এ field না থাকে তাহলে default value ব্যবহার হবে।
-- Example: `"last_name": {"default": "Not Provided"}`
+- Example: "last_name": {"default": "Not Provided"}
 
-v. **validators**
+**validators**
 - Purpose: Custom validation function ব্যবহার করতে। 
-- Example: `"email": {"validators": [validate_email]}` # from django.core.validators import validate_email
-- Example: `"email": {"validators": [custom_email_validator]} `
+- Example: "email": {"validators": [validate_email]} # from django.core.validators import validate_email
+- Example: "email": {"validators": [custom_email_validator]} 
 
-```py
+```
 from rest_framework import serializers
 def validate_username(value):
     if "admin" in value.lower():
@@ -446,13 +465,13 @@ extra_kwargs = {
 }
 ```
  
-vi. **help_text**
+**help_text**
 - Purpose: Documentation বা API Swagger এর জন্য।
-- Example: `"password": {"help_text": "Enter a strong password"}`
+- Example: "password": {"help_text": "Enter a strong password"}
 
-vii. **error_messages**
+**error_messages**
 - Purpose: Custom error message দিতে।
-- Example: `"first_name": {"error_messages": {"required": "First name লাগবেই!"}}`
+- Example: "first_name": {"error_messages": {"required": "First name লাগবেই!"}}
 
 Key (error_key)
 - এই key গুলো হলো Django REST Framework বা Django এর field validation এর default error codes। কিছু সাধারণ key:
@@ -486,21 +505,21 @@ first_name = serializers.CharField(
 
 ```
 
-viii. **allow_blank**
+**allow_blank**
 - Purpose: CharField বা TextField এ খালি string allow করা।
-- Example: `"username": {"allow_blank": True}`
+- Example: "username": {"allow_blank": True}
 
-ix. **allow_null**
+**allow_null**
 - Purpose: Field এ Null value allow করা।
-- Example: `"first_name": {"allow_null": True}`
+- Example: "first_name": {"allow_null": True}
 
-x. **max_length**, **min_length**
+**max_length**, **min_length**
 - Purpose: String field এর max/min length validation।
-- Example: `"username": {"max_length": 50, "min_length": 3}`
+- Example: "username": {"max_length": 50, "min_length": 3}
 
-xi. **trim_whitespace**
+**trim_whitespace**
 - Purpose: Field এর string value trim করবে POST/PUT এ।
-- Example: `"username": {"trim_whitespace": True} `
+- Example: "username": {"trim_whitespace": True} 
 
 
 
@@ -715,25 +734,6 @@ Input normalize করার জন্য (যেমন username lowercase)।
 <br>
 
  
-
-Django REST Framework Serializers - বিস্তারিত ব্যাখ্যা
-... 
-[->](#django-rest-framework-serializers---বিস্তারিত-ব্যাখ্যা)
-
-<h6> 
-    
-- [1. Basic Serializer Example (পাইথন ডাটাকে JSON-এ রূপান্তর করা)](#1-basic-serializer-example-পাইথন-ডাটাকে-json-এ-রূপান্তর-কর)
-- [2. Model Serializer (Django মডেল থেকে Serializer তৈরি করা)](#2-model-serializer-django-মডেল-থেকে-serializer-তৈরি-কর)
-- [3. ডাটা ভ্যালিডেশন (Validation) in Serializers](#3-ডাটা-ভ্যালিডেশন-validation-in-serializers)
-- [4. Serializer দিয়ে মডেল Data Create/Update করা](#4-serializer-দিয়ে-মডেল-data-createupdate-কর)
-- [5. Serializer for Nested Data](#5-serializer-for-nested-data)
-- [6. Serializer দিয়ে Queryset হ্যান্ডেল করা](#6-serializer-দিয়ে-queryset-হ্যান্ডেল-কর)
-- [7. Serializer Fields](#7-serializer-fields)
-- [8. ModelSerializer-এ Custom Method Field](#8-modelserializer-এ-custom-method-field)
-- [9. Serializer Context ব্যবহার করা](#9-serializer-context-ব্যবহার-কর)
-- [10. ModelSerializer এর Common Methods](#10-modelserializer-এর-common-methods)
-- 
-</h6>
 
 
 # Django REST Framework Serializers - বিস্তারিত ব্যাখ্যা
