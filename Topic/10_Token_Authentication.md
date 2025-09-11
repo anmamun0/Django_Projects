@@ -5,17 +5,17 @@
 <h6> 
 
 - [1. DRF এর TokenAuthentication](#1-DRF-এর-TokenAuthentication)
-- [2. DRF এর JWTAuthentication](#2-DRF-এর-JWTAuthentication)
+- [2. DRF এর JWTAuthentication](#2-drf-এর-jwtauthentication)
 - [Setting Setup Different TokenAuthentication  & JWTAuthentication](#Setting-Setup-Different-TokenAuthentication-&-JWTAuthentication)
-- [React custom hook - TokenAuth বা JWTAuth ব্যবহার](#React-custom-hook---TokenAuth-বা-JWTAuth-ব্যবহার)
-
-- [TokenAuthentication দিয়ে Login + Logout](#TokenAuthentication-দিয়ে-Login-+-Logout)
-- [JWTAuthentication দিয়ে Login + Logout](#JWTAuthenticationদিয়ে-Login-+-Logout)
-
+- [React.js custom hook - TokenAuth বা JWTAuth ব্যবহার](#reactjs-custom-hook---tokenauth-বা-jwtauth-ব্যবহার)
+>
+- [TokenAuthentication দিয়ে Login + Logout](#tokenauthentication-দিয়ে-login--logout)
+- [JWTAuthentication দিয়ে Login + Logout](#jwtauthentication-দিয়ে-login--logout)
+  
 </h6>
 
 # 1. DRF এর TokenAuthentication
-[Home](#-content-of-table)
+[Home](#content-of-table)
 ```
 pip install djangorestframework
 pip install djangorestframework-authtoken # TokenAuth Installation Command 
@@ -109,7 +109,7 @@ fetch("http://127.0.0.1:8000/profile/", {
 <br>
 
 # 2. DRF এর JWTAuthentication
-[Home](#-content-of-table)
+[Home](#content-of-table)
 
 ```sh
 pip install djangorestframework-simplejwt # Installation command
@@ -215,7 +215,7 @@ fetch("http://127.0.0.1:8000/dashboard/", {
 <br>
 
 ### Setting Setup Different TokenAuthentication  & JWTAuthentication
-[Home](#-content-of-table)
+[Home](#content-of-table)
 ```py
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -228,7 +228,7 @@ REST_FRAMEWORK = {
 }
 ```
 ### Key Difference
-[Home](#-content-of-table)
+[Home](#content-of-table)
 **TokenAuth:** Header এ পাঠাতে হয় →
 - `Authorization`: Token <your_token>
 
@@ -243,8 +243,8 @@ REST_FRAMEWORK = {
 <br>
 <br>
 
-## React custom hook - TokenAuth বা JWTAuth ব্যবহার
-[Home](#-content-of-table)
+## React.js custom hook - TokenAuth বা JWTAuth ব্যবহার
+[Home](#content-of-table)
 
 #### React Custom Hook: useAuth
 👉 useAuth.js
@@ -373,7 +373,7 @@ Usefull
 
 
 # TokenAuthentication দিয়ে Login + Logout
-[Home](#-content-of-table)
+[Home](#content-of-table)
 
 > Step 2: Django REST Framework এ ready-made login API আছে।
 👉 urls.py
