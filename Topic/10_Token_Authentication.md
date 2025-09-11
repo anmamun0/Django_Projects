@@ -462,6 +462,36 @@ Response
 👉 এখন সেই টোকেন আর কাজ করবে না।
 <br>
 
+#### Custom Auth Token View 
+```
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+
+class EmailAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        try:
+            user_obj = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({"error": "Invalid email or password"}, status=400)
+
+        user = authenticate(username=user_obj.username, password=password)
+        if not user:
+            return Response({"error": "Invalid email or password"}, status=400)
+
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            "token": token.key,
+            "user_id": user.id,
+            "email": user.email
+        })
+```
+
 #### Practical usecase: in my project
 
 ```py
@@ -496,8 +526,6 @@ class CustomAdminTokenCheckMixin:
         except (Token.DoesNotExist, Profile.DoesNotExist):
             return False
 ```
-
-
 
 --- 
 <br>
