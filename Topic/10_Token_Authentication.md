@@ -248,7 +248,7 @@ REST_FRAMEWORK = {
 
 #### React Custom Hook: useAuth
 👉 useAuth.js
-```
+```jsx
 import { useState } from "react";
 
 export function useAuth(authType = "jwt") {
@@ -306,7 +306,7 @@ export function useAuth(authType = "jwt") {
 #### ব্যবহার করার নিয়ম
 
 App.js
-```
+```jsx
 import React, { useState } from "react";
 import { useAuth } from "./useAuth";
 
@@ -462,8 +462,38 @@ Response
 👉 এখন সেই টোকেন আর কাজ করবে না।
 <br>
 
+### Token attributes/methods
+
+`rest_framework.authtoken.models.Token` এর সব attributes/methods:
+
+<h6>
+  
+| Attribute / Method                       | বর্ণনা (Usecase)                                     | উদাহরণ                                                    |
+| ---------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------- |
+| `Token.objects.create(user=user)`        | নতুন টোকেন তৈরি করে User এর সাথে bind করবে           | `token = Token.objects.create(user=user)`                 |
+| `Token.objects.get(user=user)`           | নির্দিষ্ট User এর existing টোকেন return করবে         | `token = Token.objects.get(user=user)`                    |
+| `Token.objects.get_or_create(user=user)` | আগে টোকেন থাকলে return করবে, না থাকলে নতুন তৈরি করবে | `token, created = Token.objects.get_or_create(user=user)` |
+| `Token.key`                              | আসল টোকেন string (client কে পাঠানো হয়)               | `print(token.key)`                                        |
+| `Token.user`                             | টোকেন কোন User এর সাথে যুক্ত সেটা return করবে        | `print(token.user.username)`                              |
+| `Token.created`                          | টোকেন কবে তৈরি হয়েছে সেটা জানাবে                     | `print(token.created)`                                    |
+| `Token.delete()`                         | টোকেন মুছে ফেলবে (logout এর সময় কাজে লাগে)           | `token.delete()`                                          |
+
+</h6>
+- .get() এ তুমি model এর যেকোনো ফিল্ড দিয়ে query করতে পারো।
+- একাধিক parameter দিলে AND condition হবে।
+
+  
+- 1. user দিয়ে get   →  `token = Token.objects.get(user=user)`
+- 2. key দিয়ে get   →    `token = Token.objects.get(key="abcd1234...")`
+- 3. multiple condition   →   `token = Token.objects.get(user=user, key="abcd1234...")`
+- 4. Case-insensitive match `(__iexact)`   →   `token = Token.objects.get(user__username__iexact="mamun")`
+- 5. Contains `(__icontains)`    →   `token = Token.objects.get(user__email__icontains="@gmail.com")`
+- 6. In list `(__in)`   →   `token = Token.objects.get(user__id__in=[1, 2, 3])`
+- 7. Greater than / Less than `(__gt, __lt)`   →   `token = Token.objects.get(created__gt="2025-01-01")`
+
+
 #### Custom Auth Token View 
-```
+```py
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -735,10 +765,64 @@ class LoginSerializer(serializers.Serializer):
 - Refresh (/refresh/) → Refresh Token দিয়ে নতুন Access Token পাওয়া যাবে
 - Logout (/logout/) → Refresh Token blacklist → আর valid হবে না
 
+<br>
+<br>
 
+### JWT Life Cycle
+`login → get JWT → use JWT → refresh → logout example`
 
+<br>
+<br>
 
+### rest_framework_simplejwt.tokens Methods & Attributes
 
+`rest_framework_simplejwt.tokens import RefreshToken, AccessToken , SlidingToken`
+
+#### Methods & Attributes
+1. RefreshToken
+- Long-lived token
+- এর মাধ্যমে নতুন access token generate করা যায়।
+- DB তে save হয় না (JWT stateless)।
+
+2. AccessToken
+- Short-lived token (যেটা API call করার সময় client পাঠায়)।
+- সাধারণত ৫ মিনিট থেকে ১ ঘণ্টা পর্যন্ত valid থাকে।
+  
+3. SlidingToken
+- Access + Refresh দুইটার mix alternative
+- একটাই টোকেন ইউজ হয়, কিন্তু auto refresh হয় expiration এর আগে
+
+<h6> 
+  
+| Method / Attribute            | কাজ                                                     |
+| ----------------------------- | ------------------------------------------------------- |
+| `RefreshToken.for_user(user)` | নির্দিষ্ট user এর জন্য নতুন refresh token তৈরি করবে     |
+| `.access_token`               | refresh token থেকে নতুন access token তৈরি করবে          |
+| `.get('exp')`                 | expiry time বের করবে                                    |
+| `.get('jti')`                 | unique token id (UUID) বের করবে                         |
+| `.blacklist()`                | blacklist করলে token invalid হয়ে যাবে (logout এ useful) |
+
+</h6>
+
+```py
+refresh = RefreshToken.for_user(user)
+print(str(refresh))              # refresh token string
+print(str(refresh.access_token)) # access token string
+ 
+print(refresh['exp'])   # expiry timestamp
+print(refresh['user_id'])  # কোন user এর জন্য তৈরি হয়েছে
+
+```
+```py
+access_token = AccessToken.for_user(user)
+print(str(access_token))  # access token string
+
+print("Before setting exp:", access_token.payload['exp'])  # default expiration | Token এর expiration time দেখতে পারি।
+
+# Change expiration time (e.g., 1 hour from now)
+access_token.set_exp(lifetime=timedelta(hours=1))
+
+```
 --- 
 <br>
 <br>
