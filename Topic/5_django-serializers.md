@@ -11,6 +11,7 @@
 - [3. ModelSerializer এর Attribute ও Field Types](#modelserializer-এর-attribute-ও-field-types)  
 - [4. ModelSerializer-এর Meta Class](#modelserializer-এর-meta-class)
 - [5. ModelSerializer-এর Override Methods](#modelserializer-এর-override-methods)
+- [6. ModelSerializer-এর Override Methods](#serializers-এর-parameter-এবং-তার-ব্যবহার)
 
 </h6>
 
@@ -704,17 +705,103 @@ Input normalize করার জন্য (যেমন username lowercase)।
 - Serializer এর validation chain manually run করার জন্য।
 - Mostly internal, rare use case।
 
+---
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## Serializers এর parameter এবং তার ব্যবহার 
+views.py
+```
+product = Product.object.get(id=1)
+serializer = ProductSerializer(data=request.data, context={'request': request},many=True,instance=product,partial=True)
+```
+এগুলো serilizers.py এর overrride class এ access করার Way:
+
+<h6>
+        
+| Attribute             | Usage                                 |
+| --------------------- | ------------------------------------- |
+| `self.context`        | Extra info like request, view, format |
+| `self.initial_data`   | Input data before validation          |
+| `self.validated_data` | Data after `is_valid()`               |
+| `self.errors`         | Validation errors                     |
+| `self.instance`       | Existing model instance (update mode) |
+| `self.partial`        | True if partial update (PATCH)        |
+| `self.fields`         | Serializer fields dict                |
+
+</h6>
 
 
+**1. self.context**
 
+- এটা dictionary যা serializer কে extra context দেয়, যেমন request, view, format ইত্যাদি।
+- DRF automatically inject করে যখন তুমি serializer কে view থেকে call করো।
+- সবচেয়ে common use-case: request.user access করা।
+```py
+serializer = ProductSerializer(data=request.data, context={'request': request})
+```
+Usage in serializer:
+```py
+user = self.context['request'].user
+```
 
+**2. self.initial_data**
+- Serializer-এ যে data initially input হয়েছে, সেটা থাকে এখানে।
+- Usually serializer.is_valid() করার আগে ব্যবহার হয়।
+- `print(self.initial_data)  # {'name': 'Laptop', 'price': 500}`
 
+**3. self.validated_data**
+serializer.is_valid() run করার পরে পাওয়া cleaned/validated data।
+create() বা update() method-এ access করা হয়।
 
+```py
+def create(self, validated_data):
+    name = validated_data.get('name')
+```
 
+**4. self.errors**
+Validation failed হলে error message dict থাকে এখানে।
+```
+if not serializer.is_valid():
+    print(serializer.errors)
+```
+**5. self.instance**
+- যদি serializer update/edit mode-এ থাকে, তাহলে এখানে existing model instance থাকে।
+- Create mode-এ None থাকে।
+```
+serializer = ProductSerializer(instance=product, data=request.data)
+print(self.instance)  # <Product: Laptop>
+```
 
+**6. self.partial**
+- Serializer কি partial update হচ্ছে না তা বোঝার জন্য।
+- Example: PATCH request (partial) vs PUT (full update)
+```
+serializer = ProductSerializer(instance=product, data=request.data, partial=True)
+print(self.partial)  # True
+```
+**7. self.fields**
+- Serializer-এ defined all fields dict আকারে থাকে।
+- Runtime এ field modify করা যায়।
+- `print(self.fields.keys())  # dict_keys(['name', 'price', 'user'])`
 
+Example Usecase:
+```py
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product 
+        exclude  = ["user"]
 
-
+    def create(self, validated_data):
+        user = self.context['request'].user
+        if not user.is_authenticated:
+            raise serializers.ValidationError({"detail": "You must be logged in to add a product."})
+        
+        return Product.objects.create(user=user, **validated_data)
+```
 
 
 

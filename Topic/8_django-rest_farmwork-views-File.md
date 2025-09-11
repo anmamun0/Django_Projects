@@ -1,36 +1,35 @@
-file_name: rest_farmwork-view.py
+#  REST framework -views.py
 
-in view.py
 
-```python
-from rest_framwork import ViewSets,APIView,Generic,Routers,Permissions,Authentication,Pagination
-```
-
-📌 Django REST Framework (DRF) Summary Table
+ 
+### DRF Library Table
+`from rest_framwork import ViewSets,APIView,Generic,Routers,Permissions,Authentication,Pagination`
 <h6> 
   
 | Component | 	Purpose	| Usage Example | 
 |-----------|----------|-----------------|
 | Serializers	| মডেল ডাটাকে JSON-এ রূপান্তর করা ও পুনরুদ্ধার করা	| serializers.ModelSerializer দিয়ে মডেল ডাটা সিরিয়ালাইজ করা| 
-| ViewSets| 	CRUD অপারেশন পরিচালনা করা	| ModelViewSet দিয়ে CRUD তৈরি করা| 
-| APIView	| HTTP রিকোয়েস্ট কাস্টমাইজ করা	| APIView ব্যবহার করে get(), post() মেথড ডিফাইন করা| 
-| Generic|  Views	সাধারণ CRUD অপারেশন সহজ করা| 	ListCreateAPIView, RetrieveUpdateDestroyAPIView ব্যবহার করা| 
-| Routers| 	স্বয়ংক্রিয়ভাবে URL তৈরি করা	| DefaultRouter() দিয়ে ViewSet রেজিস্টার করা| 
-| Permissions| 	API অ্যাক্সেস নিয়ন্ত্রণ করা| 	IsAuthenticated, IsAdminUser ব্যবহার করে API নিরাপদ করা| 
-| Authentication| 	ইউজার যাচাই করা| 	TokenAuthentication, SessionAuthentication ব্যবহার করা| 
-| Pagination| 	ডাটা সীমিত করে পেজিনেশন করা	| PageNumberPagination, LimitOffsetPagination ব্যবহার করা| 
+| ViewSets| 	CRUD অপারেশন পরিচালনা করা [see more.](#1-viewsets)	| ModelViewSet দিয়ে CRUD তৈরি করা | 
+| APIView	| HTTP রিকোয়েস্ট কাস্টমাইজ করা	[see more.](#2-apiview)	| APIView ব্যবহার করে get(), post() মেথড ডিফাইন করা| 
+| Generic|  Views	সাধারণ CRUD অপারেশন সহজ করা [see more.](#3-generic)	| 	ListCreateAPIView, RetrieveUpdateDestroyAPIView ব্যবহার করা| 
+| Routers| 	স্বয়ংক্রিয়ভাবে URL তৈরি করা [see more.](#4-routers)	| DefaultRouter() দিয়ে ViewSet রেজিস্টার করা| 
+| Permissions| 	API অ্যাক্সেস নিয়ন্ত্রণ করা [see more.](#5-permissions)	| 	IsAuthenticated, IsAdminUser ব্যবহার করে API নিরাপদ করা| 
+| Authentication| 	ইউজার যাচাই করা [see more.](#6-authentication)	| 	TokenAuthentication, SessionAuthentication ব্যবহার করা| 
+| Pagination| 	ডাটা সীমিত করে পেজিনেশন করা	[see more.](#7-pagination)	| PageNumberPagination, LimitOffsetPagination ব্যবহার করা| 
+
+
 
 </h6>
 
-### ✅ What is `initial()` in DRF?
-<h5> 
+---
+<br>
+<br>
+<br>
+<br>
+ 
+## 1. ViewSets
+[Home](#drf-library-table)
 
-  `initial()` is a special method in Django REST Framework's APIView class (which `ModelViewSet` inherits from). <br>
-  It runs before the actual request handler methods like: `get()`, `post()`, `put()`, `destroy()`, etc.
-</h5>
-
-## 1️⃣  ViewSets
-🔹 ব্যাখ্যা:
 - ViewSet হল একটি ক্লাস, যা সাধারণ CRUD অপারেশনগুলোর জন্য প্রস্তুত করা হয়েছে। এটি ModelViewSet ব্যবহার করে সম্পূর্ণ CRUD (Create, Retrieve, Update, Delete) অপারেশন সহজেই পরিচালনা করে।
 - স্বয়ংক্রিয়ভাবে CRUD (List, Retrieve, Create, Update, Delete) হ্যান্ডেল করে
 - Routers-এর মাধ্যমে অটোমেটিক URL তৈরি হয়
@@ -48,10 +47,345 @@ class StudentViewSet(ModelViewSet):
 ```
 ##### ✔ ব্যবহার: ViewSet ব্যবহার করলে আলাদা আলাদা list, retrieve, create, update, ও delete মেথড লিখতে হয় না।
 
+### Attributes in ModelViewSet
 
-## 2️⃣ APIView
+<h6>
 
-🔹 ব্যাখ্যা:
+| Attribute                | Type                           | Use                                                                                                               |
+| ------------------------ | ------------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `queryset`               | QuerySet                       | এই viewset কোন model এর data handle করবে তা define করে। উদাহরণ: `queryset = Category.objects.all()`               |
+| `serializer_class`       | Serializer class               | কোন serializer দিয়ে data serialize/deserialize হবে তা define করে। উদাহরণ: `serializer_class = CategorySerializer` |
+| `permission_classes`     | List of Permission classes     | Default permission define করে। উদাহরণ: `[IsAuthenticated]`                                                        |
+| `authentication_classes` | List of Authentication classes | কোন authentication method ব্যবহার হবে তা define করে। উদাহরণ: `[TokenAuthentication]`                              |
+| `pagination_class`       | Pagination class               | QuerySet pagination control করে।                                                                                  |
+| `filter_backends`        | List of filter backend classes | Search, ordering, filter control করে। উদাহরণ: `[SearchFilter, OrderingFilter]`                                    |
+| `search_fields`          | List of fields                 | Search filter এর জন্য ব্যবহার হয়।                                                                                 |
+| `ordering_fields`        | List of fields                 | Order filter এর জন্য ব্যবহার হয়।                                                                                  |
+| `lookup_field`           | String                         | Detail view এ object খুঁজতে কোন field use হবে। default `"pk"`                                                     |
+
+</h6>
+
+```py
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.throttling import UserRateThrottle
+from .models import Category
+from .serializers import CategorySerializer
+ 
+class CategoryView(ModelViewSet):
+    # -------------------- Model and Serializer --------------------
+    queryset = Category.objects.all()  # কোন model data serve করবে
+    serializer_class = CategorySerializer  # কোন serializer use হবে
+
+    # -------------------- Authentication and Permissions --------------------
+    authentication_classes = [TokenAuthentication, SessionAuthentication]  # API কে authenticate করবে
+    permission_classes = [AllowAny]  # ডিফল্টে GET anyone access পাবে
+
+    # -------------------- Filter, Search, Ordering --------------------
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]  # filter, search, ordering support
+    filterset_fields = ['name', 'status']  # filterable fields
+    search_fields = ['name', 'description']  # searchable fields
+    ordering_fields = ['name', 'created_at']  # orderable fields
+    ordering = ['name']  # default ordering
+
+    # -------------------- HTTP Methods --------------------
+    http_method_names = ['get', 'post']  # PUT, PATCH, DELETE blocked
+
+    # -------------------- Throttling --------------------
+    throttle_classes = [UserRateThrottle]  # rate limit control
+    throttle_scope = 'category'  # custom throttle scope
+
+    # -------------------- Lookup Customization --------------------
+    lookup_field = 'slug'  # URL থেকে object select করতে custom field
+    lookup_url_kwarg = 'category_slug'  # URL keyword arg name
+```
+
+
+### Methods in ModelViewSet
+ModelViewSet basically all CRUD operations support করে। DRF internally ViewSet + Mixins use করে।
+
+<h6>
+
+| Method / Overrideable Method                     | Description                                                            | HTTP Method / Type |
+| ------------------------------------------------ | --------------------------------------------------------- | ------------------ |
+| `initial(self, request, *args, **kwargs)`        | Request এর আগে run হয়; method block, header validation ইত্যাদি করা যায় | Override Method    |
+| `get_permissions(self)`                          | Method-wise permission override করতে use হয়                            | Override Method/Custom    |
+| `get_queryset(self)`                             | Dynamic queryset provide করতে use হয়                                   | Override Method    |
+| `list(self, request, *args, **kwargs)`           | All objects list করে                                                   | GET                |
+| `retrieve(self, request, *args, **kwargs)`       | Single object detail দেয়                                               | GET                |
+| `create(self, request, *args, **kwargs)`         | নতুন object create করে                                                 | POST               |
+| `update(self, request, *args, **kwargs)`         | Existing object update করে                                             | PUT                |
+| `partial_update(self, request, *args, **kwargs)` | Existing object partial update করে                                     | PATCH              |
+| `destroy(self, request, *args, **kwargs)`        | Existing object delete করে                                             | DELETE             |
+| `perform_create(self, serializer)`               | Object save করার আগে extra logic execute করতে use হয়                   | Override Method    |
+| `perform_update(self, serializer)`               | Object update করার আগে extra logic execute করতে use হয়                 | Override Method    |
+| `perform_destroy(self, instance)`                | Object delete করার আগে extra logic execute করতে use হয়                 | Override Method    |
+| `get_serializer(self, *args, **kwargs)`          | Serializer instance return করে, dynamic data pass করা যায়              | Override Method    |
+| `get_serializer_class(self)`                     | Serializer class dynamicভাবে override করতে use হয়                      | Override Method    |
+| `get_serializer_context(self)`                   | Serializer context (যেমন request, view) provide করতে use হয়            | Override Method    |
+| `get_object(self)`                               | Single object fetch করার জন্য use হয়                                   | Override Method    |
+| `paginate_queryset(self, queryset)`              | Queryset paginate করতে use হয়                                          | Override Method    |
+| `get_paginated_response(self, data)`             | Paginated response return করতে use হয়                                  | Override Method    |
+| `filter_queryset(self, queryset)`                | Queryset filter ও search করার জন্য use হয়                              | Override Method    |
+  
+</h6>
+
+
+### 1. list()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: সব objects এর list ফেরত দেয়।
+```
+class CategoryView(ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def list(self, request, *args, **kwargs):
+        # GET request handle
+        print("List method called")
+        return super().list(request, *args, **kwargs)
+``` 
+- এই method GET request এর জন্য call হয়।
+- সব objects এর list return করতে super().list() use করা হয়।
+
+### 2. retrieve()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: একটি single object এর detail দেয়।
+```py
+def retrieve(self, request, *args, **kwargs):
+    print("Retrieve method called")
+    return super().retrieve(request, *args, **kwargs)
+```
+- URL এ /category/1/ দিলে id=1 এর object return করবে।
+
+### 3. create()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: নতুন object create করে।
+```py
+def create(self, request, *args, **kwargs):
+    print("Create method called")
+    return super().create(request, *args, **kwargs)
+``` 
+- POST request handle করে।
+- Serializer validate করে save করে।
+
+### 4. update()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: existing object সম্পূর্ণ update করে।
+```py
+def update(self, request, *args, **kwargs):
+    print("Update method called")
+    return super().update(request, *args, **kwargs)
+``` 
+- PUT request handle করে।
+- সম্পূর্ণ object replace করে নতুন data দিয়ে।
+
+### 5. partial_update()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: existing object partial update করে।
+```py
+def partial_update(self, request, *args, **kwargs):
+    print("Partial update called")
+    return super().partial_update(request, *args, **kwargs)
+``` 
+PATCH request handle করে। 
+শুধু যেসব field পাঠানো হয়েছে, শুধু সেগুলো update করে।
+
+### 6. destroy()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: object delete করে।
+```py
+def destroy(self, request, *args, **kwargs):
+    print("Destroy method called")
+    return super().destroy(request, *args, **kwargs)
+```
+- DELETE request handle করে।
+
+### 7. initial()
+[up](#methods-in-modelviewset)
+
+**What is `initial()` in DRF?**
+
+<h5> 
+
+  `initial()` is a special method in Django REST Framework's APIView class (which `ModelViewSet` inherits from). <br>
+  It runs before the actual request handler methods like: `get()`, `post()`, `put()`, `destroy()`, etc.
+</h5>
+
+
+
+ব্যবহার: request এর আগে run হয়।
+```py
+def initial(self, request, *args, **kwargs):
+    print(f"Request method: {request.method}")
+    if request.method not in ["GET", "POST"]:
+        from rest_framework.exceptions import MethodNotAllowed
+        raise MethodNotAllowed(request.method)
+    return super().initial(request, *args, **kwargs)
+``` 
+- সব request এর আগে execute হয়।
+- আমরা এখানে GET এবং POST ছাড়া অন্য request block করেছি।
+
+### 8. get_permissions()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: method-wise permission override করতে।
+```py
+def get_permissions(self):
+    if self.request.method == "GET":
+        permission_classes = []  # public access
+    else:
+        permission_classes = [IsAuthenticated]  # POST, PUT, DELETE authenticated
+    return [permission() for permission in permission_classes]
+``` 
+GET public, POST authenticated করতে use হয়।
+
+### 9. get_queryset()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: dynamic queryset provide করতে।
+```py
+def get_queryset(self):
+    user = self.request.user
+    if user.is_authenticated:
+        return Category.objects.filter(user=user)
+    return Category.objects.none()
+``` 
+user specific queryset return করতে use হয়।
+
+### 10. perform_create()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: object save করার আগে extra logic execute করতে।
+```py
+def perform_create(self, serializer):
+    serializer.save(user=self.request.user)  # current logged in user assign
+``` 
+Serializer save করার আগে custom logic run করতে।
+
+### 11. perform_update()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: update করার আগে extra logic execute করতে।
+```py
+def perform_update(self, serializer):
+    serializer.save(updated_by=self.request.user)
+```
+### 12. perform_destroy()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: delete করার আগে extra logic execute করতে।
+```py
+def perform_destroy(self, instance):
+    print(f"Deleting {instance}")
+    instance.delete()
+```
+### 13. get_serializer_context()
+[up](#methods-in-modelviewset)
+
+ব্যবহার: serializer কে extra context provide করতে।
+```py
+def get_serializer_context(self):
+    context = super().get_serializer_context()
+    context['request_user'] = self.request.user
+    return context
+``` 
+Serializer এর মধ্যে request বা extra info পাঠানোর জন্য।
+
+
+---
+<br>
+<br>
+
+
+```py
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .models import Category
+from .serializers import CategorySerializer
+
+# Custom pagination
+class CategoryPagination(PageNumberPagination):
+    page_size = 10             # এক পেজে কতটা object দেখাবে
+    page_size_query_param = 'size'  # URL ?size=5 দিয়ে change করতে পারবে
+    max_page_size = 50
+
+class CategoryView(ModelViewSet):
+    # 1 Basic queryset
+    queryset = Category.objects.all()
+
+    # 2 Serializer
+    serializer_class = CategorySerializer
+
+    # 3 Authentication methods
+    authentication_classes = [TokenAuthentication, SessionAuthentication]
+
+    # 4 Default permission (can override per method)
+    permission_classes = [IsAuthenticated]
+
+    # 5 Pagination
+    pagination_class = CategoryPagination
+
+    # 6 Filters
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name', 'description']    # search ?search=xyz
+    ordering_fields = ['name', 'created_at']   # order ?ordering=name
+    ordering = ['name']                        # default ordering
+
+    # 7 Method-wise permissions
+    def get_permissions(self):
+        if self.request.method in ['GET', 'HEAD', 'OPTIONS']:
+            # GET requests anyone can access
+            permission_classes = [AllowAny]
+        else:
+            # POST/PUT/PATCH/DELETE only authenticated users
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
+    # 8 Dynamic queryset example (optional)
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     return Category.objects.filter(user=user)
+
+    # 9 Custom save logic
+    def perform_create(self, serializer):
+        # Automatically add current user to the category if needed
+        serializer.save(user=self.request.user)
+
+    def perform_update(self, serializer):
+        # Extra logic before update
+        serializer.save(updated_by=self.request.user)
+
+    def perform_destroy(self, instance):
+        # Extra logic before delete
+        instance.delete()
+```
+
+
+---
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## 2. APIView
+[Home](#drf-library-table)
+
 - APIView হলো ক্লাস-বেসড ভিউ (CBV), যা HTTP রিকোয়েস্টগুলোকে সম্পূর্ণ কাস্টমাইজ করতে দেয়। এটি ফাংশন-বেসড ভিউয়ের তুলনায় আরও বেশি কন্ট্রোল দেয়।
 
 ```python
@@ -77,10 +411,15 @@ class StudentAPI(APIView):
 
 ###### ✔ ব্যবহার: APIView ব্যবহার করলে আমরা GET, POST, PUT, ও DELETE রিকোয়েস্টকে নিজের মতো কাস্টমাইজ করতে পারি।
 
+---
+<br>
+<br>
+<br>
+<br>
 
-## 3️⃣ Generic Views
-
-🔹 ব্যাখ্যা:
+## 3. Generic Views
+[Home](#drf-library-table)
+ 
 - Generic Views হলো DRF-এর তৈরি করা ভিউ, যা আমাদের সাধারণ CRUD অপারেশনগুলো খুব সহজেই পরিচালনা করতে সাহায্য করে।
 
 ```python
@@ -99,8 +438,13 @@ class StudentRetrieveUpdateDestroyView(RetrieveUpdateDestroyAPIView):
 
 ###### ✔ ব্যবহার: Generic Views ব্যবহার করলে খুব কম কোড লিখেই আমরা API তৈরি করতে পারি।
 
-## 4️⃣ Routers
-🔹 ব্যাখ্যা:
+---
+<br>
+<br>
+<br>
+<br>
+## 4. Routers
+[Home](#drf-library-table)
 - Routers স্বয়ংক্রিয়ভাবে ViewSet-এর জন্য URL তৈরি করে, ফলে আমাদের আলাদা আলাদা urls.py সেটআপ করতে হয় না।
  
 
@@ -115,8 +459,14 @@ urlpatterns = router.urls
 ✔ ব্যবহার: Routers ব্যবহার করলে API-এর জন্য আলাদা আলাদা URL ম্যানুয়ালি লিখতে হয় না।
 ```
 
-## 5️⃣ Permissions
-🔹 ব্যাখ্যা:
+---
+<br>
+<br>
+<br>
+<br>
+
+## 5. Permissions
+[Home](#drf-library-table)
 - Permissions নির্ধারণ করে কোন ইউজার API অ্যাক্সেস করতে পারবে।
 
 ```python
@@ -133,9 +483,9 @@ class StudentAPI(APIView):
 
 ###### ✔ ব্যবহার: শুধুমাত্র অথেনটিকেটেড ইউজাররা এই API অ্যাক্সেস করতে পারবে।
 
-## 6️⃣ Authentication
+## 6. Authentication
 
-🔹 ব্যাখ্যা:
+[Home](#drf-library-table)
 - Authentication ব্যবহারকারীদের যাচাই করে এবং সঠিক ইউজার হলে API অ্যাক্সেস দিতে সাহায্য করে।
 
 🔹 প্রধান অথেনটিকেশন মেথড:
@@ -157,11 +507,18 @@ class StudentAPI(APIView):
         return Response(serializer.data)
 ```
 
-###### ✔ ব্যবহার: TokenAuthentication ব্যবহার করলে প্রতিটি ইউজারকে টোকেনের মাধ্যমে অথেনটিকেশন করতে হয়।
+✔ ব্যবহার: TokenAuthentication ব্যবহার করলে প্রতিটি ইউজারকে টোকেনের মাধ্যমে অথেনটিকেশন করতে হয়।
 
-## 6️⃣ Pagination
+---
+<br>
+<br>
+<br>
+<br>
 
-🔹 ব্যাখ্যা:
+
+## 6. Pagination
+[Home](#drf-library-table)
+
 - Pagination ব্যবহার করলে API থেকে অনেক বেশি ডাটা রিটার্ন করলে সেটিকে ছোট ছোট অংশে ভাগ করে দেখানো যায়।
  
 ```python 
