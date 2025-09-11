@@ -665,6 +665,42 @@ Response
 }
 ```
 
+
+### Custom Login make : its not good usecase
+
+```py
+# serializers.py
+from rest_framework import serializers
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.contrib.auth.models import User
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+    
+    def validate(self, data):
+        username = data.get("username")
+        password = data.get("password")
+
+        user = authenticate(username=username, password=password)
+
+        if not user:
+            raise serializers.ValidationError("Invalid username or password.")
+
+        # generate JWT tokens
+        refresh = RefreshToken.for_user(user)
+
+        return {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "username": user.username,
+            "email": user.email,
+            "id": user.id,
+        }
+
+```
+
  Flow Summary
 - Login (/login/) → Access + Refresh Token generate
 - Use Access Token → Protected API access করতে হবে
