@@ -1270,6 +1270,12 @@ class CustomAdminTokenCheckMixin:
 - `request.body` → Raw body of request (bytes)
 - `request.user `→ Current logged-in user (if using auth middleware)
 
+- `request.META.get("HTTP_AUTHORIZATION")` → # Token 7ce76d81bd3663ee9c1bd47c635e214278a3e888
+- `request.user`  → # anmamun0
+- `request.user.is_authenticated` → #True
+- `request.user.id` → #1
+- `request.user.username` → #anmamun0@gmail.com
+
 ##### checking request dic what has?
 ```python 
         # Only check admin for write operations (POST, PATCH)
