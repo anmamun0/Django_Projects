@@ -86,7 +86,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 
 ### ROOT urls.py
-```
+```python
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -96,7 +96,7 @@ urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 ### models.py
-```
+```python
 class Document(models.Model):
     title = models.CharField(max_length=100)
     file = models.FileField(upload_to='documents/')  # Files will be stored in MEDIA_ROOT/documents/
@@ -105,7 +105,7 @@ class Document(models.Model):
 
 ### forms.py 
 
-```
+```python
 class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
@@ -116,7 +116,7 @@ class DocumentForm(forms.ModelForm):
 
 ### views.py
 
-```
+```python
 def upload_file(request):
     if request.method == 'POST':
         form = DocumentForm(request.POST, request.FILES)  # Include request.FILES for file uploads
@@ -135,7 +135,7 @@ def file_list(request):
 
 
 ### upload_file.html
-```
+```python
 <h1>Upload File</h1>
 <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
@@ -145,7 +145,7 @@ def file_list(request):
 ```
 
 ### file_list.html
-```
+```python
 <h1>Uploaded Files</h1>
 <ul>
     {% for document in documents %}
@@ -162,7 +162,7 @@ def file_list(request):
 ## Backend Email Controll
 
 #### *setting.py* 
-```
+```python
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # For Gmail
 EMAIL_PORT = 587
@@ -173,7 +173,7 @@ EMAIL_USE_SSL = False
 ```
 ##### **views.py**
 ###### Simple and quick setup	| HTML Support	Basic (via html_message)
-```
+```python
 send_mail(
     subject='Welcome to LibZone',
     message=f"Your OTP is {otp}. Please use this to reset your password.", 
@@ -186,7 +186,7 @@ send_mail(
 ##### **views.py**
 ###### Advanced emails, attachments, rich content | More verbose, but offers full control
 
-```
+```python
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 
@@ -216,12 +216,12 @@ email.attach('example.pdf', b'PDF content here', 'application/pdf')
 *is used to ensure that a view can only be accessed by authenticated (logged-in) users. If a user is not logged in and tries to access a view that is decorated with @login_required, they are redirected to the login page.* 
 
 ####  setting.py  
-```
+```python
 LOGIN_URL = '/user/login/'
 ```
 
 ####  *view.html*
-```
+```python
 from django.contrib.auth.decorators import login_required
 @login_required(login_url='/user/login/')
 @login_required
@@ -232,7 +232,7 @@ from django.contrib.auth.decorators import login_required
 ## Cookie Management
 
 ### Setting a Cookie
-```
+```python
 def set_cookie_view(request):
     //  response = HttpResponse("Cookie Set")
 
@@ -242,14 +242,14 @@ def set_cookie_view(request):
 ```
 
 ### Reading a Cookie
-```
+```python
 def read_cookie_view(request):
     username = request.COOKIES.get('username', 'Guest')
     return HttpResponse(f"Hello, {username}!")
 ```
 
 ### Deleting a Cookie
-```
+```python
 def delete_cookie_view(request):
     response = HttpResponse("Cookie Deleted")
     response.delete_cookie('username')
@@ -266,7 +266,7 @@ Methods : .keys(), .values(), items(),
 
 ### Session Settings : settings.py
 
-```
+```python
 SESSION_ENGINE                   : Backend to use (e.g., database, file-based, cache).
 SESSION_COOKIE_NAME              : Name of the session cookie.
 SESSION_COOKIE_AGE               : Expiry age of the session cookie (default: 1209600 seconds or 2 weeks).
@@ -278,7 +278,7 @@ SESSION_SAVE_EVERY_REQUEST       : Boolean; if True, the session is saved to the
 
 ### Common Session Methods : *request.session.*
 
-```
+```python
 ['key']                   : Set a session value.
 get('key', default=None)  : Get a session value with an optional default.
 pop('key', default=None)  : Remove a session key and return its value.
@@ -506,7 +506,7 @@ django.views.generic import Generic-Base, Edit, Details, List, Dates
 <h6> def get_object(self, queryset = None): # to ensure that the profile you're updating belongs to the currently logged-in user </h6>
 
 
-```
+```python
 class UpdateProfileView(UpdateView):
     template_name = 'profile/profile_setting.html'
     model = Profile
@@ -632,7 +632,7 @@ pip install psycopg2
 
 **<h6> setting.py</h6>**
 
-``` 
+```python
 import dj_database_url 
 import environ
 
@@ -681,7 +681,7 @@ EMAIL_HOST_PASSWORD=xdsblb-jdnr-wxqaeh #next
 <h6>Your current payment view is not returning an HTTP response, which will cause an error. You need to redirect the user to the SSLCommerz payment gateway URL instead of just returning it as plain text.</h6>
 <h6>views.py</h6>
 
-```
+```python
 from django.http import HttpResponse ,JsonResponse
 from django.shortcuts import redirect, render
 from rest_framework.response import Response
@@ -771,7 +771,7 @@ def success_view(request, user_id):
 <h5> Payment system with JavaScript</h5>
 <h6>views.py</h6>
 
-```
+```python
 @csrf_exempt
 def payment(request,user_id,course_id):
     if request.method != "POST":
@@ -1262,6 +1262,13 @@ class CustomAdminTokenCheckMixin:
             return False
 ```
 
+- `request.GET` → Query parameters (from ?param=value) → type: QueryDict
+- `request.POST` → Form data (from POST body) → type: QueryDict
+- `request.FILES` → Uploaded files
+- `request.COOKIES` → Cookies dict
+- `request.META` → All headers + environment info (User-Agent, IP, etc.)
+- `request.body` → Raw body of request (bytes)
+- `request.user `→ Current logged-in user (if using auth middleware)
 
 ##### checking request dic what has?
 ```python 
