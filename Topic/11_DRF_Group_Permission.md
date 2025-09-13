@@ -89,13 +89,16 @@ DRF এর permission system নির্ধারণ করে কোন user �
  
 
 DRF automatically map করে HTTP methods → **`DjangoModelPermissions`**:
+
 <h6>
+    
 | HTTP Method | Required Permission |
 | ----------- | ------------------- |
 | GET         | `view_<model>`      |
 | POST        | `add_<model>`       |
 | PUT/PATCH   | `change_<model>`    |
 | DELETE      | `delete_<model>`    |
+
 </h6>
 
 উদাহরণ: 
@@ -258,70 +261,7 @@ REST_FRAMEWORK = {
 }
 
 ```
-
-models.py
-```py
-from django.contrib.auth.models import AbstractUser
-from django.db import models
-from rest_framework.permissions import AllowAny, IsAuthenticated
-
-
-class CustomUser(AbstractUser):
-    bio = models.TextField(blank=True, null=True)
-
-
-# Example Product Model
-class Product(models.Model):
-    name = models.CharField(max_length=200)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    stock = models.PositiveIntegerField() 
-
-    def __str__(self):
-        return self.name
-```
-
-
-serializers.py
-
-```py
-from rest_framework import serializers
-from .models import Product
-
-class ProductSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Product
-        fields = "__all__"
-```
-
-views.py
-```py
-from django.shortcuts import render
-from rest_framework import viewsets
-# Create your views here.
-from .models import Product
-from .serializers import ProductSerializer  
-
-
-class ProductViewSet(viewsets.ModelViewSet):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer 
-```
-
-urls.py
-```py
-from django.urls import path,include
-
-from rest_framework.routers import DefaultRouter
-from .views import ProductViewSet
-
-router = DefaultRouter()
-router.register("products", ProductViewSet)
-
-urlpatterns = [
-    path("", include(router.urls)),
-]
-```
-
+  
 signals.py
 ```py
 from django.db.models.signals import post_migrate
@@ -331,9 +271,10 @@ from django.apps import apps
 
 @receiver(post_migrate)
 def create_user_groups(sender, **kwargs):
-    if sender.name != "people":  # শুধু এই app এর জন্য কাজ করবে
+    if sender.name != "accounts":  # শুধু accounts migrate হলে চালু হবে
         return
-
+    
+       # products app-এ Product Model
     Product = apps.get_model("people", "Product")
 
     # Groups create
@@ -341,25 +282,29 @@ def create_user_groups(sender, **kwargs):
     editor_group, _ = Group.objects.get_or_create(name="Editor")
     viewer_group, _ = Group.objects.get_or_create(name="Viewer")
 
-    # Permissions filter
-    perms = Permission.objects.filter(content_type__app_label="people", content_type__model="product")
-
+    # যেসব model এর permission দিতে চান
+    target_models = ["product", "category", "cart", "cartitem", "order"]
+ 
     # Manager → সব পারমিশন
-    manager_group.permissions.set(perms)
+    manager_perms = Permission.objects.filter(content_type__model__in=target_models)
+    manager_group.permissions.set(manager_perms)
 
     # Editor → শুধু change এবং view পারমিশন
-    editor_group.permissions.set(perms.filter(codename__in=["change_product", "view_product"]))
+    editor_permission = [ "change_product", "view_product",  "change_category", "view_category","change_cart", "view_cart", "change_cartitem", "view_cartitem", "change_order", "view_order",]
+    editor_perms = Permission.objects.filter( content_type__model__in=target_models, codename__in=editor_permission,)
+    editor_group.permissions.set(editor_perms)
 
     # Viewer → শুধু view পারমিশন
-    viewer_group.permissions.set(perms.filter(codename__in=["view_product"]))
+    viewer_permission = [  "view_product", "view_category", "view_cart", "view_cartitem", "view_order",]
+    viewer_perms = Permission.objects.filter( content_type__model__in=target_models, codename__in=viewer_permission,)
+    viewer_group.permissions.set(viewer_perms) 
 ```
 
 
 
 
 explanation:
-
-
+ 
 ###  1️⃣ Signal & Receiver
 - `post_migrate`→ মাইগ্রেশন শেষ হলে trigger হবে।
 - `@receiver(post_migrate)` → এই ফাংশন run হবে মাইগ্রেশন শেষে।
