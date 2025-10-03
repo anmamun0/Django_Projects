@@ -1,5 +1,6 @@
 # Django models py Notes
 
+
 Model.py
 - [Django Models Fields](#django-models-fields) 
 - [Meta Class](#django-model-meta-class) 
@@ -9,7 +10,8 @@ Model.py
 
 Others File 
 - [Model Query the Database](#querying-the-database)
- 
+- [Django Model _meta & Field Attributes and Methods](#django-model-_meta-field-attributes-and-methods)
+
 <br>
 <br>
 
@@ -61,7 +63,7 @@ class Book(models.Model):
 
 
 # Django Model Meta Class
-[up](#django-models-py-notes)
+[Home](#django-models-py-notes)
 
 ## Overview
 The `Meta` class in Django models provides metadata about the model, such as how it behaves in the database, how it appears in the admin panel, and other configuration options.
@@ -186,7 +188,7 @@ class Books(models.Model):
 
 
 # All Methods in model
-[up](#django-models-py-notes)
+[Home](#django-models-py-notes)
 
 | Method                  | বাংলা ব্যাখ্যা                    |
 | ----------------------- | --------------------------------- |
@@ -274,7 +276,7 @@ class Product(models.Model):
 <br>
 
 # Abstract Models
-[up](#django-models-py-notes)
+[Home](#django-models-py-notes)
 
 - The `abstract = True` attribute in the `Meta` class makes a model abstract.
 - Abstract models act as base classes that other models can inherit from but do not create database tables themselves.
@@ -320,7 +322,7 @@ class Product(models.Model):
 
 
 # Querying the Database
-[up](#django-models-py-notes)
+[Home](#django-models-py-notes)
 
 ### Creating an Object
 ```python
@@ -379,3 +381,324 @@ class Profile(models.Model):
 <br>
 <br>
 <br>
+
+
+ 
+ 
+# Django Model _meta Field Attributes and Methods
+[Home](#django-models-py-notes)
+
+- [Model _meta Attributes and Methods](#model-_meta-attributes-and-methods)
+- [meta.get_fields() Field Attributes and Methods](#field-attributes-and-methods)
+- [Django Model _meta Summary ](#django-model-_meta-summary)
+
+---
+<br>
+<br>
+<br>
+
+
+# Model _meta Attributes and Methods
+[Up](#django-model-_meta-field-attributes-and-methods)
+
+<br>
+
+`blog = Blog.objects.all().first()`
+<h6>
+
+| Attribute / Method      | কাজ (বাংলায়)                     | Example                                     |
+| ----------------------- | -------------------------------- | ------------------------------------------- |
+| **app_label**           | কোন app এর model সেটা বলে        | `blog._meta.app_label  # 'blog'`            |
+| **model_name**          | model এর নাম lowercase এ         | `blog._meta.model_name  # 'blog'`           |
+| **object_name**         | class নাম                        | `blog._meta.object_name  # 'Blog'`          |
+| **db_table**            | database এ table এর নাম          | `blog._meta.db_table`                       |
+| **verbose_name**        | singular human-readable নাম      | `blog._meta.verbose_name  # 'blog'`         |
+| **verbose_name_plural** | plural নাম                       | `blog._meta.verbose_name_plural  # 'blogs'` |
+| **label**               | Full label (app_label.ModelName) | `blog._meta.label  # 'blog.Blog'`           |
+| **pk**                  | Primary key field object         | `blog._meta.pk`                             |
+| **fields**              | সব field list (basic)            | `blog._meta.fields`                         |
+| **get_fields()**        | সব field + relation field সহ     | `blog._meta.get_fields()`                   |
+| **concrete_fields**     | শুধু direct field                |                                             |
+| **local_fields**        | শুধুমাত্র model-এর ফিল্ড         |                                             |
+| **many_to_many**        | সব many-to-many ফিল্ড            |                                             |
+| **ordering**            | default ordering                 | `Blog._meta.ordering`                       |
+| **unique_together**     | কোন field গুলো unique একসাথে     |                                             |
+| **indexes**             | database indexes                 |                                             |
+| **constraints**         | database constraints             |                                             |
+| **db_tablespace**       | Tablespace নাম                   |                                             |
+ 
+</h6>
+
+```py
+ সবচেয়ে ব্যবহৃত Meta Attributes 
+
+blog = Blog.object.all().first()
+pythonBlog._meta.get_fields()        # সব fields
+blog._meta.get_field('title')  # নির্দিষ্ট field
+blog._meta.fields              # local fields
+blog._meta.model_name          # model নাম
+blog._meta.app_label           # app নাম
+blog._meta.db_table            # table নাম
+blog._meta.verbose_name        # display নাম
+blog._meta.pk                  # primary key field
+ 
+blog._meta.many_to_many        # M2M fields
+blog._meta.ordering            # default order
+blog._meta.indexes             # indexes
+blog._meta.constraints         # constraints
+blog._meta.permissions         # custom permissions
+blog._meta.default_manager     # default manager
+ 
+blog._meta.abstract            # abstract model check
+blog._meta.proxy               # proxy model check
+blog._meta.managed             # Django manages table
+blog._meta.db_tablespace       # tablespace
+blog._meta.parents             # parent models
+```
+ 
+<br>
+
+```py
+blog = Blog.objects.all().first()
+
+blog._meta.get_fields()       # সব fields সহ (ForeignKey, ManyToMany ইত্যাদি)
+# [<Field: Blog.id>, <Field: Blog.title>, <Field: Blog.content>, <Field: Blog.image>, <ManyToManyField: Blog.likes>, <ManyToOneRel: Comment.blog>, ...]
+
+blog._meta.get_field('title') # নির্দিষ্ট field object
+# <django.db.models.fields.CharField: title>
+
+blog._meta.fields             # শুধুমাত্র local fields (direct fields, relation ছাড়া)
+# [<Field: Blog.id>, <Field: Blog.title>, <Field: Blog.content>, <Field: Blog.image>]
+
+blog._meta.model_name         # model নাম
+# 'blog'
+
+blog._meta.app_label          # app নাম
+# 'blog'
+
+blog._meta.db_table           # database table নাম
+# 'blog_blog'
+
+blog._meta.verbose_name       # human-readable singular নাম
+# 'blog'
+
+blog._meta.pk                 # primary key field
+# <django.db.models.fields.AutoField: id>
+
+blog._meta.many_to_many       # সব Many-to-Many fields
+# [<ManyToManyField: Blog.likes>]
+
+blog._meta.ordering           # default ordering (model Meta class এ defined)
+# []
+
+blog._meta.indexes            # সব indexes
+# []
+
+blog._meta.constraints        # সব constraints
+# []
+
+blog._meta.permissions        # custom permissions
+# []
+
+blog._meta.default_manager    # default manager
+# <django.db.models.manager.Manager object at 0x000001234ABCD>
+
+blog._meta.abstract           # abstract model কিনা
+# False
+
+blog._meta.proxy              # proxy model কিনা
+# False
+
+blog._meta.managed            # Django এই table manage করছে কিনা
+# True
+
+blog._meta.db_tablespace      # কোন DB tablespace ব্যবহার হচ্ছে
+# ''
+
+blog._meta.parents            # parent models (in case of model inheritance)
+# {} (empty হলে no parent)
+
+```
+
+
+---
+<br>
+<br>
+<br>
+
+
+ 
+#  Field Attributes and Methods
+[Up](#django-model-_meta-field-attributes-and-methods)
+
+`blog = Blog.objects.all().first()`
+`field = blog.meta.get_fields()[0]` 
+
+<h6>
+
+| Attribute / Method      | কাজ (বাংলায়)                           | Example                                    |
+| ----------------------- | -------------------------------------- | ------------------------------------------ |
+| **name**                | ফিল্ডের নাম                            | `field.name`                               |
+| **verbose_name**        | human readable নাম                     | `field.verbose_name`                       |
+| **get_internal_type()** | field এর ধরন                           | `field.get_internal_type()  # 'CharField'` |
+| **null**                | DB তে null allow করবে কিনা             | `field.null`                               |
+| **blank**               | form এ ফাঁকা রাখা যাবে কিনা            | `field.blank`                              |
+| **default**             | default মান                            | `field.default`                            |
+| **choices**             | select/dropdown option এর জন্য choices | `field.choices`                            |
+| **max_length**          | max length (CharField/TextField)       | `field.max_length`                         |
+| **primary_key**         | primary key কিনা                       | `field.primary_key`                        |
+| **unique**              | unique constraint আছে কিনা             | `field.unique`                             |
+| **is_relation**         | relation field কিনা                    | `field.is_relation`                        |
+| **related_model**       | কোন model এর সাথে relation             | `field.related_model`                      |
+| **editable**            | admin বা form এ editable কিনা          | `field.editable`                           |
+| **help_text**           | ফিল্ডের জন্য extra description         | `field.help_text`                          |
+| **auto_created**        | auto তৈরি field কিনা (e.g. M2M)        |                                            |
+| **db_index**            | database index আছে কিনা                | `field.db_index`                           |
+| **db_column**           | database এ column নাম                  | `field.db_column`                          |
+| **attname**             | attribute name (ORM এ)                 | `field.attname`                            |
+ 
+</h6>
+
+```py
+    blogs = Blog.objects.all().order_by('-created_at')
+    blog = Blog.objects.all().first()
+    # Model এর meta তথ্য
+    meta = blog._meta
+
+    print("Model Name:", meta.model_name)
+    print("App Label:", meta.app_label)
+    print("DB Table:", meta.db_table)
+    print("Object Name:", meta.object_name)
+    print("Verbose Name:", meta.verbose_name)
+    print("Verbose Name Plural:", meta.verbose_name_plural)
+    print("Label:", meta.label)
+    print("Label Lower:", meta.label_lower)
+
+    print("\nAll Fields:")
+    for field in meta.get_fields():
+        print(f"  {field.name} ({field.get_internal_type()})")
+    
+    print("\nAll Fields with details:--------------------------\n")
+    for field in meta.get_fields():
+        print(f"\nField Name: {field.name}")
+        print(f"  Type: {field.get_internal_type()} (এই ফিল্ডের ধরন)")
+        print(f"  Column: {getattr(field, 'column', None)} (DB column নাম)")
+        print(f"  Verbose Name: {field.verbose_name} (Admin panel এ ব্যবহার হয়)")
+        print(f"  Help Text: {field.help_text} (User কে বোঝানোর জন্য)")
+        print(f"  Primary Key: {field.primary_key} (এইটা কি primary key?)")
+        print(f"  Null: {field.null} (DB তে NULL allow?)")
+        print(f"  Blank: {field.blank} (Form এ ফাকা allow?)")
+        print(f"  Default: {field.default} (User কিছু না দিলে default মান)")
+        print(f"  Unique: {field.unique} (মান unique হতে হবে?)")
+        print(f"  Choices: {field.choices} (নির্দিষ্ট option লিস্ট)")
+        print(f"  Is Relation: {field.is_relation} (Relation field?)")
+        print(f"  Related Model: {field.related_model} (যদি relation থাকে)")
+    print("\n --------------------------\n") 
+```
+
+---
+<br>
+<br>
+<br>
+<br>
+<br>
+ 
+# Django Model _meta Summary 
+[Up](#django-model-_meta-field-attributes-and-methods)
+
+1. Field সংক্রান্ত
+<h6> 
+ 
+| Attribute / Method        | Returns                                | Use Case                                      |
+| ------------------------- | -------------------------------------- | --------------------------------------------- |
+| `get_fields()`            | সব fields (Local + Relation + Reverse) | Field inspection                              |
+| `get_field('field_name')` | নির্দিষ্ট field object                 | Field details (type, max_length, null, blank) |
+| `fields`                  | Local fields (direct DB columns)       | Basic field list                              |
+| `local_fields`            | Directly defined fields                | Similar to fields                             |
+| `concrete_fields`         | DB column fields (ManyToMany বাদ)      | Column inspection                             |
+| `many_to_many`            | ManyToMany fields                      | Relationship check                            |
+| `related_objects`         | Reverse relations                      | Other models pointing to this model           |
+| `private_fields`          | Internal/private fields                | Rarely used                                   |
+
+</h6>
+
+2. Model Info
+<h6> 
+ 
+| Attribute             | Returns                    | Use Case                       |
+| --------------------- | -------------------------- | ------------------------------ |
+| `model_name`          | Model নাম lowercase        | Dynamic queries, introspection |
+| `object_name`         | Model class নাম            | Code reference                 |
+| `verbose_name`        | Human-readable singular    | UI, admin labels               |
+| `verbose_name_plural` | Human-readable plural      | UI, admin labels               |
+| `label`               | Full label `app.ModelName` | Identification                 |
+| `label_lower`         | Lowercase full label       | Identification                 |
+| `app_label`           | App name                   | App identification             |
+| `app_config`          | AppConfig object           | App metadata                   |
+| `db_table`            | Table name                 | Raw SQL queries                |
+
+</h6>
+ 
+3. Model Configuration
+<h6> 
+ 
+| Attribute              | Returns                       | Use Case                          |
+| ---------------------- | ----------------------------- | --------------------------------- |
+| `ordering`             | Default ordering              | Query ordering                    |
+| `get_latest_by`        | Field name for `latest()`     | Latest object query               |
+| `unique_together`      | Unique field combinations     | Constraint validation             |
+| `indexes`              | List of indexes               | DB optimization                   |
+| `constraints`          | List of constraints           | Validation, DB integrity          |
+| `permissions`          | Custom permissions            | Admin / custom roles              |
+| `default_permissions`  | Default permissions           | 'add', 'change', 'delete', 'view' |
+| `default_related_name` | Reverse relation default name | Related field naming              |
+
+</h6>
+
+4. Primary Key & Manager
+   
+<h6> 
+ 
+| Attribute         | Returns                    | Use Case               |
+| ----------------- | -------------------------- | ---------------------- |
+| `pk`              | Primary key field object   | Key info               |
+| `auto_field`      | Auto increment field       | PK / AutoField check   |
+| `default_manager` | Default manager object     | `objects` access       |
+| `base_manager`    | Base manager               | Related lookups        |
+| `managers`        | List of managers           | Custom managers        |
+| `managers_map`    | Dict name → Manager object | Lookup manager by name |
+
+</h6>
+
+5. Model Structure
+<h6> 
+ 
+| Attribute                  | Returns                | Use Case                    |
+| -------------------------- | ---------------------- | --------------------------- |
+| `abstract`                 | Boolean                | Abstract model check        |
+| `proxy`                    | Boolean                | Proxy model check           |
+| `swapped`                  | Model swapped name     | Replacement check           |
+| `managed`                  | Boolean                | Django DB migration control |
+| `proxy_for_model`          | Original model         | Proxy reference             |
+| `parents`                  | Parent models dict     | Inheritance check           |
+| `get_parent_list()`        | List of parent models  | Inheritance chain           |
+| `get_ancestor_link(model)` | Link field to ancestor | Parent relationship         |
+
+</h6>
+
+
+6. Database & Schema
+<h6> 
+ 
+| Attribute                 | Returns                        | Use Case            |
+| ------------------------- | ------------------------------ | ------------------- |
+| `db_tablespace`           | DB tablespace name             | DB optimization     |
+| `required_db_features`    | Required DB features           | Compatibility check |
+| `required_db_vendor`      | DB vendor requirement          | Compatibility check |
+| `db_returning`            | RETURNING support (PostgreSQL) | DB query support    |
+| `can_migrate(connection)` | Boolean                        | Migration check     |
+
+</h6>
+ 
+
+
