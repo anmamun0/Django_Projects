@@ -8,18 +8,17 @@
 
 [View.py File Form Explanation](#View-py-File-Form-Explanation)
   
-- [-Form inside Parameters form = ContactForm(parametters)](#Form-inside-Parameters)
-- [Useful Form APIs Methods ](#-useful-forma-apis-methods) <br>
+- [Form inside Parameters form = ContactForm(parametters)](#Form-inside-Parameters)
+- [Useful Form APIs Methods ](#useful-forma-apis-methods) <br>
 - [Validation Methods is_valid(), cleaned_data ](#2-Validation-Methods) 
 
+[Template File Form usecase](#template-rendering) 
 
 
 # From.py File Form Explanation  
 # ModelForm Methods (Meta class-এর বাইরে)
 
-
 <h6>
-
 
 | Method                            | Purpose / Comment                                                |
 | --------------------------------- | ---------------------------------------------------------------- |
@@ -285,14 +284,14 @@ class ContactForm(forms.Form):
 <br>
 <br>
 
-## View.py File Form Explanation
+## View py File Form Explanation
+
 [Home](#form-explanation)
 
 <h6>
 
 - [Form inside Parameters form = ContactForm(parametters)](#Form-inside-Parameters)
-- [Useful Form APIs Methods ](#-useful-forma-apis-methods) <br>
-- [Validation Methods is_valid(), cleaned_data ](#2-Validation-Methods) 
+- [Useful Form APIs Methods ](#useful-forma-apis-methods) <br> 
 
 </h6>
 
@@ -356,7 +355,7 @@ form = ContactForm(
 
 ## Useful Form APIs Methods
 [up](#view-py-file-form-explanation)
-
+ 
 ```py
 def contact_view(request):
     if request.method == "POST":
@@ -364,21 +363,20 @@ def contact_view(request):
         if form.is_valid():
             # cleaned data
             name = form.cleaned_data['name']
-            email = form.cleaned_data['email']
-            message = form.cleaned_data['message']
+            email = form.cleaned_data['email'] 
 ```
 
-1. Rendering Helpers [like](#-1-rendering-helpers) → `as_p()`, `as_table()`, `as_ul()`, `visible_fields()`, `hidden_fields()`
-2. Field-level [like](#-1-rendering-helpers) →`fields` , `visible_fields()` , `hidden_fields()`  , `__getitem__(field_name)`, `__iter__()`
-3. State [like](#-1-rendering-helpers) →  `is_bound`, `has_changed()`, `changed_data`
-4. Validation Methods [like](#-2-validation-methods) → `is_valid()`,`save()`, `full_clean()`, `errors`, `add_error()`, `cleaned_data`, errors
-5. Override Field Error  [like](#-1-rendering-helpers) → `clean_<field>()` ,`clean()`, 
-6. Template Rendering  [like](#template-rendering) →  , 
+1. Rendering Helpers [like](#1-rendering-helpers) → `as_p()`, `as_table()`, `as_ul()`, `visible_fields()`, `hidden_fields()`
+2. Field-level Access [like](#1-field-access-in-django-forms) →`fields` , `visible_fields()` , `hidden_fields()`  , `__getitem__(field_name)`, `__iter__()`
+3. State [like](##3-validation-methods) →  `is_bound`, `has_changed()`, `changed_data`
+4. Validation Methods [like](#3-validation-methods) → `is_valid()`,`save()`, `full_clean()`, `errors`, `add_error()`, `cleaned_data`, errors
+5. Override Field Error  [like](#5-override-field-error) → `clean_<field>()` ,`clean()`, 
+
 
 
  
 ### 1. Rendering Helpers
-[up](#view-py-file-form-explanation)
+[Up](#useful-form-apis-methods)
 
 
 <h6>
@@ -411,7 +409,7 @@ print(form.as_ul())
 
 
 # 2. Field Access in Django Forms
-[up](#view-py-file-form-explanation)
+[Up](#useful-form-apis-methods)
 
 <h6>
 
@@ -496,7 +494,7 @@ for field in form:
 
 
 # 3. Validation Methods 
-[up](#view-py-file-form-explanation)
+[Up](#useful-form-apis-methods)
 
 <h6>
 
@@ -673,11 +671,11 @@ form.media  # CSS and JS files needed by widgets
  <br>
  <br>
 
-
-
+ 
 
 # 5. Override Field Error
-[up](#view-py-file-form-explanation)
+[Up](#useful-form-apis-methods)
+
 <br>
 
 **clean_<field>()**
@@ -730,15 +728,18 @@ class BlogForm(forms.ModelForm):
 - Error form.non_field_errors() এ যাবে।
 
 ---
-<br>
-<br>
-<br>
-<br>
-<br>
 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
  
-# Template Rendering
-[up](#view-py-file-form-explanation)
+6. Template Rendering 
+[Up](#useful-form-apis-methods)
 <br>
 
 ```html

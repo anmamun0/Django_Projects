@@ -3,17 +3,22 @@
 **Model Topic summary Quick-Link**
   
 <h6>
-    
-- [Introduction to Django Models](#-introduction-to-django-models) | 
-- [All Operations in Meta Class](#-all-operations-in-meta-class) | 
-- [Abstract Models](#-abstract-models) | 
-- [Custom methods can be defined](#-custom-methods-can-be-defined) | 
-- [Model Custom Validation](#-model-custom-validation)
+Model.py
+  
+- [Django Models Fields](#django-models-fields) 
+- [Meta Class](#django-model-meta-class) 
+- [All Methods in model](#all-methods-in-model)
+- [Abstract Models](#abstract-models)
+
+
+Others File
+
+-[Model Query the Database](#querying-the-database)
 
 </h6>
 
 
-## Introduction to Django Models
+## Django Models Fields
 - In Django, models are used to define the structure of the database.
 - A model is a Python class that subclasses `django.db.models.Model`.
 - Each model corresponds to a table in the database.
@@ -49,6 +54,15 @@ class Book(models.Model):
 - `ManyToManyField(Model)` → Defines a many-to-many relationship.
 - `OneToOneField(Model, on_delete=models.CASCADE)` → Defines a one-to-one relationship.
 
+---
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
 # Django Model Meta Class
 
 ## Overview
@@ -56,7 +70,7 @@ The `Meta` class in Django models provides metadata about the model, such as how
 
 ---
 
-## All Operations in Meta Class
+## All Attribute in Meta Class
 
 <h6> 
 
@@ -116,171 +130,64 @@ class Books(models.Model):
     def __str__(self):
         return f"{self.isbn} - {self.title}"
 ```
-
----
-
-## Explanation of Common `Meta` Options
-
-### **1. `verbose_name` and `verbose_name_plural`**
-- `verbose_name = "Book"` → Changes the model’s name in the Django admin.
-- `verbose_name_plural = "Books"` → Changes the plural name.
-
-### **2. `db_table`**
-- `db_table = "library_books"` → Defines a custom table name instead of the default (`appname_books`).
-
-### **3. `ordering`**
-- `ordering = ['title']` → Orders query results alphabetically by `title`.
-- `ordering = ['-created_at']` → Orders by newest first.
-
-### **4. `unique_together`**
-- `unique_together = ('title', 'author')` → Ensures that the same book title cannot have the same author.
-
-### **5. `indexes`**
-- `models.Index(fields=['isbn'])` → Optimizes search queries for `isbn`.
-
-### **6. `permissions`**
-- Custom permission: `"can_mark_returned"` → Can be assigned to specific users.
-
-### **7. `default_permissions`**
-- Controls default permissions: `('add', 'change', 'delete', 'view')`.
-
-### **8. `get_latest_by`**
-- `get_latest_by = "created_at"` → Allows fetching the latest book using `latest()`.
-
-### **9. `managed`**
-- `managed = False` → Prevents Django from managing this table (useful for legacy databases).
-
-### **10. `default_related_name`**
-- `default_related_name = "books_related"` → Default related name for reverse lookups.
-
----
-
-## When to Use These Options?
-
-| **Use Case**                        | **Meta Options to Use** |
-|-------------------------------------|--------------------|
-| **Change admin model name**        | `verbose_name`, `verbose_name_plural` |
-| **Customize database table name**   | `db_table` |
-| **Enforce unique combinations**     | `unique_together` |
-| **Optimize database performance**   | `indexes` |
-| **Set permissions**                 | `permissions`, `default_permissions` |
-| **Change default ordering**         | `ordering` |
-| **Prevent Django from managing DB table** | `managed = False` |
-| **Proxy models (no new table)**     | `proxy = True` |
-| **Define app name explicitly**      | `app_label` |
-
----
  
 
-## Meta Class in Models
-- The `Meta` class defines additional options for models.
-```python
-class Book(models.Model):
-    title = models.CharField(max_length=255)
-    author = models.CharField(max_length=100)
-    
-    class Meta:
-        ordering = ['title']   # Default ordering by book title
-        verbose_name = "Book"   # Custom name for the model in Django Admin
-        verbose_name_plural = "Books"  # Custom plural name in Admin
-        db_table = "library_books"  # Custom table name in the database
-```
+### Explanation of Common `Meta` Options
 
-### Abstract Models
-- The `abstract = True` attribute in the `Meta` class makes a model abstract.
-- Abstract models act as base classes that other models can inherit from but do not create database tables themselves.
-```python
-class BaseModel(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    
-    class Meta:
-        abstract = True
+**1. `verbose_name` and `verbose_name_plural`**
+- `verbose_name = "Book"` → Changes the model’s name in the Django admin.
+- `verbose_name_plural = "Books"` → Changes the plural name.
+<br>
 
-class Product(BaseModel):
-    name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-```
-- Here, `Product` inherits from `BaseModel` and automatically gets `created_at` and `updated_at` fields without creating a separate `BaseModel` table.
+**2. `db_table`**
+- `db_table = "library_books"` → Defines a custom table name instead of the default (`appname_books`).
+<br>
 
-## Model Methods
-- Custom methods can be defined within a model.
-```python
-class Product(models.Model):
-    name = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
-    discount = models.FloatField(default=0.0)
-    
-    def discounted_price(self):
-        return self.price - (self.price * self.discount / 100)
-```
+**3. `ordering`**
+- `ordering = ['title']` → Orders query results alphabetically by `title`.
+- `ordering = ['-created_at']` → Orders by newest first.
+<br>
 
-## Creating and Applying Migrations
-1. Run `python manage.py makemigrations` → Creates migration files.
-2. Run `python manage.py migrate` → Applies migrations to the database.
+**4. `unique_together`**
+- `unique_together = ('title', 'author')` → Ensures that the same book title cannot have the same author.
+<br>
 
-## Querying the Database
-### Creating an Object
-```python
-book = Book.objects.create(title="Django Guide", author="AN Mamun", published_date="2023-01-01", price=19.99)
-```
-### Retrieving Objects
-```python
-books = Book.objects.all()  # Get all books
-book = Book.objects.get(id=1)  # Get a specific book
-books = Book.objects.filter(author="AN Mamun")  # Filter books
-```
-### Updating Objects
-```python
-book = Book.objects.get(id=1)
-book.price = 24.99
-book.save()
-```
-### Deleting Objects
-```python
-book = Book.objects.get(id=1)
-book.delete()
-```
+**5. `indexes`**
+- `models.Index(fields=['isbn'])` → Optimizes search queries for `isbn`.
+<br>
 
-## Model Relationships
-### ForeignKey Example (Many-to-One)
-```python
-class Author(models.Model):
-    name = models.CharField(max_length=100)
+**6. `permissions`**
+- Custom permission: `"can_mark_returned"` → Can be assigned to specific users.
+<br>
 
-class Book(models.Model):
-    title = models.CharField(max_length=255)
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-```
+**7. `default_permissions`**
+- Controls default permissions: `('add', 'change', 'delete', 'view')`.
+<br>
 
-### ManyToManyField Example
-```python
-class Student(models.Model):
-    name = models.CharField(max_length=100)
+**8. `get_latest_by`**
+- `get_latest_by = "created_at"` → Allows fetching the latest book using `latest()`.
+<br>
 
-class Course(models.Model):
-    name = models.CharField(max_length=100)
-    students = models.ManyToManyField(Student)
-```
+**9. `managed`**
+- `managed = False` → Prevents Django from managing this table (useful for legacy databases).
+<br>
 
-### OneToOneField Example
-```python
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    bio = models.TextField()
-```
+**10. `default_related_name`**
+- `default_related_name = "books_related"` → Default related name for reverse lookups.
+<br>
 
-## Conclusion
-- `models.py` is the backbone of Django’s ORM system.
-- Models define database schema and relationships.
-- Querying, updating, and deleting records is simplified with Django’s ORM.
-- Migrations ensure the database schema remains in sync with models.
-- The `Meta` class allows setting model-specific configurations, including making a model abstract for inheritance.
 
+---
+<br>
+<br>
+<br>
+<br>
 <br>
 <br>
 
-## model.Model all Methods
+
+
+## All Methods in model
 
 | Method                  | বাংলা ব্যাখ্যা                    |
 | ----------------------- | --------------------------------- |
@@ -294,12 +201,7 @@ class Profile(models.Model):
 | `refresh_from_db()`     | ডাটাবেজ থেকে রিফ্রেশ করে          |
 | `get_deferred_fields()` | কোন ফিল্ড lazy-loaded তা বলে দেয়  |
 
-<br>
-<br>
-<br>
-<br>
-
-## Model Custom Validation 
+ 
 
 ```python
 from django.db import models
@@ -363,3 +265,114 @@ class Product(models.Model):
         verbose_name = "Product"
         verbose_name_plural = "Products"
 ```
+
+---
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+### Abstract Models
+- The `abstract = True` attribute in the `Meta` class makes a model abstract.
+- Abstract models act as base classes that other models can inherit from but do not create database tables themselves.
+```python
+class BaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        abstract = True
+
+class Product(BaseModel):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+```
+- Here, `Product` inherits from `BaseModel` and automatically gets `created_at` and `updated_at` fields without creating a separate `BaseModel` table.
+
+## Model Methods
+- Custom methods can be defined within a model.
+```python
+class Product(models.Model):
+    name = models.CharField(max_length=255)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+    discount = models.FloatField(default=0.0)
+    
+    def discounted_price(self):
+        return self.price - (self.price * self.discount / 100)
+```
+
+## Creating and Applying Migrations
+1. Run `python manage.py makemigrations` → Creates migration files.
+2. Run `python manage.py migrate` → Applies migrations to the database.
+
+---
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
+
+
+## Querying the Database
+### Creating an Object
+```python
+book = Book.objects.create(title="Django Guide", author="AN Mamun", published_date="2023-01-01", price=19.99)
+```
+### Retrieving Objects
+```python
+books = Book.objects.all()  # Get all books
+book = Book.objects.get(id=1)  # Get a specific book
+books = Book.objects.filter(author="AN Mamun")  # Filter books
+```
+### Updating Objects
+```python
+book = Book.objects.get(id=1)
+book.price = 24.99
+book.save()
+```
+### Deleting Objects
+```python
+book = Book.objects.get(id=1)
+book.delete()
+```
+
+## Model Relationships
+### ForeignKey Example (Many-to-One)
+```python
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+
+class Book(models.Model):
+    title = models.CharField(max_length=255)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+```
+
+### ManyToManyField Example
+```python
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+
+class Course(models.Model):
+    name = models.CharField(max_length=100)
+    students = models.ManyToManyField(Student)
+```
+
+### OneToOneField Example
+```python
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    bio = models.TextField()
+```
+ 
+
+---
+<br>
+<br>
+<br>
+<br>
+<br>
