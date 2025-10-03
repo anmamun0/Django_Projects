@@ -13,7 +13,7 @@ Others File
 <br>
 <br>
 
-## Django Models Fields
+# Django Models Fields
 [up](#django-models-py-notes)
 
 - In Django, models are used to define the structure of the database.
@@ -185,7 +185,7 @@ class Books(models.Model):
 
 
 
-## All Methods in model
+# All Methods in model
 [up](#django-models-py-notes)
 
 | Method                  | বাংলা ব্যাখ্যা                    |
@@ -273,7 +273,7 @@ class Product(models.Model):
 <br>
 <br>
 
-### Abstract Models
+# Abstract Models
 [up](#django-models-py-notes)
 
 - The `abstract = True` attribute in the `Meta` class makes a model abstract.
@@ -319,7 +319,7 @@ class Product(models.Model):
 
 
 
-## Querying the Database
+# Querying the Database
 [up](#django-models-py-notes)
 
 ### Creating an Object
