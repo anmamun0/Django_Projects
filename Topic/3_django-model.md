@@ -699,6 +699,154 @@ blog._meta.parents            # parent models (in case of model inheritance)
 | `can_migrate(connection)` | Boolean                        | Migration check     |
 
 </h6>
- 
+
+Example
+```py
+from blog.models import Blog
+
+# =============================
+# Model Basic Info
+# =============================
+model_name = Blog._meta.model_name
+# Output: 'blog'
+
+object_name = Blog._meta.object_name
+# Output: 'Blog'
+
+verbose_name = Blog._meta.verbose_name
+# Output: 'blog'
+
+verbose_name_plural = Blog._meta.verbose_name_plural
+# Output: 'blogs'
+
+app_label = Blog._meta.app_label
+# Output: 'blog'
+
+db_table = Blog._meta.db_table
+# Output: 'blog_blog'
+
+label = Blog._meta.label
+# Output: 'blog.Blog'
+
+label_lower = Blog._meta.label_lower
+# Output: 'blog.blog'
+
+# =============================
+# Fields
+# =============================
+all_fields = Blog._meta.get_fields()
+# Output: [<Field: Blog.id>, <Field: Blog.title>, <Field: Blog.content>, <ManyToOneRel: Comment.blog>, ...]
+
+local_fields = Blog._meta.fields
+# Output: [<Field: Blog.id>, <Field: Blog.title>, <Field: Blog.content>, <Field: Blog.created_at>]
+
+m2m_fields = Blog._meta.many_to_many
+# Output: [<ManyToManyField: tags>]  # যদি থাকে
+
+related_objects = Blog._meta.related_objects
+# Output: [<ManyToOneRel: Comment.blog>]  # reverse relations
+
+# Accessing a single field
+title_field = Blog._meta.get_field('title')
+# Output: <django.db.models.fields.CharField: title>
+
+# Field attributes
+title_name = title_field.name
+# Output: 'title'
+
+title_type = title_field.get_internal_type()
+# Output: 'CharField'
+
+title_max_length = title_field.max_length
+# Output: 200
+
+title_null = title_field.null
+# Output: False
+
+title_blank = title_field.blank
+# Output: False
+
+# =============================
+# Primary Key
+# =============================
+pk_field = Blog._meta.pk
+# Output: <django.db.models.fields.AutoField: id>
+
+pk_name = pk_field.name
+# Output: 'id'
+
+pk_type = pk_field.get_internal_type()
+# Output: 'AutoField'
+
+# =============================
+# Ordering & Manager
+# =============================
+ordering = Blog._meta.ordering
+# Output: ['-created_at']
+
+default_manager = Blog._meta.default_manager
+# Output: <django.db.models.manager.Manager object at 0x...>
+
+all_managers = Blog._meta.managers
+# Output: [<Manager: objects>]
+
+managers_map = Blog._meta.managers_map
+# Output: {'objects': <Manager: objects>}
+
+# =============================
+# Model Structure Info
+# =============================
+is_abstract = Blog._meta.abstract
+# Output: False
+
+is_proxy = Blog._meta.proxy
+# Output: False
+
+is_managed = Blog._meta.managed
+# Output: True
+
+parents = Blog._meta.parents
+# Output: {}  # empty dict if no parent
+
+# =============================
+# Constraints & Permissions
+# =============================
+indexes = Blog._meta.indexes
+# Output: [<Index: fields=['title']>]
+
+constraints = Blog._meta.constraints
+# Output: [<UniqueConstraint: fields=('slug',), name='unique_slug'>]
+
+unique_together = Blog._meta.unique_together
+# Output: (('author', 'slug'),)
+
+default_permissions = Blog._meta.default_permissions
+# Output: ('add', 'change', 'delete', 'view')
+
+custom_permissions = Blog._meta.permissions
+# Output: [('can_publish', 'Can publish blog')]
+
+# =============================
+# Database & Schema
+# =============================
+tablespace = Blog._meta.db_tablespace
+# Output: ''
+
+required_db_features = Blog._meta.required_db_features
+# Output: []
+
+required_db_vendor = Blog._meta.required_db_vendor
+# Output: None
+
+db_returning = Blog._meta.db_returning
+# Output: True (PostgreSQL), False otherwise
+
+# =============================
+# Quick Field List
+# =============================
+field_names = [f.name for f in Blog._meta.get_fields()]
+# Output: ['id', 'title', 'content', 'created_at', 'tags', 'comments']
+
+```
 
 
