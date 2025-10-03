@@ -1,24 +1,21 @@
-# Django models.py Notes
+# Django models py Notes
 
-**Model Topic summary Quick-Link**
-  
-<h6>
 Model.py
-  
 - [Django Models Fields](#django-models-fields) 
 - [Meta Class](#django-model-meta-class) 
 - [All Methods in model](#all-methods-in-model)
 - [Abstract Models](#abstract-models)
 
 
-Others File
-
--[Model Query the Database](#querying-the-database)
-
-</h6>
-
+Others File 
+- [Model Query the Database](#querying-the-database)
+ 
+<br>
+<br>
 
 ## Django Models Fields
+[up](#django-models-py-notes)
+
 - In Django, models are used to define the structure of the database.
 - A model is a Python class that subclasses `django.db.models.Model`.
 - Each model corresponds to a table in the database.
@@ -64,6 +61,7 @@ class Book(models.Model):
 
 
 # Django Model Meta Class
+[up](#django-models-py-notes)
 
 ## Overview
 The `Meta` class in Django models provides metadata about the model, such as how it behaves in the database, how it appears in the admin panel, and other configuration options.
@@ -96,7 +94,7 @@ The `Meta` class in Django models provides metadata about the model, such as how
 
 ---
 
-## Example Usage in Django Model
+### Example Usage in Django Model
 
 ```python
 from django.db import models
@@ -188,6 +186,7 @@ class Books(models.Model):
 
 
 ## All Methods in model
+[up](#django-models-py-notes)
 
 | Method                  | বাংলা ব্যাখ্যা                    |
 | ----------------------- | --------------------------------- |
@@ -275,6 +274,8 @@ class Product(models.Model):
 <br>
 
 ### Abstract Models
+[up](#django-models-py-notes)
+
 - The `abstract = True` attribute in the `Meta` class makes a model abstract.
 - Abstract models act as base classes that other models can inherit from but do not create database tables themselves.
 ```python
@@ -319,6 +320,8 @@ class Product(models.Model):
 
 
 ## Querying the Database
+[up](#django-models-py-notes)
+
 ### Creating an Object
 ```python
 book = Book.objects.create(title="Django Guide", author="AN Mamun", published_date="2023-01-01", price=19.99)
