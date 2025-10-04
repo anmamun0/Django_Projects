@@ -1,21 +1,23 @@
-<img width="1312" height="385" alt="image" src="https://github.com/user-attachments/assets/6fe5a8d3-81b4-4fa3-b0f6-23d9a2f683e8" /># Advanced Django Models & ORM
+<img width="1312" height="385" alt="image" src="https://github.com/user-attachments/assets/6fe5a8d3-81b4-4fa3-b0f6-23d9a2f683e8" /> 
+
+# Advanced Django Models & ORM
 
 **Summary Table:**
-
-<h6>
  
 - [Model Relationships](#model-relationships)
 - [Migrations কি?](#migrations-কি)
 - [Advanced ORM Queries](#advanced-orm-queries)
+<br>
 
-- [Django ORM!](#django-orm!)
-</h6>
-
+- [Django Serise ORM ](#django-orm)
+  
 <br>
 <br>
 <br>
 
-## Model Relationships
+# Model Relationships
+[Home](#advanced-django-models--orm)
+
 Django তে ৩ ধরনের main relationships আছে:
 
 ### 1. One-to-Many (ForeignKey)
@@ -109,6 +111,7 @@ course.student_set.all()  # course এ enrolled সব students
 
 
 ## Migrations কি?
+[Home](#advanced-django-models--orm)
 
 - Migrations হলো Database changes track এবং apply করার system।
 - যখন আমরা নতুন model বা field add করি, database এ reflect করতে migration তৈরি করতে হয়।
@@ -176,6 +179,7 @@ python manage.py sqlmigrate myapp 0002
 
 
 ## Advanced ORM Queries
+[Home](#advanced-django-models--orm)
 
 ORM দিয়ে আমরা Python code দিয়ে database query করতে পারি, SQL লিখার দরকার নেই।
 
@@ -192,7 +196,7 @@ ORM দিয়ে আমরা Python code দিয়ে database query ক�
 from people.models import Student
 
 # ------------------------------
-# 1️⃣ Exact / Basic Matching
+# 1. Exact / Basic Matching
 # ------------------------------
 # name ঠিক "Rahim" এর সমান
 Student.objects.filter(name__exact="Rahim")       # Case-sensitive
@@ -201,7 +205,7 @@ Student.objects.filter(name__iexact="rahim")      # Case-insensitive
 # use case: যদি তুমি শুধু ঠিক মিলানো value খুঁজতে চাও
 
 # ------------------------------
-# 2️⃣ Comparison Operators
+# 2. Comparison Operators
 # ------------------------------
 Student.objects.filter(marks__gt=80)   # marks > 80
 Student.objects.filter(marks__gte=80)  # marks >= 80
@@ -211,7 +215,7 @@ Student.objects.filter(marks__lte=50)  # marks <= 50
 # use case: নির্দিষ্ট score বা range অনুযায়ী filter করা
 
 # ------------------------------
-# 3️⃣ Null / Boolean Checks
+# 3. Null / Boolean Checks
 # ------------------------------
 Student.objects.filter(age__isnull=True)       # age null
 Student.objects.filter(active__exact=True)     # active field True
@@ -219,7 +223,7 @@ Student.objects.filter(active__exact=True)     # active field True
 # use case: null value খুঁজা, boolean field check করা
 
 # ------------------------------
-# 4️⃣ String Lookups
+# 4. String Lookups
 # ------------------------------
 Student.objects.filter(name__contains="Rahim")       # "Rahim" substring আছে
 Student.objects.filter(name__icontains="rahim")      # case-insensitive
@@ -231,21 +235,21 @@ Student.objects.filter(name__iendswith="khan")       # case-insensitive
 # use case: search/filter text data, like search boxes
 
 # ------------------------------
-# 5️⃣ Choice / In List
+# 5. Choice / In List
 # ------------------------------
 Student.objects.filter(grade__in=["A", "B"])  # grade "A" বা "B"
 
 # use case: multiple option select
 
 # ------------------------------
-# 6️⃣ Range Lookup
+# 6. Range Lookup
 # ------------------------------
 Student.objects.filter(marks__range=(50, 80))  # 50 <= marks <= 80
 
 # use case: range এর মধ্যে value filter করা
 
 # ------------------------------
-# 7️⃣ Date / Time Lookups
+# 7. Date / Time Lookups
 # ------------------------------
 from datetime import date
 Student.objects.filter(joined__year=2025)         # joined date এর year 2025
@@ -258,14 +262,14 @@ Student.objects.filter(joined__lte=date.today())  # <= today
 # use case: date-based filtering, reports, analytics
 
 # ------------------------------
-# 8️⃣ Related Lookups (ForeignKey, OneToOne)
+# 8. Related Lookups (ForeignKey, OneToOne)
 # ------------------------------
 Student.objects.filter(teacher__name="Mr. Rahim") # Teacher নাম "Mr. Rahim"
 
 # use case: join like query, relational filtering
 
 # ------------------------------
-# 9️⃣ ManyToMany Lookups
+# 9. ManyToMany Lookups
 # ------------------------------
 Student.objects.filter(courses__name="Math")      # "Math" course এ enrolled
 Student.objects.filter(courses__name__icontains="math") # case-insensitive
@@ -273,7 +277,7 @@ Student.objects.filter(courses__name__icontains="math") # case-insensitive
 # use case: M2M relation এর filter
 
 # ------------------------------
-# 🔟 Custom / Advanced Lookups
+# 10. Custom / Advanced Lookups
 # ------------------------------
 Student.objects.filter(marks__gt=F('previous_marks') + 10)  # F() used for field reference
 Student.objects.annotate(total_marks=F('marks') + 5)         # annotation
@@ -282,7 +286,7 @@ Student.objects.annotate(total_marks=F('marks') + 5)         # annotation
 
 ```
  
-2.1 Lookups
+### 2.1 Lookups
 Django ORM অনেক ধরনের lookups support করে।
 ```py
 from people.models import Student
@@ -300,7 +304,7 @@ Student.objects.filter(name__icontains="rahim")
 Student.objects.filter(roll__exact=1)
 ```
 
-2.2 Aggregation
+### 2.2 Aggregation
 
 ORM দিয়ে data summary করতে পারি।
 ```py
@@ -316,7 +320,7 @@ Student.objects.aggregate(Max('marks'))
 Student.objects.aggregate(Sum('marks'))
 ```
 
-2.3 Annotation
+### 2.3 Annotation
 
 Annotation দিয়ে query এর result এ extra calculated field add করা যায়।
 ```py
@@ -329,7 +333,7 @@ Student.objects.annotate(new_marks=F('marks') + 5)
 Teacher.objects.annotate(student_count=Count('student'))
 ```
 
-2.4 Ordering & Limiting
+### 2.4 Ordering & Limiting
 ```py
 # Order by marks descending
 Student.objects.all().order_by('-marks')
@@ -422,24 +426,30 @@ students = Student.objects.filter(
 <br>
 <br>
 <br>
+<br>
+<br>
+<br>
+<br>
 
-# Django ORM! 
+   
+# Django ORM
+[Home](#advanced-django-models--orm)
 
 ### ORM Summary 
 
-- `CRUD Operations`[Go](#crud-operations) →   Create → নতুন record তৈরি করা।Read → data পড়া, filter করা।Update → data modify করা।Delete → data remove করা।
-- `Lookups & Filters`[Go](#lookups-&-filters) → Filter দিয়ে specific data বের করা যায়।
-- `Indexing in PostgreSQL`[Go](#indexing-in-postgresql) → Index হল DB performance বাড়ানোর জন্য structure।
-- `Aggregate`[Go](#aggregate) → Aggregate দিয়ে summary বা grouped calculation করা যায়।
-- `Annotate`[Go](#annotate) → Annotate দিয়ে queryset এর individual object এ extra calculation attach করা যায়।
-- `Ordering & Limiting`[Go](#ordering-&-limiting) → Sorting এবং pagination করা সহজ।
-- `Expression`[Go](#expression) → Expression দিয়ে dynamic field calculation, F( ) এবং functions ব্যবহার করা হয়।
-- `Complex Query`[Go](#complex-query) →  Q objects দিয়ে OR / AND / NOT logic তৈরি করা যায়।  
-
+- `CRUD Operations`[Go](#1-crud-operations) →   Create → নতুন record তৈরি করা।Read → data পড়া, filter করা।Update → data modify করা।Delete → data remove করা।
+- `Lookups & Filters`[Go](#2-django-lookups---filters) → Filter দিয়ে specific data বের করা যায়।
+- `Indexing in PostgreSQL`[Go](#3-indexing-in-postgresql) → Index হল DB performance বাড়ানোর জন্য structure।
+- `Aggregate`[Go](#4-aggregate) → Aggregate দিয়ে summary বা grouped calculation করা যায়।
+- `Annotate`[Go](#5-annotate) → Annotate দিয়ে queryset এর individual object এ extra calculation attach করা যায়।
+- `Ordering & Limiting`[Go](#6-ordering---limiting) → Sorting এবং pagination করা সহজ।
+- `Expression`[Go](#7-django-orm-expression) → Expression দিয়ে dynamic field calculation, F( ) এবং functions ব্যবহার করা হয়।
+- `Complex Query`[Go](#8-complex-query) →  Q objects দিয়ে OR / AND / NOT logic তৈরি করা যায়।  
+ 
 <br>
 <br>
 
-## 1. CRUD
+## 1. CRUD Operations
 [Home](#orm-summary)
 
 ## Create (new data record তৈরি করা)  
@@ -631,7 +641,7 @@ Product.objects.all().delete()
 <br>
 
 
-# 2. Django ORM Lookups
+# 2. Django Lookups & Filters
 [Home](#orm-summary)
 
 - Exact / Basic Matching Lookups
@@ -691,7 +701,17 @@ Product.objects.all().delete()
 <br>
 
 
-# 3. Django ORM Aggregate Methods
+# 3. Indexing in PostgreSQL
+
+
+---
+<br>
+<br>
+<br>
+<br>
+
+
+# 4. Aggregate 
 [Home](#orm-summary)
 
 - `Count` →  `Count('field')` → মোট rows বা related objects গণনা করতে
@@ -763,7 +783,7 @@ Summary: {
 <br>
 <br>
 
-# 4. Django ORM Annotate Operations
+# 5. Annotate 
 [Home](#orm-summary)
 
 - `Count('field')` → প্রতিটি object এর সাথে related items count attach করতে
@@ -843,7 +863,7 @@ for b in books_with_discount:
 <br>
 <br>
 
-# 5. Django ORM Ordering & Limiting Methods
+# 5. Ordering & Limiting 
 [Home](#orm-summary)
 
 - `order_by('field')` → Queryset কে ascending বা descending order এ sort করতে
@@ -903,8 +923,8 @@ subset = Blog.objects.order_by('views')[1:3]
 <br>
 <br>
 
-
-# 6. Django ORM Expressions
+# 7. Django ORM Expressions
+ 
 [Home](#orm-summary)
 
 - `F()` → field arithmetic / comparison
@@ -977,7 +997,7 @@ products = Product.objects.filter(~Q(stock__lt=5))
 <br>
 
 
-#  7. Django ORM Complex Queries
+#  8. Complex Query
 [Home](#orm-summary)
 
 `Q() / ~Q()`  → `OR / AND / NOT` logical queries করতে
