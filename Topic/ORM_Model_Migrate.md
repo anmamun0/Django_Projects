@@ -1,4 +1,4 @@
-<img width="1312" height="385" alt="image" src="https://github.com/user-attachments/assets/6fe5a8d3-81b4-4fa3-b0f6-23d9a2f683e8" /> 
+<img width="1012" height="205" alt="image" src="https://github.com/user-attachments/assets/6fe5a8d3-81b4-4fa3-b0f6-23d9a2f683e8" /> 
 
 # Advanced Django Models & ORM
 
@@ -9,16 +9,18 @@
 - [Advanced ORM Queries](#advanced-orm-queries)
 <br>
 
+*For makde that anCoder*
 - [Django Serise ORM ](#django-orm)
-  
-<br>
+   
 <br>
 <br>
 
+ 
 # Model Relationships
 [Home](#advanced-django-models--orm)
 
 Django তে ৩ ধরনের main relationships আছে:
+<br>
 
 ### 1. One-to-Many (ForeignKey)
 
@@ -48,6 +50,7 @@ Reverse access (Teacher থেকে তার students):
 teacher = Teacher.objects.get(id=1)
 teacher.student_set.all()  # এই teacher এর সব students
 ```
+<br>
 
 ## 2. One-to-One (OneToOneField)
 
@@ -64,6 +67,7 @@ class Profile(models.Model):
 - প্রতিটি User এর শুধু একটি Profile থাকবে
 - `user.profile` → profile access
 - `profile.user` → user access
+<br>
 
 ## 3. Many-to-Many (ManyToManyField)
 
@@ -93,8 +97,7 @@ Reverse (Course থেকে students):
 course = Course.objects.get(id=1)
 course.student_set.all()  # course এ enrolled সব students
 ```
-
-
+<br>
 
 - `_set` হলো Django default reverse relation accessor।
 - ForeignKey বা ManyToManyField এ forward access direct field name দিয়ে হয়।
@@ -134,6 +137,7 @@ python manage.py makemigrations myapp
 python manage.py migrate myapp
 ```
 - যদি project এ অনেক apps থাকে, শুধু একটি app এর মাইগ্রেশন করতে চাইলে।
+<br>
 
 ### 3. Specific Migration File Apply
 ```shell
@@ -141,6 +145,7 @@ python manage.py migrate myapp 0002_auto_20250907_1234
 ```
 - নির্দিষ্ট migration file কে apply করতে।
 - Useful for rollback / test purpose।
+<br>
 
 ### 4. Fake Migration
 ```shell
@@ -148,6 +153,7 @@ python manage.py migrate myapp --fake
 ```
 - Database already updated আছে, কিন্তু Django কে জানাতে চাই যে migration apply হয়েছে।
 - Example: Manual DB changes করলে।
+<br>
 
 ### 5. Rollback / Migrate to Previous State
 ```shell
@@ -155,6 +161,7 @@ python manage.py migrate myapp 0001
 ```
 - কোনো migration undo করতে।
 - Example: নতুন field add করা হয়েছে কিন্তু problem দেখা দিয়েছে।
+<br>
 
 ### 6. SQL Preview
 ```
@@ -164,12 +171,7 @@ python manage.py sqlmigrate myapp 0002
 - Debugging এবং optimization এর জন্য খুব useful।
 
 
-
-
-
-
-
-
+ 
 
 --- 
 
@@ -189,9 +191,35 @@ ORM দিয়ে আমরা Python code দিয়ে database query ক�
 - `objects.get()` → specific row fetch, যদি না থাকে error দিবে
 - `save()` → change save করা
 - `delete()` → remove record
+<br>
+
+[`1 Lookups`](#21-lookups)
+ | [`2 Aggregation`](#22-aggregation)
+ | [`3 Annotation`](#23-annotation)
+ | [`4 Ordering & Limiting`](#24-ordering--limiting)
+ | [`Q objects`](#django-q-objects)
 
 
-### 2.1 Django ORM Lookups
+### 2.1 Lookups 
+Django ORM অনেক ধরনের lookups support করে।
+```py
+from people.models import Student
+
+# greater than or equal
+Student.objects.filter(marks__gte=80)
+
+# less than
+Student.objects.filter(marks__lt=50)
+
+# contains (text search)
+Student.objects.filter(name__icontains="rahim")
+
+# exact match
+Student.objects.filter(roll__exact=1)
+```
+<br>
+
+### 2.1 Django ORM Lookups Example
 ```py
 from people.models import Student
 
@@ -285,24 +313,8 @@ Student.objects.annotate(total_marks=F('marks') + 5)         # annotation
 # use case: calculation/query-time computation
 
 ```
- 
-### 2.1 Lookups
-Django ORM অনেক ধরনের lookups support করে।
-```py
-from people.models import Student
+<br>
 
-# greater than or equal
-Student.objects.filter(marks__gte=80)
-
-# less than
-Student.objects.filter(marks__lt=50)
-
-# contains (text search)
-Student.objects.filter(name__icontains="rahim")
-
-# exact match
-Student.objects.filter(roll__exact=1)
-```
 
 ### 2.2 Aggregation
 
@@ -319,6 +331,7 @@ Student.objects.aggregate(Max('marks'))
 # Total marks
 Student.objects.aggregate(Sum('marks'))
 ```
+<br>
 
 ### 2.3 Annotation
 
@@ -332,6 +345,7 @@ Student.objects.annotate(new_marks=F('marks') + 5)
 # Count students per teacher
 Teacher.objects.annotate(student_count=Count('student'))
 ```
+<br>
 
 ### 2.4 Ordering & Limiting
 ```py
@@ -348,8 +362,7 @@ Student.objects.filter(teacher__name="Mr. Rahim")
 # Get all courses of student "Karim"
 Student.objects.get(name="Karim").courses.all()
 ```
-
-
+<br>
 
 ### Django Q objects
 
@@ -453,7 +466,11 @@ students = Student.objects.filter(
 ## 1. CRUD Operations
 [Home](#orm-summary)
 
-## Create (new data record তৈরি করা)  
+[`Create`](#create-new-data-record-তৈরি-করা) | [`Read`](#read-query-methods) | [`Update`](#update-methods) | [`Delete`](#delete-methods)
+
+## Create (new data record তৈরি করা) 
+[Up](#1-crud-operations) 
+
 - `create()`           # নতুন object তৈরি করে এবং auto save করে
 - `save()`             # object তৈরি করে save করা
 - `bulk_create()`      # একসাথে multiple objects তৈরি করে
@@ -503,10 +520,9 @@ blog4, created = Blog.objects.update_or_create(
 # যদি না থাকে → নতুন record create হবে, created=True
 # OUTPUT Example: blog4=<Blog: Update Blog>, created=True
 
-```
- 
-## Read / Query Methods  
-
+``` 
+## Read Query Methods  
+[up](#1-crud-operations)
 - `all()`, 	# সব objects return করে     
 - `get()` 		# single object return করে
 - `filter()` 	# queryset return করে
@@ -578,7 +594,10 @@ agg_data = Blog.objects.aggregate(
 # OUTPUT: {'total_views': 150, 'avg_views': 30.0, 'max_views': 50, 'min_views': 10}
 
 ```
+
+
 ## Update Methods
+[up](#1-crud-operations)
 - `save()` 		# object modify করে save
 - `update()` 		# queryset এর উপর bulk update
 - `F() expression` 	# dynamic field update | field values arithmetic করতে 			যেমন: stock=F('stock')+5
@@ -612,8 +631,9 @@ Product.objects.filter(name="Tablet").update(stock=F("stock") + 5)
 
 ```
 <br>
-
+ 
 ##  Delete Methods 
+[up](#1-crud-operations)
 - `delete()` 	# single row delete , 
 - 		# multiple row delete , 
 - 		# bulk delete, signal fired 
