@@ -431,19 +431,20 @@ students = Student.objects.filter(
 <br>
 <br>
 
-   
+
+ 
 # Django ORM
 [Home](#advanced-django-models--orm)
 
 ### ORM Summary 
 
 - `CRUD Operations`[Go](#1-crud-operations) →   Create → নতুন record তৈরি করা।Read → data পড়া, filter করা।Update → data modify করা।Delete → data remove করা।
-- `Lookups & Filters`[Go](#2-django-lookups---filters) → Filter দিয়ে specific data বের করা যায়।
+- `Lookups & Filters`[Go](#2-django-lookups-filters) → Filter দিয়ে specific data বের করা যায়।
 - `Indexing in PostgreSQL`[Go](#3-indexing-in-postgresql) → Index হল DB performance বাড়ানোর জন্য structure।
 - `Aggregate`[Go](#4-aggregate) → Aggregate দিয়ে summary বা grouped calculation করা যায়।
 - `Annotate`[Go](#5-annotate) → Annotate দিয়ে queryset এর individual object এ extra calculation attach করা যায়।
-- `Ordering & Limiting`[Go](#6-ordering---limiting) → Sorting এবং pagination করা সহজ।
-- `Expression`[Go](#7-django-orm-expression) → Expression দিয়ে dynamic field calculation, F( ) এবং functions ব্যবহার করা হয়।
+- `Ordering & Limiting`[Go](#6-ordering-limiting) → Sorting এবং pagination করা সহজ।
+- `Expression`[Go](#7-django-orm-expressions) → Expression দিয়ে dynamic field calculation, F( ) এবং functions ব্যবহার করা হয়।
 - `Complex Query`[Go](#8-complex-query) →  Q objects দিয়ে OR / AND / NOT logic তৈরি করা যায়।  
  
 <br>
